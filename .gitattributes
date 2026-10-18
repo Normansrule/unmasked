@@ -1,0 +1,13 @@
+# Big art/audio inside the Unity project goes through Git LFS. Docs images stay in plain git so
+# they show up on GitHub without LFS.
+Assets/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.png filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.psd filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.wav filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.ogg filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+Assets/**/*.exr filter=lfs diff=lfs merge=lfs -text
+*.unity merge=unityyamlmerge eol=lf
+*.prefab merge=unityyamlmerge eol=lf
+*.asset merge=unityyamlmerge eol=lf
+*.sh text eol=lf

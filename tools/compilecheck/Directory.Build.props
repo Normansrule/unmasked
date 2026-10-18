@@ -1,0 +1,14 @@
+<Project>
+  <!-- Keeps bin/obj out of the shared project folder. Override with CC_OUT=/some/dir. -->
+  <PropertyGroup>
+    <CcOut Condition="'$(CC_OUT)' != ''">$(CC_OUT)</CcOut>
+    <CcOut Condition="'$(CC_OUT)' == ''">/tmp/cc/artifacts</CcOut>
+    <ArtifactsPath>$(CcOut)</ArtifactsPath>
+    <CcDeps Condition="'$(CC_DEPS)' != ''">$(CC_DEPS)</CcDeps>
+    <CcDeps Condition="'$(CC_DEPS)' == ''">/tmp/cc/deps</CcDeps>
+    <!-- 2021.3.33 reference DLLs + injected Unity 6 members (see unity6-members.txt); produced by check.sh -->
+    <UnityEngineDir>$(CcDeps)/patched</UnityEngineDir>
+    <UnityEditorDll>$(CcDeps)/unity3d.sdk.2021.1.14.1/lib/UnityEditor.dll</UnityEditorDll>
+    <ScriptsDir>$(MSBuildThisFileDirectory)../../Assets/Unmasked/Scripts</ScriptsDir>
+  </PropertyGroup>
+</Project>

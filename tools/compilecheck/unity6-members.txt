@@ -1,0 +1,11 @@
+# Unity 6 (6000.0) members that the 2021.3.33 reference DLLs on nuget.org lack. Injected by unity6patch/ (bodies throw).
+# Only add members that really exist in Unity 6.0 (see docs.unity3d.com/6000.0/Documentation/ScriptReference/...).
+# Rigidbody: velocity/drag/angularDrag were renamed in Unity 6.
+UnityEngine.PhysicsModule.dll UnityEngine.Rigidbody prop UnityEngine.Vector3 linearVelocity
+UnityEngine.PhysicsModule.dll UnityEngine.Rigidbody prop System.Single linearDamping
+UnityEngine.PhysicsModule.dll UnityEngine.Rigidbody prop System.Single angularDamping
+UnityEngine.Physics2DModule.dll UnityEngine.Rigidbody2D prop UnityEngine.Vector2 linearVelocity
+UnityEngine.Physics2DModule.dll UnityEngine.Rigidbody2D prop System.Single linearVelocityX
+UnityEngine.Physics2DModule.dll UnityEngine.Rigidbody2D prop System.Single linearVelocityY
+UnityEngine.Physics2DModule.dll UnityEngine.Rigidbody2D prop System.Single linearDamping
+UnityEngine.Physics2DModule.dll UnityEngine.Rigidbody2D prop System.Single angularDamping

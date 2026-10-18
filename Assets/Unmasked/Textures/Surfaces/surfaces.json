@@ -1,0 +1,102 @@
+{
+ "surfaces": [
+  {
+   "id": "siding",
+   "texture": "siding",
+   "tile": 1.6,
+   "strength": 0.85,
+   "swapTop": false
+  },
+  {
+   "id": "shingle",
+   "texture": "shingle",
+   "tile": 2.0,
+   "strength": 0.95,
+   "swapTop": false
+  },
+  {
+   "id": "shingle_z",
+   "texture": "shingle",
+   "tile": 2.0,
+   "strength": 0.95,
+   "swapTop": true
+  },
+  {
+   "id": "brick",
+   "texture": "brick",
+   "tile": 1.0,
+   "strength": 0.8,
+   "swapTop": false
+  },
+  {
+   "id": "stone",
+   "texture": "stone",
+   "tile": 2.4,
+   "strength": 0.85,
+   "swapTop": false
+  },
+  {
+   "id": "planks",
+   "texture": "planks",
+   "tile": 2.0,
+   "strength": 0.7,
+   "swapTop": false
+  },
+  {
+   "id": "planks_z",
+   "texture": "planks",
+   "tile": 2.0,
+   "strength": 0.7,
+   "swapTop": true
+  },
+  {
+   "id": "grass",
+   "texture": "grass",
+   "tile": 3.0,
+   "strength": 0.75,
+   "swapTop": false
+  },
+  {
+   "id": "road",
+   "texture": "road",
+   "tile": 4.0,
+   "strength": 0.6,
+   "swapTop": false
+  },
+  {
+   "id": "gravel",
+   "texture": "gravel",
+   "tile": 2.0,
+   "strength": 0.7,
+   "swapTop": false
+  },
+  {
+   "id": "plaster",
+   "texture": "plaster",
+   "tile": 1.2,
+   "strength": 0.35,
+   "swapTop": false
+  },
+  {
+   "id": "bark",
+   "texture": "bark",
+   "tile": 1.0,
+   "strength": 0.8,
+   "swapTop": false
+  },
+  {
+   "id": "leaf",
+   "texture": "leaf",
+   "tile": 1.5,
+   "strength": 0.8,
+   "swapTop": false
+  },
+  {
+   "id": "water",
+   "texture": "water",
+   "tile": 3.0,
+   "strength": 0.6,
+   "swapTop": false
+  }
+ ]
+}

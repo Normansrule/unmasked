@@ -1,0 +1,144 @@
+{
+ "sounds": [
+  {
+   "id": "wind",
+   "loop": true,
+   "where": "always, outdoors and in"
+  },
+  {
+   "id": "crickets",
+   "loop": true,
+   "where": "always, quietly"
+  },
+  {
+   "id": "rain",
+   "loop": true,
+   "where": "Thunderstorm nights"
+  },
+  {
+   "id": "drone",
+   "loop": true,
+   "where": "Blood Moon nights"
+  },
+  {
+   "id": "music_box",
+   "loop": true,
+   "where": "Willow Lane's nursery"
+  },
+  {
+   "id": "van_engine",
+   "loop": true,
+   "where": "the Mystery Van (pitch follows speed)"
+  },
+  {
+   "id": "heartbeat",
+   "loop": false,
+   "where": "your own heart, faster as fear rises"
+  },
+  {
+   "id": "thunder",
+   "loop": false,
+   "where": "lightning strikes"
+  },
+  {
+   "id": "crow",
+   "loop": false,
+   "where": "now and then, somewhere nearby"
+  },
+  {
+   "id": "owl",
+   "loop": false,
+   "where": "now and then, somewhere nearby"
+  },
+  {
+   "id": "rattle",
+   "loop": false,
+   "where": "possessed: Rattle"
+  },
+  {
+   "id": "whoosh",
+   "loop": false,
+   "where": "possessed: Launch, the Haunter popping out"
+  },
+  {
+   "id": "door_slam",
+   "loop": false,
+   "where": "possessed: Slam, doors"
+  },
+  {
+   "id": "creak",
+   "loop": false,
+   "where": "doors opening"
+  },
+  {
+   "id": "buzz",
+   "loop": false,
+   "where": "possessed: Flicker"
+  },
+  {
+   "id": "power_down",
+   "loop": false,
+   "where": "possessed: Cut Power"
+  },
+  {
+   "id": "banshee_wail",
+   "loop": false,
+   "where": "the Banshee's Wail"
+  },
+  {
+   "id": "hoofbeats",
+   "loop": false,
+   "where": "the Horseman's Pumpkin Toss"
+  },
+  {
+   "id": "pumpkin_burst",
+   "loop": false,
+   "where": "a flaming jack-o'-lantern landing"
+  },
+  {
+   "id": "wisp_chime",
+   "loop": false,
+   "where": "Stingy Jack's Wisp Lure"
+  },
+  {
+   "id": "hex",
+   "loop": false,
+   "where": "Baba Yaga's Hex"
+  },
+  {
+   "id": "ghost_moan",
+   "loop": false,
+   "where": "a Phantom Illusion"
+  },
+  {
+   "id": "eek",
+   "loop": false,
+   "where": "a startled suspect"
+  },
+  {
+   "id": "clue_chime",
+   "loop": false,
+   "where": "a clue found"
+  },
+  {
+   "id": "alibi_holds",
+   "loop": false,
+   "where": "an alibi that checks out"
+  },
+  {
+   "id": "alibi_broken",
+   "loop": false,
+   "where": "an alibi that falls apart"
+  },
+  {
+   "id": "trap_sting",
+   "loop": false,
+   "where": "the culprit named: build the trap!"
+  },
+  {
+   "id": "unmask",
+   "loop": false,
+   "where": "the unmasking"
+  }
+ ]
+}

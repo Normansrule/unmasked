@@ -1,0 +1,20 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <!-- Unity compiles user scripts with these; UNITY_EDITOR because scripts are compiled in the editor too. -->
+    <DefineConstants>UNITY_EDITOR;UNITY_6000_0_OR_NEWER;UNITY_2021_3_OR_NEWER;UNITY_2022_3_OR_NEWER;UNITY_2023_1_OR_NEWER;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2</DefineConstants>
+    <!-- Unity's own compiler suppresses these; keep output focused. CS0414/CS0649/CS0169 are noise for serialized fields. -->
+    <NoWarn>CS0649;CS0414;CS0169;CS1591;CS8632</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="$(UnityEngineDir)/*.dll" Private="false" />
+  </ItemGroup>
+</Project>
