@@ -10,10 +10,15 @@ music or fonts are in `Assets/`.
 | Surface patterns (siding, shingles, brick...) | `Assets/Unmasked/Textures/Surfaces` | `make_textures.py` | Procedural |
 | Sounds (29 .wav) | `Assets/Unmasked/Resources/Sounds` | `make_sounds.py` | Synthesized |
 | Toon shader | `Assets/Unmasked/Shaders/ToonSpooky.shader` | Hand-written | Original |
-| In-game text | Unity's built-in LegacyRuntime font | Unity | Ships with Unity |
+| In-game text | `Assets/Unmasked/Resources/Fonts` (Fraunces, Atkinson Hyperlegible), falls back to Unity's LegacyRuntime font | Fraunces by Undercase Type; Atkinson Hyperlegible by the Braille Institute | SIL Open Font License 1.1, licence texts next to the fonts |
+| Website fonts | `site/fonts/*.woff2` | Subset from the same fonts | SIL Open Font License 1.1, licence texts in `site/fonts` |
+| Website house pictures | `site/img/*.jpg` | Cropped from `Reference renders` | The project's own renders, not Unity |
+| Website case data | `site/data/game.json` | `Docs/tools/make_site_data.py`, read from `Cases.cs` and `PROGRESS.md` | Original |
+| Website screenshots and GIFs (`site-*.png`, `site-*.gif`) | `Docs/images` | `Docs/tools/make_site_pictures.py` (Playwright) | Real browser screenshots of `site/` |
+| Interface mockups (`hud-refresh.png`, `hud-board.png`) | `Docs/images` | `Docs/tools/make_readme_anim.py` | Drawn from the UITheme colour and type tokens over a Reference render; mockups, not Unity |
 | Animated README pieces (progress tracker SVG, rounds, one night, cast, handbook GIFs) | `Docs/images` | `Docs/tools/make_readme_anim.py` | Drawn from PROGRESS.md and the other README pictures; illustrations, not Unity |
 | README pictures and Reference renders | `Docs/images`, `Reference renders` | `Docs/tools/make_images*.py`, `render3d.py` | Rendered by the project's own renderer, not Unity |
-| Fonts in the README pictures | Not in the repo | Inter or DejaVu, from the build machine | Open-source fonts (SIL OFL / Bitstream Vera licence), used only to draw the pictures |
+| Fonts in the README pictures | `Resources/Fonts` (Fraunces, Atkinson Hyperlegible); embedded subset in the tracker SVGs | Same as in-game | SIL Open Font License 1.1 |
 
 ## Reference material (study only, never shipped)
 Alek's reference uploads are kept outside the project: the story and art direction pack, the

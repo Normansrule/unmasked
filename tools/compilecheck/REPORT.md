@@ -6,7 +6,22 @@ Post Processing 3.4.0 and Unity.Collections 2.2.1. Nothing in Assets/ is touched
 
     bash tools/compilecheck/check.sh    # needs dotnet-sdk-8.0; the first run downloads from api.nuget.org
 
-## Latest result (2026-10-18, round 23)
+## Latest result (2026-10-20, round 25)
+Runtime: 0 errors, 0 warnings. Editor: 0 errors. RPC naming check: 0 problems.
+
+New this round: the Case Book look. UITheme.cs gets the paper-and-ink palette, the fonts in
+Resources/Fonts, and helpers for pins, red string, struck names, the cork texture and the Swing
+pendulum. GameHUD.DrawBoard is a corkboard laid out by hand in a scroll view; Handbook and TownMap
+use the pins and string.
+
+## Round 24 (2026-10-20)
+Runtime: 0 errors, 0 warnings. Editor: 0 errors. RPC naming check: 0 problems.
+
+New this round: UI/UITheme.cs (skin, colour and type tokens, GUI scale, motion helpers, text-size
+and reduced-motion preferences). GameHUD, Handbook and TownMap now call UITheme.Begin() and lay out
+in GUI points (UITheme.W / H) instead of raw screen pixels.
+
+## Round 23 (2026-10-18)
 Runtime: 0 errors, 0 warnings. Editor: 0 errors. RPC naming check: 0 problems.
 
 New this round: UI/Handbook.cs (first-time hint cards, F1 page, saved in PlayerPrefs

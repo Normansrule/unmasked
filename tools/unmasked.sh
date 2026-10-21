@@ -5,6 +5,8 @@
 #   unmasked publish [name]    first upload: create the GitHub repo (private) and push everything
 #   unmasked save "message"    commit everything and push
 #   unmasked status            progress: milestones, recent commits, last compile check
+#   unmasked site              preview the website (site/) at http://localhost:8000
+#   unmasked pages             turn on GitHub Pages so the website goes live
 #   unmasked open              open the project in the Unity editor
 #   unmasked check             compile the project headless and list any errors
 #   unmasked world             rebuild the 3D manor (layout script + Unity scene) headless
@@ -122,7 +124,28 @@ cmd_publish() {
       --description "Asymmetric 'meddling kids' mystery game made in Unity"
   fi
   ok "Uploaded: $(gh repo view --json url -q .url)"
+  cmd_pages || true
   echo "Next: 'unmasked secrets' so GitHub can build downloadable versions."
+}
+
+# The website is plain files in site/, deployed by .github/workflows/pages.yml.
+cmd_pages() {
+  command -v gh >/dev/null || die "Run 'unmasked setup' first."
+  local repo; repo="$(gh repo view --json nameWithOwner -q .nameWithOwner)" || die "No GitHub repo yet. Run 'unmasked publish' first."
+  if gh api "repos/$repo/pages" >/dev/null 2>&1 || gh api -X POST "repos/$repo/pages" -f build_type=workflow >/dev/null 2>&1; then
+    gh workflow run pages.yml >/dev/null 2>&1 || true
+    ok "Website: https://${repo%%/*}.github.io/${repo#*/}/ (live a minute or two after the Website workflow finishes)"
+  else
+    warn "GitHub Pages couldn't be turned on. On a free account the repo has to be public: 'gh repo edit --visibility public --accept-visibility-change-consequences', then 'unmasked pages' again."
+    return 1
+  fi
+}
+
+cmd_site() {
+  command -v python3 >/dev/null || die "The preview needs python3 (sudo apt install python3)."
+  python3 Docs/tools/make_site_data.py
+  bold "Website preview: http://localhost:8000  (Ctrl+C to stop)"
+  python3 -m http.server 8000 --bind 127.0.0.1 --directory site
 }
 
 cmd_save() {
@@ -247,13 +270,15 @@ cmd_install_unity() {
   ok "Unity $UNITY_VERSION installed. Run: unmasked open"
 }
 
-cmd_help() { sed -n '2,17p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'; }
+cmd_help() { sed -n '2,18p' "$SCRIPT_PATH" | sed 's/^# \{0,1\}//'; }
 
 case "${1:-help}" in
   setup) cmd_setup ;;
   publish) shift; cmd_publish "$@" ;;
   save) shift; cmd_save "$@" ;;
   status|progress) cmd_status ;;
+  site) cmd_site ;;
+  pages) cmd_pages ;;
   open) cmd_open ;;
   check) cmd_check ;;
   world|room) cmd_world ;;

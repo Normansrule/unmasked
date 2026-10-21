@@ -170,6 +170,24 @@
 - [x] Animated README: progress tracker read from this file, every round on a timeline, one night start to finish, the cast turning
 - [ ] See the hints on screen in Unity and adjust the wording after a first playtest
 
+## Milestone 19: The design pass
+- [x] One interface theme (`UI/UITheme.cs`): colour roles, four type sizes, spacing steps, flat surfaces
+- [x] HUD, Suspect Board, town map and handbook restyled; panels and toasts no longer overlap at 720p
+- [x] Text size and reduced-motion settings on the handbook page (F1)
+- [x] README reorganised around overview, features, setup and design; the full tour moved to Docs/GUIDE.md
+- [ ] Check the new look in Unity at 720p, 1080p and 4K
+
+## Milestone 20: The Case Book
+- [x] Direction picked from three concepts: the club's paperwork, a corkboard and evidence-tag red
+- [x] Fraunces and Atkinson Hyperlegible shipped with the game (Resources/Fonts, SIL Open Font License)
+- [x] Suspect Board as a corkboard: clue tags, pinned cards, red string, a real strikethrough, cards that swing
+- [x] Town map pins and string to tonight's call; hint cards pinned up; keys in bold ink
+- [x] Website in site/ with light and dark modes and a playable Suspect Board built from Cases.cs
+- [x] Website published by GitHub Actions (`unmasked pages`), previewed with `unmasked site`
+- [x] Suspect Board works by keyboard in the game (arrows pick, H, X, C, A twice to accuse)
+- [x] Website remembers solved cases, shows each legend's portrait, and has a link preview picture
+- [ ] Check the board's swing and string in Unity, and turn the site on once the repo is public
+
 ## Release pipeline
 - [x] One-click test room generator
 - [x] Player builds for Windows, macOS, Linux (menu, terminal, GitHub Actions)

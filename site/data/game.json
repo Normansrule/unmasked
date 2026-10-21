@@ -1,0 +1,1406 @@
+{
+ "cases": [
+  {
+   "id": "BlackwoodManor",
+   "house": "BlackwoodManor",
+   "houseName": "Blackwood Manor",
+   "visit": 1,
+   "name": "The Missing Blackwood Ledger",
+   "premise": "The 1823 town ledger, which says who really owns half of Hollow Creek, has vanished from the Library.",
+   "recovered": "The ledger is back in the Library, and Hollow Creek finally knows who owns what.",
+   "traits": [
+    "Muddy boots",
+    "Perfume",
+    "Cigar ash",
+    "Flour",
+    "Master keys",
+    "Gardening",
+    "Jewelry",
+    "Leather gloves"
+   ],
+   "suspects": [
+    {
+     "name": "Gus Thornbury",
+     "job": "Groundskeeper",
+     "bio": "Has tended the Blackwood grounds for forty years and hates visitors trampling his roses.",
+     "alibi": "Says he was locking up the Greenhouse all evening.",
+     "alibiRoom": "Greenhouse",
+     "motive": "to keep the ledger from showing the greenhouse land was never his family's",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Vivian Blackwood",
+     "job": "Heiress",
+     "bio": "Inherits the manor next month, unless it's 'too haunted' to sell.",
+     "alibi": "Claims she was in the Library reading all night.",
+     "alibiRoom": "Library",
+     "motive": "to tear out the page that splits her inheritance with a long-lost cousin",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Reginald Pike",
+     "job": "Rival antiques dealer",
+     "bio": "Has been trying to buy the manor's antiques for a song.",
+     "alibi": "Insists he left before sunset and spent the evening at the Diner in town.",
+     "alibiRoom": "Diner",
+     "motive": "to sell the ledger to a collector in the city while everyone hid from the ghost",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Martha Bunce",
+     "job": "Cook",
+     "bio": "Bakes the best pies in the county and knows every servants' passage.",
+     "alibi": "Says she was in the Kitchen baking for tomorrow's party until midnight.",
+     "alibiRoom": "Kitchen",
+     "motive": "to hide the old recipe pages tucked inside it, the ones her prize pies are copied from",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "BootPrint",
+     "name": "Muddy boot print",
+     "description": "Fresh garden mud, heavy work boots.",
+     "trait": 0
+    },
+    {
+     "id": "Perfume",
+     "name": "Whiff of lavender",
+     "description": "Expensive lavender perfume lingers on the curtain.",
+     "trait": 1
+    },
+    {
+     "id": "CigarAsh",
+     "name": "Cigar ash",
+     "description": "Still-warm ash from an imported cigar.",
+     "trait": 2
+    },
+    {
+     "id": "FlourPrint",
+     "name": "Floury handprint",
+     "description": "A perfect handprint in baking flour.",
+     "trait": 3
+    },
+    {
+     "id": "KeyRing",
+     "name": "Dropped key ring",
+     "description": "A ring of old master keys to the manor.",
+     "trait": 4
+    },
+    {
+     "id": "RosePetals",
+     "name": "Fresh rose petals",
+     "description": "Petals from the manor's prize rose garden.",
+     "trait": 5
+    },
+    {
+     "id": "Pearl",
+     "name": "Loose pearl",
+     "description": "A real pearl from a broken necklace.",
+     "trait": 6
+    },
+    {
+     "id": "Glove",
+     "name": "Torn leather glove",
+     "description": "A fine leather glove, torn on a nail.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "PembertonCottage",
+   "house": "PembertonCottage",
+   "houseName": "Pemberton Cottage",
+   "visit": 1,
+   "name": "The Missing Harvest Lantern",
+   "premise": "The Harvest Lantern that leads the festival's lantern walk has vanished from Mrs. Pemberton's mantel, and her teapot hasn't stopped rattling since.",
+   "recovered": "The Harvest Lantern is back on Mrs. Pemberton's mantel, just in time for the lantern walk.",
+   "traits": [
+    "Sawdust",
+    "Glitter",
+    "Hair pomade",
+    "Icing sugar",
+    "Spare key",
+    "Potting soil",
+    "Gold locket",
+    "Chamomile tea"
+   ],
+   "suspects": [
+    {
+     "name": "Hank Moody",
+     "job": "Handyman",
+     "bio": "Has been 'fixing' Mrs. Pemberton's shed since June and charges by the hour.",
+     "alibi": "Says he was fixing the lock on the Garden Shed, then went home with a sore back.",
+     "alibiRoom": "Garden Shed",
+     "motive": "to sell the lantern's old brass to a scrap dealer and blame it on the ghost",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Daisy Pemberton",
+     "job": "Granddaughter",
+     "bio": "Wants the cottage for herself, and Grandma won't move out while the teapot behaves.",
+     "alibi": "Claims she was at the Diner in town with friends all evening.",
+     "alibiRoom": "Diner",
+     "motive": "to scare Grandma into moving out, lantern and all",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Leonard Crisp",
+     "job": "Estate agent",
+     "bio": "Already has a buyer lined up for a 'charming, slightly haunted' cottage.",
+     "alibi": "Insists he was showing a house on Elm Street.",
+     "alibiRoom": "Elm Street",
+     "motive": "to pocket the lantern and sell his buyer a 'charmingly haunted' cottage",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Beatrice Hollis",
+     "job": "Next-door neighbour",
+     "bio": "Runs the bake-off club and has wanted that prize-winning garden for years.",
+     "alibi": "Says she was icing cupcakes in Mrs. Pemberton's Kitchen, as a favour.",
+     "alibiRoom": "Kitchen",
+     "motive": "to carry the lantern in the walk herself and finally win the garden prize",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "Sawdust",
+     "name": "Pile of sawdust",
+     "description": "Fresh sawdust, the kind you get from sawing a shed door.",
+     "trait": 0
+    },
+    {
+     "id": "Glitter",
+     "name": "Pink glitter",
+     "description": "Party glitter, still sparkling on the windowsill.",
+     "trait": 1
+    },
+    {
+     "id": "Pomade",
+     "name": "Greasy smudge",
+     "description": "A hair-pomade smudge on the hall mirror. Smells of limes.",
+     "trait": 2
+    },
+    {
+     "id": "Icing",
+     "name": "Icing sugar",
+     "description": "A dusting of icing sugar on the doorknob.",
+     "trait": 3
+    },
+    {
+     "id": "SpareKey",
+     "name": "Spare key",
+     "description": "The spare key from under the flowerpot, left on the rug.",
+     "trait": 4
+    },
+    {
+     "id": "Soil",
+     "name": "Potting soil",
+     "description": "Rich potting soil from the vegetable patch, trodden indoors.",
+     "trait": 5
+    },
+    {
+     "id": "Locket",
+     "name": "Gold locket",
+     "description": "A gold locket with a tiny photo of the cottage inside.",
+     "trait": 6
+    },
+    {
+     "id": "TeaLeaves",
+     "name": "Spilled tea leaves",
+     "description": "Chamomile tea leaves, scattered as if the pot leapt by itself.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "HollowCreekFarm",
+   "house": "HollowCreekFarm",
+   "houseName": "Hollow Creek Farm",
+   "visit": 1,
+   "name": "The Sabotaged Prize Display",
+   "premise": "Someone wrecked the farm's prize pumpkin display the night before judging, and the scarecrow keeps moving.",
+   "recovered": "The prize display is mended and the judges can come in the morning.",
+   "traits": [
+    "Hay seeds",
+    "Pageant glitter",
+    "Surveyor's chalk",
+    "Apple peel",
+    "Barn key",
+    "Corn husks",
+    "Rodeo buckle",
+    "Tractor grease"
+   ],
+   "suspects": [
+    {
+     "name": "Abel Hatcher",
+     "job": "Farmer",
+     "bio": "Runs the farm with his sister and swears the scarecrow moved on its own.",
+     "alibi": "Says he was mending the Windmill until it got dark.",
+     "alibiRoom": "Windmill",
+     "motive": "to hide that the prize pumpkin was bought in town, not grown",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Clementine Hatcher",
+     "job": "Harvest Queen",
+     "bio": "Won the county fair three years running and wants to sell the farm and move to the city.",
+     "alibi": "Claims she was rehearsing her parade wave in the Parlor.",
+     "alibiRoom": "Parlor",
+     "motive": "to make the farm lose, so it sells and she can leave for the city",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Silas Crane",
+     "job": "Land developer",
+     "bio": "Wants to turn the corn maze into a car park, if only the farm were 'too spooky' to keep.",
+     "alibi": "Insists he was at the Post Office in town, mailing plans to the county.",
+     "alibiRoom": "Post Office",
+     "motive": "to scare the Hatchers into selling the corn maze for his car park",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Ma Jessup",
+     "job": "Runs the pie stand",
+     "bio": "Sells pies at the farm gate and hears every bit of gossip in the county.",
+     "alibi": "Says she was baking apple pies in the Farm Kitchen for the Harvest Festival.",
+     "alibiRoom": "Farm Kitchen",
+     "motive": "to make sure her own pie stand takes best in show",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "HaySeeds",
+     "name": "Hay seeds",
+     "description": "Seeds from the very top of the hayloft, stuck in a boot tread.",
+     "trait": 0
+    },
+    {
+     "id": "PageantGlitter",
+     "name": "Gold glitter",
+     "description": "Gold pageant glitter on the ladder rungs.",
+     "trait": 1
+    },
+    {
+     "id": "Chalk",
+     "name": "Surveyor's chalk",
+     "description": "Bright blue chalk, the kind used to mark out building plots.",
+     "trait": 2
+    },
+    {
+     "id": "AppleParing",
+     "name": "Apple peel",
+     "description": "A long curl of apple peel, still fresh.",
+     "trait": 3
+    },
+    {
+     "id": "BarnKey",
+     "name": "Barn key",
+     "description": "The big iron key to the barn, dropped in the straw.",
+     "trait": 4
+    },
+    {
+     "id": "CornHusk",
+     "name": "Corn husks",
+     "description": "Husks from the maze, tucked into a pocket and dropped.",
+     "trait": 5
+    },
+    {
+     "id": "Buckle",
+     "name": "Rodeo belt buckle",
+     "description": "A shiny silver buckle shaped like a horseshoe.",
+     "trait": 6
+    },
+    {
+     "id": "Grease",
+     "name": "Tractor grease",
+     "description": "Black grease on the hayloft hatch. Someone's been near an engine.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "WillowLaneVictorian",
+   "house": "WillowLaneVictorian",
+   "houseName": "Willow Lane Victorian",
+   "visit": 1,
+   "name": "The Interrupted Recital",
+   "premise": "The nursery music box keeps cutting off Lavinia's charity recital, and the donation tin went missing in the fuss.",
+   "recovered": "The donation tin is found and Lavinia's recital goes on, music box and all.",
+   "traits": [
+    "Hedge clippings",
+    "Violet perfume",
+    "Pipe tobacco",
+    "Silver polish",
+    "Skeleton key",
+    "Graveyard dirt",
+    "Velvet thread",
+    "Candle wax"
+   ],
+   "suspects": [
+    {
+     "name": "Ezra Cole",
+     "job": "Caretaker",
+     "bio": "Has kept the Ashcombe garden and family plot tidy since he was a boy.",
+     "alibi": "Says he was raking leaves in the Family Plot until the candles burned down.",
+     "alibiRoom": "Family Plot",
+     "motive": "to hide that he'd borrowed from the donation tin to mend the family plot gate",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Lavinia Ashcombe",
+     "job": "The last Ashcombe",
+     "bio": "Lives alone in the big house and hasn't slept since the music box started playing.",
+     "alibi": "Claims she was locked in the Master Bedroom with the radio on.",
+     "alibiRoom": "Master Bedroom",
+     "motive": "to stop the recital before anyone counted the donation tin",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Dr. Felix Marlowe",
+     "job": "Music-box collector",
+     "bio": "Has offered three times to buy the nursery's music box. Three times he was refused.",
+     "alibi": "Insists he was at the Bookshop in town until closing.",
+     "alibiRoom": "Bookshop",
+     "motive": "to frighten Lavinia into finally selling him the music box",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Agnes Pratt",
+     "job": "Housekeeper",
+     "bio": "Knows every creaky floorboard and every secret door in the house.",
+     "alibi": "Says she was polishing the silver in the Dining Room for Sunday.",
+     "alibiRoom": "Dining Room",
+     "motive": "to slip the donation tin away while everyone stared at the music box",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "Clippings",
+     "name": "Hedge clippings",
+     "description": "Fresh clippings from the front hedge, tracked up the stairs.",
+     "trait": 0
+    },
+    {
+     "id": "Violets",
+     "name": "Scent of violets",
+     "description": "Violet perfume, faint but unmistakable, in the nursery.",
+     "trait": 1
+    },
+    {
+     "id": "Tobacco",
+     "name": "Pipe tobacco",
+     "description": "A pinch of cherry pipe tobacco on the windowsill.",
+     "trait": 2
+    },
+    {
+     "id": "Polish",
+     "name": "Silver polish",
+     "description": "A smear of silver polish on the music box's key.",
+     "trait": 3
+    },
+    {
+     "id": "SkeletonKey",
+     "name": "Skeleton key",
+     "description": "An old skeleton key that opens the nursery door.",
+     "trait": 4
+    },
+    {
+     "id": "GraveDirt",
+     "name": "Graveyard dirt",
+     "description": "Dark soil from the family plot, still damp.",
+     "trait": 5
+    },
+    {
+     "id": "Velvet",
+     "name": "Velvet thread",
+     "description": "A thread of plum velvet caught on the trapdoor.",
+     "trait": 6
+    },
+    {
+     "id": "Wax",
+     "name": "Candle wax",
+     "description": "Drips of black candle wax leading to the tower stairs.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "HistoricalSociety",
+   "house": "HistoricalSociety",
+   "houseName": "Historical Society",
+   "visit": 1,
+   "name": "The Mask Keeper",
+   "premise": "Someone at the Historical Society has been lending out the town's folklore masks, and tonight the oldest of them all, the Hollow Creek Mask, is missing from its case.",
+   "recovered": "The Hollow Creek Mask is back in its case with the other four, and the museum stays open.",
+   "traits": [
+    "Brass keys",
+    "Ink stains",
+    "Ledger pages",
+    "Cake crumbs",
+    "Old paper dust",
+    "Lantern oil",
+    "Fountain pen",
+    "Raffle tickets"
+   ],
+   "suspects": [
+    {
+     "name": "Walter Finch",
+     "job": "Night watchman",
+     "bio": "Has guarded the museum for thirty years and knows every creaky board and every key.",
+     "alibi": "Says he was doing his rounds in the Archive all night.",
+     "alibiRoom": "Archive",
+     "motive": "so the town would believe in the old legends again, and the museum he has guarded for thirty years would stay open",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Edie Wren",
+     "job": "Curator",
+     "bio": "Runs the museum on a shoestring and gives out full-size candy bars. Her fingers are always inky.",
+     "alibi": "Claims she was cataloguing in the Reading Room until late.",
+     "alibiRoom": "Reading Room",
+     "motive": "to bring the crowds back before the museum closed for good, one haunting at a time",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Mortimer Vane",
+     "job": "Society treasurer",
+     "bio": "Keeps the books, and keeps telling the board the building should be sold.",
+     "alibi": "Insists he left the board meeting and spent the evening at the Diner.",
+     "alibiRoom": "Diner",
+     "motive": "to frighten the board into selling the building, masks and all, to his collector friend in the city",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Rosa Delgado",
+     "job": "Tea room volunteer",
+     "bio": "Bakes for every fundraiser and runs the museum's little tea corner in the Gift Shop.",
+     "alibi": "Says she was in the Gift Shop pricing raffle prizes.",
+     "alibiRoom": "Gift Shop",
+     "motive": "to make the Halloween fundraiser the busiest night her little tea room had ever seen",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "WatchKeys",
+     "name": "Ring of brass keys",
+     "description": "The watchman's keys, every door in the building, dropped in a hurry.",
+     "trait": 0
+    },
+    {
+     "id": "InkBlot",
+     "name": "Inky fingerprint",
+     "description": "A fresh, inky fingerprint on the glass of the mask case.",
+     "trait": 1
+    },
+    {
+     "id": "LedgerPage",
+     "name": "Torn ledger page",
+     "description": "A page from the society's accounts, columns of sums circled in red.",
+     "trait": 2
+    },
+    {
+     "id": "Crumbs",
+     "name": "Cake crumbs",
+     "description": "Crumbs of lemon drizzle cake, all the way along the gallery rope.",
+     "trait": 3
+    },
+    {
+     "id": "PaperDust",
+     "name": "Old paper dust",
+     "description": "Grey dust from very old paper, the kind that lives in the archive and the reading room.",
+     "trait": 4
+    },
+    {
+     "id": "LampOil",
+     "name": "Lantern oil",
+     "description": "A drip of lantern oil, from the kind of lamp you carry on rounds or into a cold storeroom.",
+     "trait": 5
+    },
+    {
+     "id": "PenNib",
+     "name": "Fountain pen nib",
+     "description": "A gold fountain pen nib, snapped off. Only a few people here still write with one.",
+     "trait": 6
+    },
+    {
+     "id": "Raffle",
+     "name": "Raffle tickets",
+     "description": "A strip of raffle tickets from the Halloween fundraiser, numbers 101 to 110.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "PembertonCottage#2",
+   "house": "PembertonCottage",
+   "houseName": "Pemberton Cottage",
+   "visit": 2,
+   "name": "The Lost Love Letters",
+   "premise": "A bundle of letters from the late Mr. Pemberton has vanished from the Study desk, and every night since, the garden gnomes have turned to face the window.",
+   "recovered": "The letters are back in the Study desk, blue ribbon and all, and Mrs. Pemberton reads one aloud to the club.",
+   "traits": [
+    "Leaf mould",
+    "Bookshop bag",
+    "Sealing wax",
+    "Rosewater",
+    "Shed key",
+    "Garden twine",
+    "Postage stamps",
+    "Fountain pen ink"
+   ],
+   "suspects": [
+    {
+     "name": "Hank Moody",
+     "job": "Handyman",
+     "bio": "Back to fix the shed roof he 'definitely' fixed last time. Owes money all over town.",
+     "alibi": "Says he was clearing leaves in the Back Garden until dark.",
+     "alibiRoom": "Back Garden",
+     "motive": "to hide that the letters mention the money Mr. Pemberton lent him and never got back",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Daisy Pemberton",
+     "job": "Granddaughter",
+     "bio": "Staying the week to help Grandma, and asking a lot of questions about the old days.",
+     "alibi": "Claims she was at the Bookshop in town choosing a birthday present.",
+     "alibiRoom": "Bookshop",
+     "motive": "to read what Grandma never told anyone about where the family's money went",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Leonard Crisp",
+     "job": "Estate agent",
+     "bio": "Has a buyer lined up for the cottage the moment Mrs. Pemberton says yes.",
+     "alibi": "Insists he was at the Post Office sending off the sale papers.",
+     "alibiRoom": "Post Office",
+     "motive": "to find the letter that promises the cottage to the town before it ruins his sale",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Beatrice Hollis",
+     "job": "Next-door neighbour",
+     "bio": "Mrs. Pemberton's friend for fifty years. Keeps a lot of secrets, and keeps them well.",
+     "alibi": "Says she was in the Living Room keeping Mrs. Pemberton company.",
+     "alibiRoom": "Living Room",
+     "motive": "because half the letters were written by her, and she'd rather nobody ever knew",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "LeafMould",
+     "name": "Leaf mould",
+     "description": "Damp black leaf mould trodden into the Study rug.",
+     "trait": 0
+    },
+    {
+     "id": "BookshopBag",
+     "name": "Bookshop bag",
+     "description": "A crumpled paper bag from the Bookshop on Main Street.",
+     "trait": 1
+    },
+    {
+     "id": "SealingWax",
+     "name": "Sealing wax",
+     "description": "A chip of red sealing wax, the kind used on official papers.",
+     "trait": 2
+    },
+    {
+     "id": "Rosewater",
+     "name": "Rosewater",
+     "description": "The desk drawer smells of old-fashioned rosewater.",
+     "trait": 3
+    },
+    {
+     "id": "ShedKey",
+     "name": "Shed key",
+     "description": "The little brass key to the garden shed, left in the desk.",
+     "trait": 4
+    },
+    {
+     "id": "Twine",
+     "name": "Garden twine",
+     "description": "A length of green garden twine, like the bundle was tied with.",
+     "trait": 5
+    },
+    {
+     "id": "Stamps",
+     "name": "Postage stamps",
+     "description": "A strip of new stamps, torn off in a hurry.",
+     "trait": 6
+    },
+    {
+     "id": "Ink",
+     "name": "Fountain pen ink",
+     "description": "Blue-black ink on the blotter, still wet.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "HollowCreekFarm#2",
+   "house": "HollowCreekFarm",
+   "houseName": "Hollow Creek Farm",
+   "visit": 2,
+   "name": "The Stolen Seed Corn",
+   "premise": "The Hatchers' prize seed corn, saved from every harvest for a hundred years, has been stolen from the Barn, and the scarecrow in the maze now turns its head to watch whoever walks by.",
+   "recovered": "The seed corn is back in the Barn, and next year's harvest is safe.",
+   "traits": [
+    "Hay dust",
+    "Sequins",
+    "Fence wire",
+    "Cornmeal",
+    "Barn key",
+    "Seed husks",
+    "Satin ribbon",
+    "Diner napkin"
+   ],
+   "suspects": [
+    {
+     "name": "Abel Hatcher",
+     "job": "Farmer",
+     "bio": "Worried about money since the prize display. Works later every night.",
+     "alibi": "Says he was stacking bales in the Hayloft.",
+     "alibiRoom": "Hayloft",
+     "motive": "to sell the seed corn quietly and pay off the debts he hasn't told his family about",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Clementine Hatcher",
+     "job": "Harvest Queen",
+     "bio": "Keeps her crown on even to feed the chickens. Wants a farm of her own one day.",
+     "alibi": "Claims she was in the Sewing Room finishing her parade cape.",
+     "alibiRoom": "Sewing Room",
+     "motive": "to plant it on her own patch and win next year's ribbon all by herself",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Silas Crane",
+     "job": "Land developer",
+     "bio": "Still trying to buy the farm. Brought a new offer, and new shoes.",
+     "alibi": "Insists he was at the Hardware store in town buying fence wire.",
+     "alibiRoom": "Hardware",
+     "motive": "to ruin next year's harvest so the farm would have to sell to him",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Ma Jessup",
+     "job": "Runs the pie stand",
+     "bio": "Bakes for half the county and buys her cornmeal from nobody but the Hatchers.",
+     "alibi": "Says she was at the Diner dropping off muffins.",
+     "alibiRoom": "Diner",
+     "motive": "because only cornmeal from the old seed corn makes her prize muffins rise",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "HayDust",
+     "name": "Hay dust",
+     "description": "A thick layer of hay dust on the seed bin's lid.",
+     "trait": 0
+    },
+    {
+     "id": "Sequins",
+     "name": "Sequins",
+     "description": "Gold sequins scattered across the Barn floor.",
+     "trait": 1
+    },
+    {
+     "id": "FenceWire",
+     "name": "Fence wire",
+     "description": "A coil of shiny new fence wire, never used.",
+     "trait": 2
+    },
+    {
+     "id": "Cornmeal",
+     "name": "Cornmeal",
+     "description": "A trail of fine yellow cornmeal by the door.",
+     "trait": 3
+    },
+    {
+     "id": "BarnKey",
+     "name": "Barn key",
+     "description": "The spare barn key, left in the padlock.",
+     "trait": 4
+    },
+    {
+     "id": "SeedHusks",
+     "name": "Seed husks",
+     "description": "Husks from the old seed corn, caught in a cuff.",
+     "trait": 5
+    },
+    {
+     "id": "Ribbon",
+     "name": "Satin ribbon",
+     "description": "A scrap of red satin ribbon on a nail.",
+     "trait": 6
+    },
+    {
+     "id": "Napkin",
+     "name": "Diner napkin",
+     "description": "A paper napkin from the Diner with sums scribbled on it.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "WillowLaneVictorian#2",
+   "house": "WillowLaneVictorian",
+   "houseName": "Willow Lane Victorian",
+   "visit": 2,
+   "name": "The Silver Christening Cup",
+   "premise": "The Ashcombe christening cup, solid silver and two hundred years old, is gone from the Nursery, and every night since, the empty cradle has rocked by itself.",
+   "recovered": "The christening cup is back in the Nursery, and the cradle has finally stopped rocking.",
+   "traits": [
+    "Lantern soot",
+    "Lilac powder",
+    "Jeweller's loupe",
+    "Polishing rag",
+    "Nursery key",
+    "Candle stubs",
+    "Engraving dust",
+    "Velvet lining"
+   ],
+   "suspects": [
+    {
+     "name": "Ezra Cole",
+     "job": "Caretaker",
+     "bio": "Looks after the house and the Family Plot. Says the old stones are crumbling.",
+     "alibi": "Says he was in the Gazebo stringing up lanterns.",
+     "alibiRoom": "Gazebo",
+     "motive": "to pawn it and pay for new headstones in the Family Plot, since nobody else would",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Lavinia Ashcombe",
+     "job": "The last Ashcombe",
+     "bio": "Has started labelling the family silver with her initials, 'just in case'.",
+     "alibi": "Claims she was in the Tower Study writing letters.",
+     "alibiRoom": "Tower Study",
+     "motive": "to have it engraved with her own name before the family could argue over it",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Dr. Felix Marlowe",
+     "job": "Music-box collector",
+     "bio": "Came back for the music box, stayed for the silver.",
+     "alibi": "Insists he was at the Library in town reading about silver marks.",
+     "alibiRoom": "Library",
+     "motive": "to add it to his collection, where it belongs, in his opinion",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Agnes Pratt",
+     "job": "Housekeeper",
+     "bio": "Has polished the Ashcombe silver every Sunday for thirty years.",
+     "alibi": "Says she was in the Kitchen polishing the rest of the silver.",
+     "alibiRoom": "Kitchen",
+     "motive": "to hide the dent she put in it while polishing, before anyone noticed",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "Soot",
+     "name": "Lantern soot",
+     "description": "Black soot smudged on the cradle's rail.",
+     "trait": 0
+    },
+    {
+     "id": "Powder",
+     "name": "Lilac powder",
+     "description": "A dusting of lilac face powder on the windowsill.",
+     "trait": 1
+    },
+    {
+     "id": "Loupe",
+     "name": "Jeweller's loupe",
+     "description": "A little magnifying eyepiece, the kind for reading hallmarks.",
+     "trait": 2
+    },
+    {
+     "id": "Rag",
+     "name": "Polishing rag",
+     "description": "A grey polishing rag, stiff with silver polish.",
+     "trait": 3
+    },
+    {
+     "id": "NurseryKey",
+     "name": "Nursery key",
+     "description": "The Nursery key, hung back on the wrong hook.",
+     "trait": 4
+    },
+    {
+     "id": "Stubs",
+     "name": "Candle stubs",
+     "description": "Two burnt-down candle stubs under the cradle.",
+     "trait": 5
+    },
+    {
+     "id": "Engraving",
+     "name": "Engraving dust",
+     "description": "Fine silver dust, like someone tried an engraving tool.",
+     "trait": 6
+    },
+    {
+     "id": "Velvet",
+     "name": "Velvet lining",
+     "description": "A strip of blue velvet torn from the cup's case.",
+     "trait": 7
+    }
+   ]
+  },
+  {
+   "id": "BlackwoodManor#2",
+   "house": "BlackwoodManor",
+   "houseName": "Blackwood Manor",
+   "visit": 2,
+   "name": "The Vanishing Portrait",
+   "premise": "Lady Blackwood's portrait has vanished from the Portrait Gallery, leaving a pale square on the wallpaper, and the old organ in the Cellar plays by itself at midnight.",
+   "recovered": "Lady Blackwood's portrait is back in the Portrait Gallery, and the organ in the Cellar is quiet at last.",
+   "traits": [
+    "Wet leaves",
+    "Face powder",
+    "Picture wire",
+    "Jam stains",
+    "Gallery key",
+    "Cellar cobwebs",
+    "Gilt flakes",
+    "Brass screws"
+   ],
+   "suspects": [
+    {
+     "name": "Gus Thornbury",
+     "job": "Groundskeeper",
+     "bio": "Forty years on the grounds and, he says, ten years of wages owed.",
+     "alibi": "Says he was raking leaves in the Cemetery.",
+     "alibiRoom": "Cemetery",
+     "motive": "to get at the wall safe behind it, where he swears his unpaid wages are kept",
+     "traits": [
+      0,
+      4,
+      5
+     ]
+    },
+    {
+     "name": "Vivian Blackwood",
+     "job": "Heiress",
+     "bio": "Owns the manor now. Owns slightly less of what's in it than she used to.",
+     "alibi": "Claims she was in the Master Bedroom with a headache.",
+     "alibiRoom": "Master Bedroom",
+     "motive": "to hide that the portrait shows the pearl necklace she has already sold",
+     "traits": [
+      1,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Reginald Pike",
+     "job": "Rival antiques dealer",
+     "bio": "Has a buyer in the city who wants 'anything old and Blackwood'.",
+     "alibi": "Insists he was at the Barber in town having a shave.",
+     "alibiRoom": "Barber",
+     "motive": "to sell the painting to his buyer in the city, frame and all",
+     "traits": [
+      2,
+      6,
+      7
+     ]
+    },
+    {
+     "name": "Martha Bunce",
+     "job": "Cook",
+     "bio": "Has been looking for Lady Blackwood's lost recipe book her whole life.",
+     "alibi": "Says she was in the Cellar fetching jars of preserves.",
+     "alibiRoom": "Cellar",
+     "motive": "to find the recipe book Lady Blackwood hid behind the frame years ago",
+     "traits": [
+      3,
+      5,
+      7
+     ]
+    }
+   ],
+   "clues": [
+    {
+     "id": "WetLeaves",
+     "name": "Wet leaves",
+     "description": "Wet autumn leaves on the gallery floor.",
+     "trait": 0
+    },
+    {
+     "id": "FacePowder",
+     "name": "Face powder",
+     "description": "A smudge of pale face powder on the empty wall.",
+     "trait": 1
+    },
+    {
+     "id": "PictureWire",
+     "name": "Picture wire",
+     "description": "A cut length of new picture wire.",
+     "trait": 2
+    },
+    {
+     "id": "Jam",
+     "name": "Jam stains",
+     "description": "Sticky blackberry jam on the skirting board.",
+     "trait": 3
+    },
+    {
+     "id": "GalleryKey",
+     "name": "Gallery key",
+     "description": "The Portrait Gallery key, left in the lock.",
+     "trait": 4
+    },
+    {
+     "id": "Cobwebs",
+     "name": "Cellar cobwebs",
+     "description": "Thick cellar cobwebs caught on the picture hook.",
+     "trait": 5
+    },
+    {
+     "id": "Gilt",
+     "name": "Gilt flakes",
+     "description": "Flakes of gold leaf from a heavy frame.",
+     "trait": 6
+    },
+    {
+     "id": "Screws",
+     "name": "Brass screws",
+     "description": "Two brass screws, unscrewed from the frame's back.",
+     "trait": 7
+    }
+   ]
+  }
+ ],
+ "houses": [
+  {
+   "id": "PembertonCottage",
+   "name": "Pemberton Cottage",
+   "street": "14 Elm Street",
+   "size": "Small",
+   "floors": 1,
+   "difficulty": 1,
+   "blurb": "A tidy little cottage with a white picket fence. Mrs. Pemberton swears her teapot rattles at midnight. Small and quick: one floor, a garden and a shed."
+  },
+  {
+   "id": "HollowCreekFarm",
+   "name": "Hollow Creek Farm",
+   "street": "Old Mill Road",
+   "size": "Medium",
+   "floors": 2,
+   "difficulty": 2,
+   "blurb": "The Hatchers' farm at the edge of town. Lanterns float through the corn maze and something lives in the hayloft. Medium: a two-storey farmhouse, a barn and a big maze."
+  },
+  {
+   "id": "WillowLaneVictorian",
+   "name": "Willow Lane Victorian",
+   "street": "3 Willow Lane",
+   "size": "Large",
+   "floors": 2,
+   "difficulty": 3,
+   "blurb": "The Ashcombe house: turrets, gingerbread trim and a music box that plays by itself in the nursery. Large: two floors and a tower, a gazebo and a family plot."
+  },
+  {
+   "id": "HistoricalSociety",
+   "name": "Historical Society",
+   "street": "1 Founders Way",
+   "size": "Large",
+   "floors": 2,
+   "difficulty": 5,
+   "blurb": "The Hollow Creek Historical Society: a red-brick museum with white columns, a gallery of folklore masks, a reading room that smells of lavender and old paper, and an archive upstairs. It may close after Halloween. Large: two floors, a courtyard and a workshop."
+  },
+  {
+   "id": "BlackwoodManor",
+   "name": "Blackwood Manor",
+   "street": "The end of Main Street",
+   "size": "Huge",
+   "floors": 3,
+   "difficulty": 4,
+   "blurb": "The old Blackwood estate past the creek: a cellar, two floors and a roof, a greenhouse, a cemetery and a pumpkin patch. Huge: the longest night."
+  }
+ ],
+ "legends": [
+  {
+   "id": "HeadlessHorseman",
+   "name": "The Headless Horseman",
+   "origin": "Sleepy Hollow, New York (1820)",
+   "legend": "A Hessian trooper who lost his head to a cannonball. He rides at night looking for it, and throws a flaming jack-o'-lantern in its place.",
+   "power": "Pumpkin Toss",
+   "powerBlurb": "hurl a flaming jack-o'-lantern that bursts in a ring of fear"
+  },
+  {
+   "id": "Banshee",
+   "name": "The Banshee",
+   "origin": "Irish folklore (bean sidhe)",
+   "legend": "A pale spirit whose wail foretells a death in the family. Hearing it means trouble.",
+   "power": "Wail",
+   "powerBlurb": "a scream heard through walls: big fear, flashlights knocked out"
+  },
+  {
+   "id": "StingyJack",
+   "name": "Stingy Jack",
+   "origin": "Irish folk tale, the first jack-o'-lantern",
+   "legend": "He tricked the Devil twice, so neither Heaven nor Hell would have him. He wanders with a coal in a carved turnip: the will-o'-the-wisp.",
+   "power": "Wisp Lure",
+   "powerBlurb": "three wisps drift out and hunt Solvers; a flashlight pops them"
+  },
+  {
+   "id": "BabaYaga",
+   "name": "Baba Yaga",
+   "origin": "Slavic folklore",
+   "legend": "The bony-legged witch of the deep woods. She flies in a mortar, steers with a pestle and curses anyone who wanders too close to her hut.",
+   "power": "Hex",
+   "powerBlurb": "curse the nearest Solver: fear spikes and their flashlight drains"
+  }
+ ],
+ "rounds": [
+  {
+   "title": "The match",
+   "line": "Solvers, the Haunter, clues, the Suspect Board, traps and the unmasking"
+  },
+  {
+   "title": "Play without a full lobby",
+   "line": "AI Director, Solver roles, animation, downloads and the terminal tool"
+  },
+  {
+   "title": "Blackwood Manor in 3D",
+   "line": "Four floors and the grounds, built from one layout file"
+  },
+  {
+   "title": "Tonight's legends",
+   "line": "Headless Horseman, Banshee, Stingy Jack, Baba Yaga and their powers"
+  },
+  {
+   "title": "Hollow Creek",
+   "line": "A town with HQ, the van, five houses of different sizes and a map"
+  },
+  {
+   "title": "Halloween night",
+   "line": "Window trims, carved jacks, string lights and surface patterns everywhere"
+  },
+  {
+   "title": "A case for every house",
+   "line": "Each house has its own suspects, clues and gossip"
+  },
+  {
+   "title": "Dressed for each house",
+   "line": "Every house's suspects get their own outfits and stroll around"
+  },
+  {
+   "title": "Witnesses",
+   "line": "Suspects jump at scares, and whoever saw it can tell you something"
+  },
+  {
+   "title": "Alibis",
+   "line": "Check where a suspect says they were; the Haunter can fake one"
+  },
+  {
+   "title": "The sound",
+   "line": "28 generated sounds: wind, crows, hoofbeats, the van, a music box"
+  },
+  {
+   "title": "First open in Unity",
+   "line": "The project sets itself up and builds the town on first open"
+  },
+  {
+   "title": "Storybook direction",
+   "line": "Why each mask is worn, motives, and a beat before every scare"
+  },
+  {
+   "title": "Reference renders",
+   "line": "Big stills of every house and a tour video, plus a timed Suspect Board"
+  },
+  {
+   "title": "The case book",
+   "line": "Solved cases are saved; keepsakes fill the shelf at HQ"
+  },
+  {
+   "title": "A bigger world",
+   "line": "Hills, far lights, roads out of town and landmarks on the horizon"
+  },
+  {
+   "title": "A living town",
+   "line": "Trick-or-treaters with rumours, cars and a train in the valley"
+  },
+  {
+   "title": "The fifth call",
+   "line": "The Historical Society unlocks after the first four cases"
+  },
+  {
+   "title": "The people of Hollow Creek",
+   "line": "Five townsfolk with errands that earn favours"
+  },
+  {
+   "title": "Return visits",
+   "line": "Every house calls again with a second case"
+  },
+  {
+   "title": "The character pass",
+   "line": "Faces with lashes and lips, real hands, hair, heights and builds"
+  },
+  {
+   "title": "A town that remembers",
+   "line": "The Lantern Watch costume, party yards, saved errands, a case checker"
+  },
+  {
+   "title": "The Club Handbook",
+   "line": "First-time hints for new players, and an animated README"
+  },
+  {
+   "title": "The design pass",
+   "line": "One look for every panel: colour, type, spacing and calm motion"
+  },
+  {
+   "title": "The Case Book",
+   "line": "A corkboard look for the game, and a website with a playable Suspect Board"
+  }
+ ],
+ "milestones": [
+  {
+   "name": "Milestone 1: Core",
+   "done": 5,
+   "total": 5
+  },
+  {
+   "name": "Milestone 2: Haunter toolkit",
+   "done": 3,
+   "total": 3
+  },
+  {
+   "name": "Milestone 3: Solve it",
+   "done": 3,
+   "total": 3
+  },
+  {
+   "name": "Milestone 4: Play without a full lobby",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 5: The 3D world",
+   "done": 6,
+   "total": 8
+  },
+  {
+   "name": "Milestone 6: Halloween night",
+   "done": 8,
+   "total": 9
+  },
+  {
+   "name": "Milestone 7: Hollow Creek, the town",
+   "done": 8,
+   "total": 10
+  },
+  {
+   "name": "Milestone 8: The Nights of the Jack look",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 9: A case for every house",
+   "done": 10,
+   "total": 11
+  },
+  {
+   "name": "Milestone 10: Storybook direction",
+   "done": 17,
+   "total": 20
+  },
+  {
+   "name": "Milestone 11: A bigger world",
+   "done": 8,
+   "total": 9
+  },
+  {
+   "name": "Milestone 12: A living town",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 13: The fifth call",
+   "done": 6,
+   "total": 7
+  },
+  {
+   "name": "Milestone 14: The people of Hollow Creek",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 15: Return visits",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 16: The character pass",
+   "done": 6,
+   "total": 7
+  },
+  {
+   "name": "Milestone 17: A town that remembers (inspiration pack)",
+   "done": 7,
+   "total": 8
+  },
+  {
+   "name": "Milestone 18: The Club Handbook and a README you can watch",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 19: The design pass",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 20: The Case Book",
+   "done": 8,
+   "total": 9
+  },
+  {
+   "name": "Release pipeline",
+   "done": 5,
+   "total": 7
+  },
+  {
+   "name": "Later",
+   "done": 0,
+   "total": 4
+  }
+ ]
+}

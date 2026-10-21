@@ -130,12 +130,41 @@ The Missing Harvest Lantern at Pemberton Cottage, end to end: call at HQ, short 
 clues, one mask, the Suspect Board, one trap, an earned unmasking, back to HQ. Prove it solo, then
 co-op, then against a human Haunter. Afterwards players should be able to say who did it, how and why.
 
+## The interface: the Case Book (round 25)
+
+The club's own paperwork: case-file paper, a corkboard, pinned index cards, evidence tags and red
+string. One design for the game (`Assets/Unmasked/Scripts/UI/UITheme.cs`), the website
+(`site/styles.css`), the README mockups and the tracker. The game uses the dark tokens.
+
+| Token | Light | Dark | Used for |
+|---|---|---|---|
+| paper (Ground) | #f2eadc | #16120e | the page, every panel |
+| sheet (Raised) | #fffaf1 | #241d17 | cards, buttons, meter tracks |
+| ink / ink-2 / ink-3 | #221c16 / #554a3e / #72655a | #f3eadb / #cdbfab / #a2937f | text, secondary text, faint text |
+| cork | #c69e6f | #3b2c20 | the board behind the cards (generated grain, no gradient) |
+| tag (Accent) | #ae2f26 | #ef6c5b | the main action, the key to press, a low timer, red string |
+| haunt | #5b45a6 | #ac99f2 | the Haunter only, so violet always means haunted |
+| good | #2b6b45 | #82cf9f | yes: an alibi holds, a task is done |
+
+Every text pair is at least 4.5:1. Type: Fraunces (headings, names, numbers) and Atkinson
+Hyperlegible (reading), both under the SIL Open Font License, in `Resources/Fonts` and `site/fonts`.
+Spacing steps are 4, 8, 12, 16, 24, 32, 48, 72 and 112.
+
+Motion: pinned cards are damped pendulums (stiffness 140, damping 7.5) pushed by clicks and the
+pointer; string sags as a curve from pin to pin and draws in over 520 ms with an ease-out; a struck
+name gets a pen stroke. Panels the player opens (Tab, M, F1) still appear instantly. On the board,
+the card picked with the keyboard gets an ink ring 3 points out (red while an accusation waits
+for its second press). In the game a
+card only rotates while it is swinging, so a card at rest is always square and never clips. Reduced
+motion: no swing, string appears at once, a wrong guess is a red outline instead of a shake.
+
 ## The README is part of the look (round 23)
 
-The top of the README moves: the tracker bars fill, round cards cross-fade along a timeline, and
-one night plays from HQ to the unmasking. Same rules as the game: warm amber for what's done and
-welcoming, violet for the haunted, one beat of anticipation before a change. Every animation says
-it is an illustration, never an engine capture, until real F12 screenshots replace them.
+The README moves: the tracker bars fill, round cards cross-fade along a timeline, and one night
+plays from HQ to the unmasking. Since round 25 it uses the Case Book palette, with a light and a
+dark tracker picked by the reader's theme. Every game animation says it is an illustration, never
+an engine capture, until real F12 screenshots replace them; the website pictures are real browser
+screenshots.
 
 ## Reference list (study only)
 

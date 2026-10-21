@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unmasked: solve the haunting, unmask the person</title>
+<meta name="description" content="Unmasked is a storybook Halloween mystery for friends. A club of kids takes calls from haunted houses, gathers clues and works out who in town is wearing a folklore mask, while one player secretly is the Haunter.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Unmasked: solve the haunting, unmask the person">
+<meta property="og:description" content="A storybook Halloween mystery for up to five friends. Play a case on the corkboard right in your browser.">
+<meta property="og:url" content="https://normansrule.github.io/unmasked/">
+<meta property="og:image" content="https://normansrule.github.io/unmasked/img/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Unmasked corkboard: red string from two clues to the one suspect they share">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f2eadc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16120e" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/atkinson-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='11' fill='%23ae2f26'/%3E%3Ccircle cx='12.5' cy='12.5' r='3' fill='%23fff6ef' opacity='.55'/%3E%3C/svg%3E">
+<script>
+  // Set the theme before the first paint so a saved choice never flashes the other one.
+  try { const t = localStorage.getItem("unmasked-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<link rel="stylesheet" href="styles.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#play">Skip to the Suspect Board</a>
+
+<header class="top" id="top">
+  <div class="top-in">
+    <a class="mark" href="#top" aria-label="Unmasked, back to the top">Unmasked</a>
+    <nav aria-label="Sections">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+      <ul id="menu" class="menu">
+        <li><a href="#play">Play a case</a></li>
+        <li><a href="#night">The night</a></li>
+        <li><a href="#houses">Houses</a></li>
+        <li><a href="#legends">Legends</a></li>
+        <li><a href="#progress">Progress</a></li>
+        <li><a href="#get">Get the game</a></li>
+      </ul>
+    </nav>
+    <button class="theme" type="button" aria-pressed="false" data-theme-toggle>
+      <span class="theme-dot" aria-hidden="true"></span><span class="theme-label">Dark</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <h1 id="hero-title">Solve the haunting. Unmask the person.</h1>
+      <p class="lede">Unmasked is a storybook Halloween mystery for up to five friends. Your club takes calls from haunted houses in the little town of Hollow Creek, hunts for clues by flashlight and works out which neighbour is hiding behind a folklore mask. The catch: one of you is that neighbour.</p>
+      <p class="cta">
+        <a class="btn btn-primary" href="#play">Play a case</a>
+        <a class="link" href="#get">Get the game</a>
+      </p>
+    </div>
+
+    <figure class="hero-board cork" data-hero aria-labelledby="hero-cap">
+      <svg class="strings" aria-hidden="true"></svg>
+      <div class="pinned clue-card" data-id="c4" style="--r:-4deg;--x:4%;--y:8%"><span class="pin"></span><b>Spare key</b><span>Left on the rug</span></div>
+      <div class="pinned clue-card" data-id="c6" style="--r:3deg;--x:6%;--y:58%"><span class="pin"></span><b>Gold locket</b><span>A tiny photo inside</span></div>
+      <div class="pinned suspect-mini" data-id="s0" data-traits="0 4 5" style="--r:2deg;--x:56%;--y:2%"><span class="pin"></span><b>Hank Moody</b><span>Handyman</span></div>
+      <div class="pinned suspect-mini" data-id="s1" data-traits="1 4 6" style="--r:-2.5deg;--x:44%;--y:36%"><span class="pin"></span><b>Daisy Pemberton</b><span>Granddaughter</span></div>
+      <div class="pinned suspect-mini" data-id="s2" data-traits="2 6 7" style="--r:3.5deg;--x:58%;--y:70%"><span class="pin"></span><b>Leonard Crisp</b><span>Estate agent</span></div>
+      <div class="pinned suspect-mini" data-id="s3" data-traits="3 5 7" style="--r:-3deg;--x:74%;--y:38%"><span class="pin"></span><b>Beatrice Hollis</b><span>Neighbour</span></div>
+      <figcaption id="hero-cap">Any two true clues name exactly one suspect. Both of these lead to Daisy.</figcaption>
+    </figure>
+  </section>
+
+  <section class="play" id="play" aria-labelledby="play-title">
+    <div class="sec-head">
+      <h2 id="play-title">Play a case</h2>
+      <p>Every case from the game, straight from its case files. Search the house for clues, cross off anyone who doesn't fit, check an alibi, then make your accusation. You get two tries, like the club does.</p>
+    </div>
+
+    <div class="cases" role="tablist" aria-label="Cases" data-cases></div>
+    <p class="casebook" data-casebook hidden><span data-casebook-text></span> <button class="link-btn" type="button" data-casebook-clear>Clear it</button></p>
+
+    <div class="casefile" data-casefile aria-busy="true">
+      <div class="state state-loading" data-state="loading">
+        <p class="state-title">Opening the case file…</p>
+        <div class="ghosts" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="state state-error" data-state="error" hidden>
+        <p class="state-title">The case file wouldn't open.</p>
+        <p class="state-body" data-error-text>Something went wrong loading the cases.</p>
+        <button class="btn" type="button" data-retry>Try again</button>
+      </div>
+
+      <div class="case" data-state="ready" hidden>
+        <div class="case-head">
+          <h3 class="case-name" data-case-name></h3>
+          <p class="case-house" data-case-house></p>
+          <p class="premise" data-premise></p>
+        </div>
+
+        <div class="board cork" data-board>
+          <svg class="strings" aria-hidden="true"></svg>
+          <div class="clue-row">
+            <h4 class="sr">Evidence</h4>
+            <ul class="tags" data-tags aria-label="Clues found"></ul>
+            <p class="empty" data-empty>No clues yet. Search the house to find the first one. Any two true clues name the culprit.</p>
+          </div>
+          <ul class="suspects" data-suspects aria-label="Suspects"></ul>
+        </div>
+
+        <div class="desk">
+          <p class="counts" data-counts></p>
+          <div class="actions">
+            <button class="link-btn" type="button" data-restart>Start the case over</button>
+            <button class="btn btn-primary" type="button" data-search>Search the house</button>
+          </div>
+        </div>
+
+        <p class="log" data-log role="status" aria-live="polite"></p>
+
+        <div class="verdict" data-verdict hidden tabindex="-1">
+          <p class="verdict-title" data-verdict-title></p>
+          <p class="verdict-body" data-verdict-body></p>
+          <p class="verdict-actions">
+            <button class="btn btn-primary" type="button" data-next>Next case</button>
+            <button class="btn" type="button" data-again>Play this one again</button>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="night" id="night" aria-labelledby="night-title">
+    <div class="sec-head">
+      <h2 id="night-title">How a night goes</h2>
+      <p>A match is one Halloween night, from the first call to the last chance at dawn. Up to four Solvers work the case; the fifth player is the Haunter, dressed as a legend and secretly one of the suspects. No one free to haunt? The game's AI (artificial intelligence) Director takes the part.</p>
+    </div>
+    <ol class="clock">
+      <li><time>7:30 PM</time><div><h3>Mystery Club HQ</h3><p>The host picks a call from the board. Suspects, clues and gossip all depend on the house.</p></div></li>
+      <li><time>7:45 PM</time><div><h3>The van</h3><p>Someone takes the wheel. M opens the town map and an arrow points the way.</p></div></li>
+      <li><time>8:00 PM</time><div><h3>The house</h3><p>Four neighbours are already there, each with an alibi and a reason to want the mask.</p></div></li>
+      <li><time>9:00 PM</time><div><h3>Clues</h3><p>Things that glow in your flashlight are clues. Each fits two suspects or just one.</p></div></li>
+      <li><time>11:00 PM</time><div><h3>The Suspect Board</h3><p>Tab opens it. Cross people off, check an alibi, listen to witnesses who saw a scare.</p></div></li>
+      <li><time>1:00 AM</time><div><h3>The accusation</h3><p>Two tries. The wrong name costs you time, and the Haunter gets braver.</p></div></li>
+      <li><time>3:00 AM</time><div><h3>The trap</h3><p>Carry the pieces to the trap site, build it and lure the costumed Haunter in.</p></div></li>
+      <li><time>Before dawn</time><div><h3>The unmasking</h3><p>The mask comes off, the motive comes out and the house throws a party.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="houses" id="houses" aria-labelledby="houses-title">
+    <div class="sec-head">
+      <h2 id="houses-title">Five houses on the call board</h2>
+      <p>Each one is its own case, with its own neighbours. Solve one and it calls again later with a second mystery.</p>
+    </div>
+    <ul class="photos" data-houses></ul>
+    <p class="note">Pictures are renders from the game's level files, not Unity captures.</p>
+  </section>
+
+  <section class="legends" id="legends" aria-labelledby="legends-title">
+    <div class="sec-head">
+      <h2 id="legends-title">Tonight's legend</h2>
+      <p>Hollow Creek's festival masks really work. Whoever wears one gets that legend's power, and the Haunter is the one wearing it.</p>
+    </div>
+    <ul class="legend-list" data-legends></ul>
+  </section>
+
+  <section class="progress" id="progress" aria-labelledby="progress-title">
+    <div class="sec-head">
+      <h2 id="progress-title">Where the game is</h2>
+      <p>Built in rounds. Everything compiles against Unity's libraries and every case is checked for a fair solution, but nobody has played it inside Unity yet.</p>
+    </div>
+    <div class="ledger">
+      <div class="total"><span class="total-num" data-total>0%</span><span class="total-sub" data-total-sub>of planned tasks done</span></div>
+      <ul class="milestones" data-milestones></ul>
+    </div>
+    <ol class="rounds" data-rounds reversed></ol>
+  </section>
+
+  <section class="get" id="get" aria-labelledby="get-title">
+    <div class="sec-head">
+      <h2 id="get-title">Get the game</h2>
+      <p>Unmasked is made with Unity 6 and its Netcode for GameObjects library for online play.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>Play a build</h3>
+        <p>Download the zip for your computer from the <a href="https://github.com/Normansrule/unmasked/releases">Releases page</a>, unzip it and run Unmasked. One person hosts, everyone else joins with the host's address.</p>
+      </div>
+      <div class="step">
+        <h3>Open it in Unity</h3>
+        <p>Install Unity <span class="num">6000.0.32f1</span> with Unity Hub, add the project folder and open it. The first open builds the town for you.</p>
+      </div>
+      <div class="step">
+        <h3>From a terminal</h3>
+        <p>On Ubuntu, this gets the project and the <code>unmasked</code> helper command.</p>
+        <div class="code">
+          <pre tabindex="0" aria-label="Terminal commands"><code data-copy-src>git clone https://github.com/Normansrule/unmasked.git ~/unmasked
+bash ~/unmasked/tools/unmasked.sh setup
+unmasked help</code></pre>
+          <button class="copy" type="button" data-copy>Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p><span class="mark">Unmasked</span> is a work in progress by Alek. Set in Fraunces and Atkinson Hyperlegible, both under the SIL Open Font License.</p>
+  <p><a href="https://github.com/Normansrule/unmasked">Source on GitHub</a></p>
+</footer>
+</body>
+</html>

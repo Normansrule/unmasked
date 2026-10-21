@@ -164,13 +164,16 @@ namespace Unmasked
         {
             if (town == null || NetworkManager.Singleton == null || PlayerAgent.Local == null) return;
             GUI.depth = -10;
+            UITheme.Begin();
             if (pinLabel == null)
             {
-                pinLabel = new GUIStyle(GUI.skin.label) { fontSize = 13, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter };
-                cardTitle = new GUIStyle(GUI.skin.label) { fontSize = 22, fontStyle = FontStyle.Bold, wordWrap = true };
-                cardText = new GUIStyle(GUI.skin.label) { fontSize = 14, wordWrap = true };
-                small = new GUIStyle(GUI.skin.label) { fontSize = 11, alignment = TextAnchor.MiddleCenter };
-                arrowStyle = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+                pinLabel = new GUIStyle(UITheme.SmallCenter) { fontStyle = FontStyle.Bold, wordWrap = false };
+                cardTitle = UITheme.Display;
+                cardText = UITheme.BodyWrap;
+                small = UITheme.SmallCenter;
+                arrowStyle = new GUIStyle(UITheme.TitleCenter) { fontSize = 30, alignment = TextAnchor.MiddleCenter };
+                // These two are tinted per pin with GUI.color, so their base colour is plain white.
+                pinLabel.normal.textColor = arrowStyle.normal.textColor = Color.white;
             }
 
             if (open) DrawMap();
@@ -188,23 +191,22 @@ namespace Unmasked
         void DrawMap()
         {
             var game = MysteryGameManager.Instance;
-            GUI.color = new Color(0f, 0f, 0f, 0.82f);
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
-            GUI.color = Color.white;
+            // Opened with M, so it appears at once over a dimmed scene.
+            UITheme.Rect(new Rect(0, 0, UITheme.W, UITheme.H), UITheme.ScrimDeep);
 
-            float mapH = Screen.height - 90f;
+            float mapH = UITheme.H - 100f;
             float mapW = mapH * world.width / world.height;
-            if (mapW > Screen.width * 0.62f) { mapW = Screen.width * 0.62f; mapH = mapW * world.height / world.width; }
-            var r = new Rect(30, 60, mapW, mapH);
-            GUI.Label(new Rect(30, 14, 600, 40), $"<size=28><b>{town.name.ToUpperInvariant()}</b></size>   <size=14>M or Esc to close · click a house</size>",
-                new GUIStyle(GUI.skin.label) { richText = true });
+            if (mapW > UITheme.W * 0.62f) { mapW = UITheme.W * 0.62f; mapH = mapW * world.height / world.width; }
+            var r = new Rect(UITheme.S6, 72, mapW, mapH);
+            GUI.Label(new Rect(UITheme.S6, 20, 420, 40), town.name, UITheme.Display);
+            GUI.Label(new Rect(UITheme.S6 + 300, 32, 400, 22), "M or Esc to close · click a house", UITheme.Small);
             GUI.DrawTexture(r, mapTexture, ScaleMode.StretchToFill);
 
             // HQ
             if (town.hq?.van != null)
             {
                 var hq = ToMap(ManorLayout.V(town.hq.spawns[0].p), r);
-                Pin(hq, new Color(0.25f, 0.95f, 0.9f), "Mystery Club HQ", 11f);
+                Pin(hq, UITheme.Ink, "Mystery Club HQ", 11f);
             }
 
             // Houses
@@ -213,9 +215,12 @@ namespace Unmasked
             {
                 var p = ToMap(lot.Center, r);
                 bool isCall = lot.id == active;
-                float pulse = isCall ? 1f + 0.25f * Mathf.Sin(Time.time * 6f) : 1f;
-                var color = isCall ? new Color(1f, 0.35f, 0.25f) : selected == lot ? new Color(1f, 0.8f, 0.3f) : new Color(1f, 0.6f, 0.2f);
-                Pin(p, color, $"{lot.name}\n<size=11>{lot.size}{(isCall ? " · TONIGHT'S CALL" : "")}</size>", 13f * pulse);
+                // Tonight's call is the haunted one (violet, a size up, with red string from HQ to it);
+                // the selected house takes the lighter red. Nothing pulses: the string already points.
+                var color = isCall ? UITheme.Haunt : selected == lot ? UITheme.AccentHover : UITheme.Accent;
+                if (isCall && town.hq?.spawns != null && town.hq.spawns.Length > 0 && Event.current.type == EventType.Repaint)
+                    UITheme.RedString(ToMap(ManorLayout.V(town.hq.spawns[0].p), r), p, 0.9f, 2.5f);
+                Pin(p, color, $"{lot.name}\n<size=11>{lot.size}{(isCall ? " · tonight's call" : "")}</size>", isCall ? 16f : 13f);
                 if (GUI.Button(new Rect(p.x - 16, p.y - 16, 32, 32), GUIContent.none, GUIStyle.none)) selected = lot;
             }
 
@@ -226,24 +231,24 @@ namespace Unmasked
             {
                 var state = folk.Errand.Value;
                 string mark = state == Townsperson.ErrandState.Done ? " (done)" : state == Townsperson.ErrandState.NotAsked ? "" : " !";
-                Pin(ToMap(folk.transform.position, r), new Color(1f, 0.75f, 0.85f), $"<size=10>{folk.DisplayName}{mark}</size>", 6f);
+                Pin(ToMap(folk.transform.position, r), UITheme.InkMuted, $"{folk.DisplayName}{mark}", 6f);
             }
 
-            if (van != null) Pin(ToMap(van.transform.position, r), new Color(0.3f, 0.9f, 0.85f), "Van", 8f);
+            if (van != null) Pin(ToMap(van.transform.position, r), UITheme.Good, "Van", 8f);
             foreach (var solver in SolverController.All)
             {
                 if (solver == null || solver.IsRiding) continue;
                 bool me = solver == SolverController.Local;
-                Pin(ToMap(solver.transform.position, r), me ? Color.white : new Color(0.6f, 0.8f, 1f), me ? "You" : "", me ? 8f : 6f);
+                Pin(ToMap(solver.transform.position, r), me ? Color.white : UITheme.InkMuted, me ? "You" : "", me ? 8f : 6f);
             }
             if (TryGetWaypoint(out var wp, out _))
-                Pin(ToMap(wp, r), new Color(1f, 1f, 0.4f), "", 5f);
+                Pin(ToMap(wp, r), UITheme.AccentHover, "", 5f);
 
             // Event banner
             if (game != null && game.IsSpawned && game.Event.Value != NightEvent.None && game.Phase.Value >= MatchPhase.Dispatch)
                 GUI.Label(new Rect(r.x, r.yMax + 4, r.width, 24), $"Tonight: {TownLayout.EventName(game.Event.Value)}. {TownLayout.EventBlurb(game.Event.Value)}", cardText);
 
-            DrawCard(new Rect(r.xMax + 24, 60, Screen.width - r.xMax - 54, Screen.height - 90), game);
+            DrawCard(new Rect(r.xMax + UITheme.S5, 72, UITheme.W - r.xMax - UITheme.S5 - UITheme.S6, UITheme.H - 100f), game);
         }
 
         void DrawCard(Rect r, MysteryGameManager game)
@@ -253,9 +258,9 @@ namespace Unmasked
                 GUI.Label(r, "Click a house on the map to see it.", cardText);
                 return;
             }
-            GUILayout.BeginArea(r, GUI.skin.box);
+            GUILayout.BeginArea(r, UITheme.Panel);
             GUILayout.Label(selected.name, cardTitle);
-            GUILayout.Label($"{selected.street}   ·   {selected.style}", cardText);
+            GUILayout.Label($"{selected.street} · {selected.style}", UITheme.MutedWrap);
             float w = r.width - 16f;
             var preview = GUILayoutUtility.GetRect(w, w * previewTexture.height / previewTexture.width);
             GUI.DrawTexture(preview, previewTexture, ScaleMode.ScaleToFit);
@@ -269,7 +274,7 @@ namespace Unmasked
             var me = SolverController.Local;
             if (me != null)
                 GUILayout.Label($"{Vector3.Distance(me.transform.position, selected.Arrival):0} m away", cardText);
-            if (GUILayout.Button(waypoint.HasValue && waypointName == selected.name ? "Clear waypoint" : "Set waypoint", GUILayout.Height(30)))
+            if (GUILayout.Button(waypoint.HasValue && waypointName == selected.name ? "Clear waypoint" : "Set waypoint", GUILayout.Height(34)))
             {
                 if (waypoint.HasValue && waypointName == selected.name) waypoint = null;
                 else { waypoint = selected.Arrival; waypointName = selected.name; }
@@ -279,7 +284,7 @@ namespace Unmasked
             {
                 bool isCall = game.ActiveHouse.Value.ToString() == selected.id;
                 GUI.enabled = !isCall;
-                if (GUILayout.Button(isCall ? "This is tonight's call" : "Take this call", GUILayout.Height(30)))
+                if (GUILayout.Button(isCall ? "This is tonight's call" : "Take this call", isCall ? GUI.skin.button : UITheme.Primary, GUILayout.Height(34)))
                     agent.ChooseCallRpc(selected.id);
                 GUI.enabled = true;
             }
@@ -288,14 +293,11 @@ namespace Unmasked
 
         void Pin(Vector2 at, Color color, string label, float size)
         {
-            GUI.color = new Color(0f, 0f, 0f, 0.6f);
-            GUI.DrawTexture(new Rect(at.x - size / 2 - 2, at.y - size / 2 - 2, size + 4, size + 4), Texture2D.whiteTexture);
-            GUI.color = color;
-            GUI.DrawTexture(new Rect(at.x - size / 2, at.y - size / 2, size, size), Texture2D.whiteTexture);
-            GUI.color = Color.white;
+            // Round map pins, the same as the ones on the Suspect Board.
+            UITheme.Pin(at, size + 2f, color);
             if (!string.IsNullOrEmpty(label))
             {
-                var style = new GUIStyle(pinLabel) { richText = true };
+                var style = pinLabel;
                 GUI.color = new Color(0, 0, 0, 0.8f);
                 GUI.Label(new Rect(at.x - 99, at.y + size / 2 + 3, 200, 40), label, style);
                 GUI.color = color;
@@ -311,7 +313,7 @@ namespace Unmasked
             if (focus == null || mapTexture == null) return;
 
             const float size = 190f;
-            var r = new Rect(Screen.width - size - 14, 44, size, size);
+            var r = new Rect(UITheme.W - size - UITheme.Edge, UITheme.Edge, size, size);
             float spanU = MinimapSpan / world.width, spanV = MinimapSpan / world.height;
             float u = (focus.position.x - world.xMin) / world.width - spanU / 2;
             float v = (focus.position.z - world.yMin) / world.height - spanV / 2;
@@ -329,21 +331,19 @@ namespace Unmasked
                 var p = ToMini(wp);
                 p.x = Mathf.Clamp(p.x, r.xMin + 4, r.xMax - 4);
                 p.y = Mathf.Clamp(p.y, r.yMin + 4, r.yMax - 4);
-                GUI.color = new Color(1f, 1f, 0.4f);
-                GUI.DrawTexture(new Rect(p.x - 5, p.y - 5, 10, 10), Texture2D.whiteTexture);
+                UITheme.Pin(p, 11f, UITheme.Accent);
             }
             var van = MysteryVan.Instance;
             if (van != null && r.Contains(ToMini(van.transform.position)))
             {
                 var p = ToMini(van.transform.position);
-                GUI.color = new Color(0.3f, 0.9f, 0.85f);
-                GUI.DrawTexture(new Rect(p.x - 4, p.y - 4, 8, 8), Texture2D.whiteTexture);
+                UITheme.Pin(p, 9f, UITheme.Good);
             }
-            GUI.color = Color.white;
-            GUI.DrawTexture(new Rect(r.center.x - 4, r.center.y - 4, 8, 8), Texture2D.whiteTexture);
+            // You, in the middle: an ink pin, the same as on the big map.
+            UITheme.Pin(r.center, 9f, UITheme.Ink);
             string here = ManorLayout.Describe(focus.position);
             GUI.Label(new Rect(r.x, r.yMax + 2, r.width, 18), here, small);
-            GUI.Label(new Rect(r.x, r.yMax + 18, r.width, 18), "[M] map", small);
+            GUI.Label(new Rect(r.x, r.yMax + 18, r.width, 18), "M opens the map", small);
         }
 
         void DrawWaypointArrow()
@@ -356,10 +356,11 @@ namespace Unmasked
             float dist = to.magnitude;
             if (dist < 6f) return;
             float angle = Vector3.SignedAngle(Vector3.ProjectOnPlane(cam.transform.forward, Vector3.up), to, Vector3.up);
-            var center = new Vector2(Screen.width / 2f, 84f);
+            // Under the phase bar, so the two never overlap.
+            var center = new Vector2(UITheme.W / 2f, 128f);
             var matrix = GUI.matrix;
             GUIUtility.RotateAroundPivot(angle, center);
-            GUI.color = new Color(1f, 0.9f, 0.4f);
+            GUI.color = UITheme.Accent;
             GUI.Label(new Rect(center.x - 20, center.y - 20, 40, 40), "^", arrowStyle);
             GUI.matrix = matrix;
             GUI.Label(new Rect(center.x - 150, center.y + 16, 300, 20), $"{label}  {dist:0} m", pinLabel);

@@ -49,10 +49,9 @@ namespace Unmasked
 
         readonly Queue<int> queue = new();
         int seen, current = -1;
-        float currentUntil;
+        float currentShown, currentUntil, closingAt = -1f;
         bool pageOpen;
         Vector2 scroll;
-        GUIStyle wrap, head;
 
         void Awake() => seen = PlayerPrefs.GetInt(SeenKey, 0);
 
@@ -72,56 +71,93 @@ namespace Unmasked
                 if (Hints[i].When(game, agent)) queue.Enqueue(i);
             }
 
-            if (current >= 0 && Time.time > currentUntil) current = -1;
+            if (current >= 0 && Time.unscaledTime > currentUntil) current = -1;
             if (current < 0 && queue.Count > 0) Show(queue.Dequeue());
         }
 
         void Show(int index)
         {
             current = index;
-            currentUntil = Time.time + CardSeconds;
+            currentShown = Time.unscaledTime;
+            currentUntil = currentShown + CardSeconds;
             seen |= 1 << index;
             PlayerPrefs.SetInt(SeenKey, seen);
             PlayerPrefs.Save();
         }
 
+        /// <summary>Dismiss the card: it fades out instead of vanishing.</summary>
+        void Dismiss() => currentUntil = Mathf.Min(currentUntil, Time.unscaledTime + UITheme.ExitSeconds);
+
         void OnGUI()
         {
-            if (wrap == null)
-            {
-                wrap = new GUIStyle(GUI.skin.label) { wordWrap = true };
-                head = new GUIStyle(GUI.skin.label) { fontSize = 15, fontStyle = FontStyle.Bold };
-            }
+            UITheme.Begin();
 
             if (current >= 0)
             {
+                // Bottom centre, above the help line: a note pinned up for you. It arrives by itself,
+                // so it eases in; the handbook page (F1) is opened from the keyboard and appears at once.
                 var hint = Hints[current];
-                var r = new Rect(Screen.width / 2f - 260, Screen.height - 150, 520, 96);
-                GUI.Box(r, "");
-                GUI.Label(new Rect(r.x + 12, r.y + 6, 380, 24), "Handbook: " + hint.Title, head);
-                GUI.Label(new Rect(r.x + 12, r.y + 30, r.width - 24, 44), hint.Text, wrap);
-                GUI.Label(new Rect(r.x + 12, r.y + 72, 300, 20), "F1: the whole handbook");
-                if (GUI.Button(new Rect(r.xMax - 92, r.y + 8, 80, 24), "Got it")) current = -1;
+                const float w = 560f;
+                float textH = UITheme.BodyWrap.CalcHeight(new GUIContent(hint.Text), w - 32f);
+                float h = 44f + textH + 28f;
+                var (alpha, rise) = UITheme.Arrive(currentShown, currentUntil, 12f);
+                var r = new Rect(UITheme.W / 2f - w / 2f, UITheme.H - 44f - h + rise, w, h);
+                var old = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, alpha);
+                UITheme.Rect(new Rect(r.x + 1f, r.y + 3f, r.width, r.height), UITheme.Shadow);
+                UITheme.Rect(r, UITheme.Raised);
+                UITheme.Pin(new Vector2(r.center.x, r.y + 2f));
+                GUI.Label(new Rect(r.x + 16, r.y + 12, w - 140, 26), hint.Title, UITheme.Title);
+                GUI.Label(new Rect(r.x + 16, r.y + 40, w - 32, textH), hint.Text, UITheme.BodyWrap);
+                GUI.Label(new Rect(r.x + 16, r.yMax - 26, 300, 20), "F1 opens the whole handbook", UITheme.Small);
+                if (GUI.Button(new Rect(r.xMax - 104, r.y + 10, 88, 30), "Got it", UITheme.CardButton)) Dismiss();
+                GUI.color = old;
             }
 
             if (!pageOpen) return;
-            var page = new Rect(Screen.width / 2f - 300, 70, 600, Screen.height - 160);
-            GUI.Box(page, "Mystery Club Handbook");
-            scroll = GUI.BeginScrollView(new Rect(page.x + 10, page.y + 28, page.width - 20, page.height - 70), scroll,
-                new Rect(0, 0, page.width - 40, Hints.Length * 74));
+            UITheme.Rect(new Rect(0, 0, UITheme.W, UITheme.H), UITheme.Scrim);
+            float pw = Mathf.Min(640f, UITheme.W - 2 * UITheme.S6);
+            var page = new Rect(UITheme.W / 2f - pw / 2f, UITheme.S6, pw, UITheme.H - 2 * UITheme.S6);
+            GUILayout.BeginArea(page, UITheme.Panel);
+            GUILayout.Label("Mystery Club Handbook", UITheme.Display);
+            GUILayout.Label("Hints you've seen so far. The rest turn up on a night.", UITheme.MutedWrap);
+            GUILayout.Space(UITheme.S3);
+            scroll = GUILayout.BeginScrollView(scroll);
             for (int i = 0; i < Hints.Length; i++)
             {
                 bool known = (seen & (1 << i)) != 0;
-                GUI.Label(new Rect(0, i * 74, 540, 22), known ? Hints[i].Title : "???", head);
-                GUI.Label(new Rect(0, i * 74 + 22, 540, 48), known ? Hints[i].Text : "You'll find this one out on a night.", wrap);
+                GUILayout.Label(known ? Hints[i].Title : UITheme.Tint("Not found yet", UITheme.InkFaint), UITheme.Title);
+                if (known) GUILayout.Label(Hints[i].Text, UITheme.BodyWrap);
+                GUILayout.Space(UITheme.S3);
             }
-            GUI.EndScrollView();
-            if (GUI.Button(new Rect(page.x + 10, page.yMax - 36, 160, 26), "Show hints again"))
+
+            // Settings that belong to whoever is at this computer.
+            GUILayout.Space(UITheme.S3);
+            GUILayout.Label("Reading and motion", UITheme.Title);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Text size", UITheme.Muted, GUILayout.Width(110));
+            for (int i = 0; i < UITheme.TextSizes.Length; i++)
+                if (GUILayout.Toggle(UITheme.TextSize == i, UITheme.TextSizeNames[i], GUI.skin.button) && UITheme.TextSize != i)
+                    UITheme.SetTextSize(i);
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Motion", UITheme.Muted, GUILayout.Width(110));
+            if (GUILayout.Toggle(!UITheme.ReduceMotion, "Full", GUI.skin.button) && UITheme.ReduceMotion) UITheme.SetReduceMotion(false);
+            if (GUILayout.Toggle(UITheme.ReduceMotion, "Reduced (fades only)", GUI.skin.button) && !UITheme.ReduceMotion) UITheme.SetReduceMotion(true);
+            GUILayout.EndHorizontal();
+            GUILayout.EndScrollView();
+
+            GUILayout.Space(UITheme.S3);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Show hints again", GUILayout.Width(180)))
             {
                 seen = 0;
                 PlayerPrefs.DeleteKey(SeenKey);
             }
-            if (GUI.Button(new Rect(page.xMax - 110, page.yMax - 36, 100, 26), "Close")) pageOpen = false;
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Close", UITheme.Primary, GUILayout.Width(120))) pageOpen = false;
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
         }
     }
 }
