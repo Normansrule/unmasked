@@ -56,6 +56,9 @@ namespace Unmasked
             var haunter = MysteryGameManager.Instance.HaunterPawn;
             if (!springing && haunter != null && haunter.IsPhysical && Vector3.Distance(haunter.transform.position, transform.position) <= AutoTriggerRadius)
                 Spring();
+            var standIn = StandInHaunter.Active; // nobody playing the Haunter: the costumed suspect
+            if (!springing && haunter == null && standIn != null && Vector3.Distance(standIn.Position, transform.position) <= AutoTriggerRadius)
+                Spring();
         }
 
         public bool CanInteract(SolverController solver) => TrapPhase;

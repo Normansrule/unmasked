@@ -21,6 +21,14 @@ namespace Unmasked
             foreach (var site in Sites) if (site.IsHQ) HQ = site;
             Horizon.Ensure(gameObject); // the world past the edge of the map
             TownLife.Ensure(gameObject); // trick-or-treaters, cars, a far-off train
+            LostLantern.Ensure(gameObject); // lanterns to find around town (the Club Book keeps count)
+            Doorstep.Ensure(gameObject);    // front doors to knock on for trick-or-treat
+            HookBoard.Ensure(gameObject);   // the Historical Society's 24 hooks, where found lanterns go home
+            CarvingBench.Ensure(gameObject); // carve a jack-o'-lantern for the HQ porch, one a night
+            Wisp.Ensure(gameObject);        // will-o'-the-wisps off the creek that lead to lost lanterns
+            Lamplighter.Ensure(gameObject); // Tobias Wick and the twelve gas lamps on the Creekside Path
+            WorldLife.Ensure(gameObject);   // the haunted places past the edge of town: moving pieces, first visits, climbs
+            Curio.Ensure(gameObject);       // curiosities hidden all over the world, each with a little story
         }
 
         void OnDestroy()

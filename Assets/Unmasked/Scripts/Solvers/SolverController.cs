@@ -139,7 +139,9 @@ namespace Unmasked
 
             if (keyboard == null || menuOpen || IsPanicked) return;
 
-            if (keyboard.eKey.wasPressedThisFrame && Focused is Component target)
+            if (keyboard.eKey.wasPressedThisFrame && Focused is ILocalInteractable local)
+                local.LocalInteract(this);
+            else if (keyboard.eKey.wasPressedThisFrame && Focused is Component target)
             {
                 var targetObject = target.GetComponentInParent<NetworkObject>();
                 if (targetObject != null) InteractRpc(targetObject);

@@ -376,6 +376,37 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
 .foot { max-width: var(--wide); margin: var(--s9) auto 0; padding: var(--s6) var(--gutter-r) max(var(--s7), env(safe-area-inset-bottom)) var(--gutter); border-top: 1px solid var(--edge); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s4); color: var(--ink-2); font-size: var(--t-small); }
 .foot .mark { font-size: 1rem; padding: 0; }
 
+/* ---------- Things to do: the town, the Club Book, the Wardrobe ---------- */
+.btn-small { min-height: 44px; padding: 0 var(--s4); font-size: var(--t-small); }
+.play-row { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.town-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--s7); align-items: start; margin-bottom: var(--s8); }
+.town-map { margin: 0; }
+.town-map img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 1435; object-fit: cover; background: var(--sheet-2); }
+.town-side { display: grid; gap: var(--s4); }
+.town-side h3, .club-title { font-size: var(--t-h3); font-weight: 750; }
+.places { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3) var(--s5); }
+.places li { display: grid; gap: 2px; padding-top: var(--s2); border-top: 1px solid var(--edge); }
+.places span, .lanterns, .doors, .club-lead { color: var(--ink-2); }
+.tale { margin: 0; padding: var(--s4) var(--s5); background: var(--sheet); border-left: 3px solid var(--tag); border-radius: 0 3px 3px 0; font-style: italic; color: var(--ink); max-width: var(--measure); }
+.tale b { font-style: normal; }
+.places span { font-size: var(--t-small); color: var(--ink-3); }
+.club-title { margin-top: var(--s7); }
+.club-lead { max-width: var(--measure); margin: var(--s2) 0 var(--s5); }
+.chapters { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s6) var(--s5); }
+.chapter { background: var(--sheet); border: 1px solid var(--edge); border-radius: 3px; padding: var(--s5); display: grid; gap: var(--s2); align-content: start; }
+.chapter h4 { font-size: 1.25rem; font-weight: 750; }
+.chapter .blurb { color: var(--ink-3); font-size: var(--t-small); }
+.chapter ul { list-style: none; margin: var(--s2) 0 0; padding: 0; display: grid; gap: var(--s3); }
+.chapter li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s1) var(--s3); align-items: baseline; font-size: var(--t-small); color: var(--ink-2); }
+.chapter li b { color: var(--ink); display: block; }
+.chapter .reward { font-weight: 700; color: var(--good); }
+.chapter li .btn { grid-column: 1 / -1; justify-self: start; }
+.wardrobe { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--s4); }
+.wardrobe li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px var(--s3); align-items: center; padding: var(--s3); background: var(--sheet); border: 1px solid var(--edge); border-radius: 3px; }
+.wardrobe .swatch { grid-row: span 3; width: 40px; height: 40px; border-radius: 3px; background: linear-gradient(var(--a) 0 68%, var(--b) 68% 100%); box-shadow: inset 0 0 0 1px var(--hairline); }
+.wardrobe .slot { font-size: var(--t-small); color: var(--ink-3); }
+.wardrobe .price { font-size: var(--t-small); font-weight: 700; color: var(--tag); }
+
 /* ---------- Narrower screens ---------- */
 @media (max-width: 1020px) {
   .suspects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -385,6 +416,7 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
   .rounds { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .milestones { grid-template-columns: minmax(0, 1fr); }
   .steps { grid-template-columns: minmax(0, 1fr); max-width: 40rem; }
+  .chapters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 860px) {
   main > section { padding-top: var(--s8); }
@@ -394,6 +426,7 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
   .photo, .photo:nth-child(n) { grid-column: span 1; }
   .photo:first-child { grid-column: 1 / -1; }
   .legend-list { grid-template-columns: 1fr; }
+  .town-grid { grid-template-columns: 1fr; gap: var(--s6); }
   .ledger { grid-template-columns: 1fr; gap: var(--s5); }
   .total { position: static; }
 }
@@ -416,6 +449,7 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
   .legend-text { flex-basis: 12rem; }
   .photos { grid-template-columns: 1fr; }
   .rounds { grid-template-columns: 1fr; }
+  .chapters, .places { grid-template-columns: 1fr; }
   .pinned { width: 40%; padding: var(--s3) var(--s2) var(--s2); }
   .pinned b { font-size: .9375rem; }
   .hero-board { aspect-ratio: 4 / 5.4; }
@@ -450,3 +484,52 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
 }
 }
 .later { color: var(--ink-3); font-style: italic; grid-column: 1 / -1; }
+
+/* ---------- The night, told by scrolling ----------
+   Wide screens with motion on: the stage sticks while the section scrolls past it, and the scroll
+   position is the clock. Everyone else keeps the timeline list above. */
+html { overflow-x: clip; }
+.nightfall { position: relative; height: calc(8 * 72vh + 100vh); margin: var(--s6) 0 0; }
+.nf-stage {
+  position: sticky; top: 0; height: 100vh; width: 100vw; margin-left: calc(50% - 50vw);
+  overflow: hidden; background: #120e1c; color: #f3eadb;
+}
+.nf-scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.nf-card {
+  position: absolute; left: max(var(--gutter), calc(50vw - var(--wide) / 2)); top: calc(var(--s8) + var(--s6));
+  width: min(26rem, 40vw); padding: var(--s5) var(--s5) var(--s4); border-radius: 2px;
+  background: #fffaf1; color: #221c16; box-shadow: 0 24px 40px -18px rgba(0, 0, 0, .7);
+  transform-origin: 50% 6px; transform: rotate(calc(-1.2deg + var(--sway, 0deg)));
+  display: grid; gap: var(--s1);
+}
+.nf-card time { font: 700 1rem/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; color: #ae2f26; }
+.nf-card h3 { font: 700 var(--t-h3)/1.15 var(--serif); margin: 0; }
+.nf-card p { color: #554a3e; margin: 0; }
+.nf-card > :not(.pin) { transition: opacity var(--med) var(--ease-out), translate var(--med) var(--ease-out); }
+.nf-card.swap > :not(.pin) { opacity: 0; translate: 0 6px; transition-duration: 90ms; }
+.nf-steps {
+  position: absolute; right: max(var(--gutter-r), calc(50vw - var(--wide) / 2)); top: 50%; translate: 0 -50%;
+  list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s4);
+}
+.nf-steps li { width: 10px; height: 10px; border-radius: 50%; background: rgba(243, 234, 219, .28); transition: background-color var(--med) var(--ease-out), scale var(--med) var(--ease-pin); }
+.nf-steps li.past { background: rgba(239, 108, 91, .6); }
+.nf-steps li.now { background: #ef6c5b; scale: 1.5; }
+.nightfall [data-nf="strings"] path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.night.cinema .clock { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Headlines that set themselves, word by word ---------- */
+.js .sec-head h2.words .w { display: inline-block; opacity: 0; translate: 0 .45em; rotate: 2deg; transition: opacity 600ms var(--ease-out), translate 700ms var(--ease-pin), rotate 700ms var(--ease-pin); transition-delay: calc(var(--i) * 55ms); }
+.js .sec-head h2.words.in .w { opacity: 1; translate: 0 0; rotate: 0deg; }
+
+/* ---------- The hero board leans toward the pointer ---------- */
+.hero-board.tilt { transform: perspective(1400px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)); transition: transform 500ms var(--ease-out); will-change: transform; }
+.hero-board.tilt.measuring { transform: none; transition: none; }
+
+/* ---------- The mask that comes off when you solve it ---------- */
+.suspect { position: relative; }
+.unmask-fx { position: absolute; left: 50%; top: 18px; width: 96px; margin-left: -48px; pointer-events: none; z-index: 5; color: var(--haunt); filter: drop-shadow(0 6px 6px var(--shade)); }
+.unmask-fx svg { display: block; width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .sec-head h2.words .w { opacity: 1; translate: none; rotate: none; transition: none; }
+}

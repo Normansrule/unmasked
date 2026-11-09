@@ -160,11 +160,28 @@ namespace Unmasked
             bubble.text = TownLife.Wrap(text, 38);
             bubbleUntil = Time.time + BubbleTime;
             var face = GetComponent<FaceLife>();
-            if (face != null) face.Talk(Mathf.Clamp(text.Length * 0.05f, 1.5f, 4f));
+            if (face != null)
+            {
+                face.Talk(Mathf.Clamp(text.Length * 0.05f, 1.5f, 4f));
+                // Asking a favour looks worried; a thank-you (or a friendly hello) smiles.
+                face.Feel(line == -1 ? FaceLife.Mood.Worried : FaceLife.Mood.Happy, 3.5f);
+            }
             // Bubbles are hard to read from far off, so whoever is close also gets it on screen.
             var local = SolverController.Local;
             if (local != null && Vector3.Distance(local.transform.position, transform.position) < 8f)
                 GameHUD.Toast($"{info.name}: {text}");
+        }
+
+        float poseUntil;
+        Vector3 posePoint;
+
+        /// <summary>Someone's pointing the club camera this way: turn to it and smile for a few seconds.</summary>
+        public void Pose(Vector3 camera)
+        {
+            poseUntil = Time.time + 3f;
+            posePoint = camera;
+            var face = GetComponent<FaceLife>();
+            if (face != null) face.Feel(FaceLife.Mood.Happy, 3f);
         }
 
         void LateUpdate()
@@ -176,6 +193,14 @@ namespace Unmasked
 
             // Turn to face the nearest Solver who comes up to them, and back again when they leave.
             if (Model == null) return;
+            if (Time.time < poseUntil) // smiling for the club camera (Snapshots.cs)
+            {
+                var look = posePoint - transform.position;
+                look.y = 0f;
+                if (look.sqrMagnitude > 0.01f)
+                    Model.localRotation = Quaternion.Slerp(Model.localRotation, Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(look), 1f - Mathf.Exp(-6f * Time.deltaTime));
+                return;
+            }
             Transform nearest = null;
             float best = 5f;
             foreach (var s in SolverController.All)

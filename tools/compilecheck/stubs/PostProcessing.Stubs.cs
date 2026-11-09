@@ -48,5 +48,6 @@ namespace UnityEngine.Rendering.PostProcessing {
   public sealed class AmbientOcclusionModeParameter : ParameterOverride<AmbientOcclusionMode> { }
   public sealed class AmbientOcclusionQualityParameter : ParameterOverride<AmbientOcclusionQuality> { }
   public sealed class AmbientOcclusion : PostProcessEffectSettings { public AmbientOcclusionModeParameter mode; public FloatParameter intensity; public ColorParameter color; public BoolParameter ambientOnly; public FloatParameter noiseFilterTolerance; public FloatParameter blurTolerance; public FloatParameter upsampleTolerance; public FloatParameter thicknessModifier; public FloatParameter zBias; public FloatParameter directLightingStrength; public FloatParameter radius; public AmbientOcclusionQualityParameter quality; }
+  public sealed class ChromaticAberration : PostProcessEffectSettings { public TextureParameter spectralLut; public FloatParameter intensity; public BoolParameter fastMode; }
   public sealed class Grain : PostProcessEffectSettings { public BoolParameter colored; public FloatParameter intensity; public FloatParameter size; public FloatParameter lumContrib; }
 }

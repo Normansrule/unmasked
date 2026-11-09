@@ -39,6 +39,7 @@
         <li><a href="#play">Play a case</a></li>
         <li><a href="#night">The night</a></li>
         <li><a href="#houses">Houses</a></li>
+        <li><a href="#town">Things to do</a></li>
         <li><a href="#legends">Legends</a></li>
         <li><a href="#progress">Progress</a></li>
         <li><a href="#get">Get the game</a></li>
@@ -135,7 +136,86 @@
   <section class="night" id="night" aria-labelledby="night-title">
     <div class="sec-head">
       <h2 id="night-title">How a night goes</h2>
-      <p>A match is one Halloween night, from the first call to the last chance at dawn. Up to four Solvers work the case; the fifth player is the Haunter, dressed as a legend and secretly one of the suspects. No one free to haunt? The game's AI (artificial intelligence) Director takes the part.</p>
+      <p>A match is one Halloween night, from the first call to the last chance at dawn. Up to four Solvers work the case; the fifth player is the Haunter, dressed as a legend and secretly one of the suspects. No one free to haunt? The game's AI (artificial intelligence) Director haunts the house, and once the culprit is named they put on the costume and try to dodge your trap.</p>
+    </div>
+    <!-- The night, told by scrolling: the stage stays put while the evening passes. The list below
+         is the same story for screen readers, phones and reduced motion. -->
+    <div class="nightfall" data-nightfall aria-hidden="true" hidden>
+      <div class="nf-stage">
+        <svg class="nf-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" focusable="false">
+          <rect data-nf="sky" x="0" y="0" width="1600" height="900" fill="#3a2a45"/>
+          <defs><linearGradient id="nf-dawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9a66b" stop-opacity="0"/><stop offset=".75" stop-color="#e9a66b"/><stop offset="1" stop-color="#f3c46b"/></linearGradient></defs>
+          <rect data-nf="dawn" x="0" y="200" width="1600" height="420" fill="url(#nf-dawn)" opacity="0"/>
+          <g data-nf="stars" fill="#f3eadb" opacity="0"></g>
+          <circle data-nf="moon" cx="1290" cy="520" r="46" fill="#f3e7cf"/>
+          <path d="M0 610 C180 560 330 585 470 560 C640 530 760 575 930 548 C1110 520 1260 560 1420 540 C1500 530 1560 540 1600 548 V900 H0Z" fill="#241a2c"/>
+          <path d="M0 690 C220 655 420 676 640 662 C860 648 1080 672 1300 658 C1440 650 1540 660 1600 664 V900 H0Z" fill="#1c1522"/>
+          <!-- HQ, on the left: always lit -->
+          <g transform="translate(150 560)">
+            <path d="M0 140 V60 L80 10 L160 60 V140Z" fill="#140f18"/>
+            <rect x="26" y="78" width="26" height="30" fill="#f3c46b"/><rect x="108" y="78" width="26" height="30" fill="#f3c46b"/>
+            <rect x="66" y="96" width="28" height="44" fill="#f3c46b" opacity=".75"/>
+          </g>
+          <!-- the street in between -->
+          <g fill="#150f19">
+            <path d="M440 700 V640 L500 600 L560 640 V700Z"/><path d="M600 700 V620 L650 586 L700 620 V700Z"/>
+            <path d="M760 700 V650 L820 612 L880 650 V700Z"/><path d="M930 700 V630 L985 594 L1040 630 V700Z"/>
+          </g>
+          <g fill="#f3c46b" opacity=".55"><rect x="486" y="652" width="12" height="14"/><rect x="636" y="640" width="12" height="14"/><rect x="972" y="646" width="12" height="14"/></g>
+          <!-- tonight's house -->
+          <g transform="translate(1140 520)">
+            <path d="M0 190 V80 L60 40 V10 H86 V24 L130 0 L260 80 V190Z" fill="#140f18"/>
+            <g data-nf="lit" fill="#f3c46b" opacity="0"><rect x="34" y="104" width="30" height="34"/><rect x="196" y="104" width="30" height="34"/><rect x="112" y="122" width="36" height="68"/><rect x="114" y="54" width="28" height="26"/></g>
+            <g data-nf="party" opacity="0">
+              <path d="M-10 86 Q130 128 270 86" fill="none" stroke="#3a2c24" stroke-width="2"/>
+              <circle cx="20" cy="96" r="6" fill="#ef6c5b"/><circle cx="70" cy="108" r="6" fill="#f3c46b"/><circle cx="130" cy="112" r="6" fill="#82cf9f"/><circle cx="190" cy="108" r="6" fill="#ac99f2"/><circle cx="240" cy="96" r="6" fill="#ef6c5b"/>
+            </g>
+          </g>
+          <!-- the road and the van -->
+          <rect x="0" y="752" width="1600" height="54" fill="#120d15"/>
+          <path d="M0 779 H1600" stroke="#3a2f3c" stroke-width="3" stroke-dasharray="28 26"/>
+          <g data-nf="van">
+            <path d="M0 0 H120 Q150 0 156 26 L162 44 V62 H-6 V14 Q-6 0 0 0Z" fill="#82cf9f"/>
+            <path d="M104 8 H126 Q142 8 146 30 H104Z" fill="#cfe9dc"/><rect x="14" y="10" width="76" height="20" fill="#cfe9dc"/>
+            <circle cx="30" cy="64" r="13" fill="#0c090e"/><circle cx="128" cy="64" r="13" fill="#0c090e"/>
+            <path data-nf="beam" d="M160 40 L330 18 L330 74Z" fill="#f3e7cf" opacity=".22"/>
+          </g>
+          <!-- the four neighbours on the porch, and the flashlight -->
+          <path data-nf="cone" d="M0 0 L300 -70 L300 70Z" fill="#f3e7cf" opacity="0"/>
+          <g data-nf="people" opacity="0" fill="#0c090e">
+            <g data-nf="p0" transform="translate(1100 700)"><circle cx="0" cy="-46" r="10"/><path d="M-12 0 V-30 Q0 -40 12 -30 V0Z"/></g>
+            <g data-nf="p1" transform="translate(1150 704)"><circle cx="0" cy="-50" r="10"/><path d="M-13 0 V-32 Q0 -42 13 -32 V0Z"/></g>
+            <g data-nf="p2" transform="translate(1420 700)"><circle cx="0" cy="-48" r="11"/><path d="M-14 0 V-32 Q0 -42 14 -32 V0Z"/></g>
+            <g data-nf="p3" transform="translate(1468 704)"><circle cx="0" cy="-44" r="9"/><path d="M-12 0 V-28 Q0 -38 12 -28 V0Z"/></g>
+          </g>
+          <circle data-nf="ring" cx="1150" cy="676" r="40" fill="none" stroke="#ef6c5b" stroke-width="4" opacity="0"/>
+          <!-- clues, and the string from each to the one person they fit -->
+          <g data-nf="strings" fill="none" stroke="#ef6c5b" stroke-width="2.5" stroke-linecap="round">
+            <path d="M1020 612 Q1090 660 1150 640" pathLength="1"/>
+            <path d="M1300 600 Q1220 650 1152 640" pathLength="1"/>
+            <path d="M1250 690 Q1200 690 1154 650" pathLength="1"/>
+          </g>
+          <g data-nf="clues" opacity="0">
+            <g transform="translate(1012 600) rotate(-8)"><rect width="26" height="16" rx="2" fill="#f4dcd5"/><circle cx="6" cy="8" r="3" fill="#ef6c5b"/></g>
+            <g transform="translate(1292 588) rotate(6)"><rect width="26" height="16" rx="2" fill="#f4dcd5"/><circle cx="6" cy="8" r="3" fill="#ef6c5b"/></g>
+            <g transform="translate(1244 680) rotate(-4)"><rect width="26" height="16" rx="2" fill="#f4dcd5"/><circle cx="6" cy="8" r="3" fill="#ef6c5b"/></g>
+          </g>
+          <!-- the trap, and the Haunter in tonight's costume -->
+          <g data-nf="haunter" opacity="0">
+            <path d="M-26 0 Q-30 -60 -14 -86 L14 -86 Q30 -60 26 0 Q14 -10 0 0 Q-14 -10 -26 0Z" fill="#5b45a6"/>
+            <g data-nf="mask"><path d="M-22 -112 Q0 -126 22 -112 Q24 -98 12 -94 Q4 -100 0 -96 Q-4 -100 -12 -94 Q-24 -98 -22 -112Z" fill="#ac99f2"/><circle cx="-9" cy="-106" r="3.5" fill="#120d15"/><circle cx="9" cy="-106" r="3.5" fill="#120d15"/></g>
+            <circle cx="0" cy="-102" r="13" fill="#0c090e"/>
+          </g>
+          <g data-nf="crate"><rect x="-44" y="-70" width="88" height="70" fill="#7a5a3a"/><path d="M-44 -70 L44 0 M44 -70 L-44 0" stroke="#4e3a26" stroke-width="5"/></g>
+        </svg>
+        <div class="nf-card" data-nf-card>
+          <span class="pin"></span>
+          <time data-nf-time></time>
+          <h3 data-nf-title></h3>
+          <p data-nf-text></p>
+        </div>
+        <ol class="nf-steps" data-nf-steps></ol>
+      </div>
     </div>
     <ol class="clock">
       <li><time>7:30 PM</time><div><h3>Mystery Club HQ</h3><p>The host picks a call from the board. Suspects, clues and gossip all depend on the house.</p></div></li>
@@ -156,6 +236,32 @@
     </div>
     <ul class="photos" data-houses></ul>
     <p class="note">Pictures are renders from the game's level files, not Unity captures.</p>
+  </section>
+
+  <section class="town" id="town" aria-labelledby="town-title">
+    <div class="sec-head">
+      <h2 id="town-title">A whole town to walk</h2>
+      <p>Between calls, Hollow Creek is yours: eleven streets of lit-up houses with a family behind every door, a corn maze, the old cemetery, the mill pond and more. The Club Book keeps track of everything you do.</p>
+    </div>
+    <div class="town-grid">
+      <figure class="print town-map" style="--r:-.8deg"><img src="img/town-map.jpg" width="900" height="1435" loading="lazy" decoding="async" alt="Top-down map of Hollow Creek: Main Street and the side streets lined with houses, the five haunted lots, and landmarks north of the creek"></figure>
+      <div class="town-side">
+        <h3>Places to find</h3>
+        <ul class="places" data-places></ul>
+        <p class="lanterns" data-lanterns></p>
+        <h3>Trick or treat</h3>
+        <p class="doors" data-doors></p>
+        <blockquote class="tale" data-tale></blockquote>
+        <p><a class="btn btn-primary" href="#play" data-play-case="">Play a case</a></p>
+        <p class="note">The map is drawn from the game's level file, not a Unity capture.</p>
+      </div>
+    </div>
+    <h3 class="club-title">The Club Book</h3>
+    <p class="club-lead" data-club-lead>Challenges in chapters. None of them expire, and nothing is lost for taking a break.</p>
+    <ol class="chapters" data-chapters></ol>
+    <h3 class="club-title">The Wardrobe</h3>
+    <p class="club-lead">Every look costs candy, and candy only comes from playing. Nothing in Unmasked is sold for money.</p>
+    <ul class="wardrobe" data-wardrobe></ul>
   </section>
 
   <section class="legends" id="legends" aria-labelledby="legends-title">

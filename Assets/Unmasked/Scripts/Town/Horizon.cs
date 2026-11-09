@@ -10,7 +10,7 @@ namespace Unmasked
     ///
     ///  - Far: three rings of hills that follow the camera like the sky does, so they never get any
     ///    closer. Far-off windows and farm lights twinkle on them, and landmarks stand on the ridges:
-    ///    Ravensford's steeple, the Gull Point lighthouse (its beam sweeps round), a windmill turning,
+    ///    Ravensford's steeple, a windmill turning (the real lighthouse is at Gull Harbor, round 39),
     ///    a water tower, the Thornbury ruins. Drawn without fog so they show through the night haze,
     ///    with a band of mist at their feet so they sit in the valley.
     ///  - Near: the roads carry on out of town, lit by street lamps, with signposts to the next towns,
@@ -350,6 +350,14 @@ namespace Unmasked
 
         static Font builtinFont;
 
+        static bool InClearing(float[] clear, float x, float z)
+        {
+            if (clear == null) return false;
+            for (int k = 0; k + 3 < clear.Length; k += 4)
+                if (x >= clear[k] && x <= clear[k + 2] && z >= clear[k + 1] && z <= clear[k + 3]) return true;
+            return false;
+        }
+
         void BuildForest(TownLayout.HorizonInfo h)
         {
             var f = h.forest;
@@ -370,6 +378,7 @@ namespace Unmasked
                 float kind = rng.Next(), height = rng.Range(9f, 18f);
                 if (dx <= 0f && dz <= 0f) continue; // inside the town (and its fields)
                 if (NearRoad(h, x, z, 9f)) continue;
+                if (InClearing(f.clear, x, z)) continue; // a haunted place, or a road out to one
                 var at = new Vector3(x, 0f, z);
                 trunks.Box(at + Vector3.up * height * 0.2f, new Vector3(0.5f, height * 0.4f, 0.5f), bark);
                 int v = kind < 0.55f ? 0 : kind < 0.82f ? 1 : 2;

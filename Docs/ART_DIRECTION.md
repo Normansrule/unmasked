@@ -56,6 +56,38 @@ Houses get more intricate as the game goes on, not just bigger.
 Pair every gameplay colour with a shape, symbol or label. Light the way with a few strong
 practical lights (porch lamps, lanterns, windows) rather than flat orange everywhere.
 
+### How the game uses them (the storybook lighting pass, round 33)
+
+- **The night is teal.** Ambient light, fog, the moon and the particle mist are blue-green; the
+  ToonSpooky shader leans the dark side of each light band teal and lays a low creek mist along
+  the ground. The colour grade puts teal in the shadows and amber in the highlights.
+- **Amber is the practicals.** Lit windows glow in a few warm shades (curtains on some, a blue-green
+  television in a few), porch lamps and jack-o'-lanterns cut through the mist, and each lamp's
+  light ends in a thin, warmer painted edge. Near HQ the whole picture warms (`StoryLight`).
+- **Violet means a haunting.** It is nowhere in the base look. `Spooky/StoryLight.cs` brings it into
+  rims, mist and the grade as a Solver's fear rises, on the lot of the house being haunted, and
+  (a little, always) for whoever plays the Haunter.
+- **Gold is the unmasking.** The mist lifts and the picture warms and blooms, then settles.
+
+### Characters: storybook proportions (round 34)
+
+- **Big heads, big eyes.** Heads 1.3x, grown from the top of the neck; eyes 1.18x; hands 1.14x.
+  Faces must read from across a street at night.
+- **One outline per role.** Test every character in plain black: if two read the same, change the
+  shape, not the colour. Sleuth: capelet and long coat. Techie: headphones and aerials. Brawn:
+  gloves and boots, an upside-down triangle. Snacker: round, with a bobble hat.
+
+### Faces: moods, never tells (round 35)
+
+- Moods are big and short: a strong brow tilt, wide lids or an open mouth for a few seconds, then
+  back to calm. Small changes don't read at night.
+- A mood never gives the mystery away: every suspect wears the same worried face under questioning.
+
+### Jack-o'-lanterns you carve (round 36)
+
+- The cut-outs are candlelight, not holes: warm glowing shapes set just proud of the skin.
+- Four eyes, three noses, four mouths: few enough to choose quickly, enough for 48 faces.
+
 ## Animation: anticipation, action, recovery
 
 Every scare has a readable wind-up, the surprise, and a moment to recover. In the game now:
@@ -71,9 +103,12 @@ Still to do: a pumpkin lid lifting, the team reacting together at the unmasking.
 
 Hollow Creek must never feel like a set with nothing behind it. Three ridges of hills ring the
 horizon, darker the nearer they are, with valley mist at their feet and the warm lights of farms and
-far towns scattered on them. Landmarks give each direction a name (Ravensford church, Gull Point
-lighthouse, Hatcher's windmill, the water tower, the Thornbury ruins), and the lighthouse beam and
-windmill keep the far distance alive. Roads keep going past the last house, lit and signposted, and
+far towns scattered on them. Landmarks give each direction a name (Ravensford church, Hatcher's
+windmill, the water tower, the Thornbury ruins), and the turning windmill keeps the far distance
+alive. Since round 39 the nearer distance is real places you can reach: a castle, a circus, a high
+rise, a harbor with Saltmarsh Lighthouse, a beach and a swamp, each with one big shape that reads
+from far off (towers, the big top and Ferris wheel, the lit window grid, the beam, the wreck's
+masts, the cottage's green glow). Roads keep going past the last house, lit and signposted, and
 a forest band hides where the playable town ends. The hills follow the camera, so the horizon is
 always the horizon. Keep it quiet and low-contrast: it frames the houses, it never competes with them.
 
@@ -157,6 +192,13 @@ the card picked with the keyboard gets an ink ring 3 points out (red while an ac
 for its second press). In the game a
 card only rotates while it is swinging, so a card at rest is always square and never clips. Reduced
 motion: no swing, string appears at once, a wrong guess is a red outline instead of a shake.
+
+Two moments are played out rather than shown (`UI/Moments.cs`). The hour card drops 28 points onto
+its pin with a small overshoot, gets a push so it swings, holds for about four seconds and fades.
+The unmasking follows anticipation, action, recovery: the mask holds (0.25 to 0.3 s), dips and
+squashes (0.3 to 0.6 s), then flies up and right, accelerating and turning 42 degrees (0.6 to 1.3
+s), and the name types in at 34 letters a second once it has gone. Reduced motion: the card only
+fades, the mask fades out and the name appears whole.
 
 ## The README is part of the look (round 23)
 

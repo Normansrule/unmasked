@@ -13,7 +13,8 @@ namespace Unmasked
     /// needs no UI assets: connect menu, phase bar, setup picks, Solver and Haunter panels, the
     /// Suspect Board (Tab) and the end screens. Colours, type, spacing and motion come from
     /// <see cref="UITheme"/>. Screen zones: phase bar top centre, setup top left, your panel bottom
-    /// left, toasts bottom right, hint cards bottom centre, minimap top right (town).
+    /// left, toasts bottom right, hint cards bottom centre, minimap top right (town), the hour card
+    /// under the phase bar (<see cref="Moments"/>).
     /// TODO(UI milestone): move to UI Toolkit once the layout has been played.
     /// </summary>
     public class GameHUD : MonoBehaviour
@@ -29,7 +30,8 @@ namespace Unmasked
             Debug.Log("[Unmasked] " + message);
         }
 
-        string address = "127.0.0.1";
+        const string LastAddressKey = "Unmasked.LastAddress";
+        string address;
         string port = "7777";
         bool boardOpen;
         Vector2 boardScroll, setupScroll;
@@ -41,8 +43,20 @@ namespace Unmasked
         string accuseArmed = "";
         float accuseArmedUntil;
 
+        void OnApplicationQuit() => LanDiscovery.Shutdown();
+
+        void Awake()
+        {
+            // The Club Book (challenges, the wardrobe, lost lanterns) lives next to the HUD.
+            if (GetComponent<ClubBook>() == null) gameObject.AddComponent<ClubBook>();
+            Snapshots.Ensure(gameObject);  // the club camera (P) and the album
+            StoryLight.Ensure(gameObject); // the storybook moods: teal night, amber home, violet haunting, gold unmasking
+        }
+
         void Update()
         {
+            address ??= PlayerPrefs.GetString(LastAddressKey, "127.0.0.1");
+            LanDiscovery.Tick(NetworkManager.Singleton, ushort.TryParse(port, out var p) ? p : (ushort)7777);
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             bool inGame = NetworkManager.Singleton != null && NetworkManager.Singleton.IsClient && PlayerAgent.Local != null;
@@ -56,7 +70,7 @@ namespace Unmasked
                 else Cursor.lockState = CursorLockMode.None;
             }
 
-            bool menu = boardOpen || TownMap.IsOpen;
+            bool menu = boardOpen || TownMap.IsOpen || ClubBook.IsOpen || CarvingBench.IsOpen;
             if (CameraRig.Instance != null) CameraRig.Instance.InputLocked = menu;
 
             if (menu || !inGame)
@@ -187,6 +201,7 @@ namespace Unmasked
             if (game == null || !game.IsSpawned || agent == null) { GUI.Label(new Rect(UITheme.Edge, UITheme.Edge, 300, 25), "Connecting…", UITheme.Muted); return; }
 
             DrawTopBar(game);
+            Moments.HourCard(game, agent, !boardOpen && !TownMap.IsOpen);
 
             if (game.Phase.Value == MatchPhase.Setup) DrawSetup(game, agent);
 
@@ -198,9 +213,9 @@ namespace Unmasked
             DrawToasts();
 
             if (!boardOpen && Cursor.lockState != CursorLockMode.Locked)
-                GUI.Label(new Rect(UITheme.W / 2f - 320, UITheme.H - 28, 640, 22), TownMap.Instance != null
-                    ? "Click to look around · Esc frees the mouse · Tab Suspect Board · M map · F1 handbook"
-                    : "Click to look around · Esc frees the mouse · Tab Suspect Board · F1 handbook", UITheme.SmallCenter);
+                GUI.Label(new Rect(UITheme.W / 2f - 380, UITheme.H - 28, 760, 22), TownMap.Instance != null
+                    ? "Click to look around · Esc frees the mouse · Tab Suspect Board · M map · K Club Book · F1 handbook"
+                    : "Click to look around · Esc frees the mouse · Tab Suspect Board · K Club Book · F1 handbook", UITheme.SmallCenter);
             else if (Cursor.lockState == CursorLockMode.Locked)
             {
                 // A small dot reads as an aim point without covering what you look at.
@@ -212,35 +227,65 @@ namespace Unmasked
 
         void DrawConnectMenu(NetworkManager net)
         {
-            GUILayout.BeginArea(new Rect(UITheme.Edge * 2, UITheme.Edge * 2, 340, 330), UITheme.Panel);
-            GUILayout.Label("Unmasked", UITheme.Display);
-            GUILayout.Label("A Halloween mystery. Host a game, or join a friend's.", UITheme.MutedWrap);
-            GUILayout.Space(UITheme.S3);
-            GUILayout.Label("Host address", UITheme.Small);
-            address = GUILayout.TextField(address);
-            GUILayout.Label("Port", UITheme.Small);
-            port = GUILayout.TextField(port);
-            GUILayout.Space(UITheme.S2);
-
             var transport = net.GetComponent<UnityTransport>();
             ushort portNumber = ushort.TryParse(port, out var parsed) ? parsed : (ushort)7777;
+            var found = new List<LanDiscovery.Game>(LanDiscovery.Games);
+            int rows = Mathf.Max(1, Mathf.Min(4, found.Count));
 
-            if (GUILayout.Button("Host a game", UITheme.Primary))
+            GUILayout.BeginArea(new Rect(UITheme.Edge * 2, UITheme.Edge * 2, 380, 350 + rows * 46), UITheme.Panel);
+            GUILayout.Label("Unmasked", UITheme.Display);
+            GUILayout.Label("A Halloween mystery. Play on your own or host for friends, or join a friend's game.", UITheme.MutedWrap);
+            GUILayout.Space(UITheme.S3);
+
+            if (GUILayout.Button("Play (host a game)", UITheme.Primary, GUILayout.Height(40)))
             {
                 transport?.SetConnectionData("0.0.0.0", portNumber);
                 net.StartHost();
             }
-            if (GUILayout.Button("Join"))
+            if (GUILayout.Button($"Club Book: challenges and wardrobe ({ClubBook.Candy} candy)")) ClubBook.Open();
+
+            // Games on the same Wi-Fi announce themselves (LanDiscovery), so friends nearby just click Join.
+            GUILayout.Space(UITheme.S4);
+            GUILayout.Label("Games on your Wi-Fi", UITheme.Title);
+            if (!LanDiscovery.CanListen)
+                GUILayout.Label("This network won't let the game look for others. Type the host's address below.", UITheme.MutedWrap);
+            else if (found.Count == 0)
+                GUILayout.Label("Looking… When a friend on this Wi-Fi hosts, their game shows up here.", UITheme.MutedWrap);
+            foreach (var g in found.GetRange(0, Mathf.Min(4, found.Count)))
             {
-                transport?.SetConnectionData(address, portNumber);
-                net.StartClient();
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Label($"{g.Name} · {g.Players} {(g.Players == 1 ? "player" : "players")}", UITheme.Body);
+                GUILayout.Label(g.SameVersion ? g.Status : $"Version {g.Version}; you have {Application.version}", UITheme.Small);
+                GUILayout.EndVertical();
+                GUI.enabled = g.SameVersion;
+                if (GUILayout.Button("Join", GUILayout.Width(84), GUILayout.Height(36))) Join(net, transport, g.Address, g.GamePort);
+                GUI.enabled = true;
+                GUILayout.EndHorizontal();
             }
+
+            GUILayout.Space(UITheme.S4);
+            GUILayout.Label("Or type an address", UITheme.Small);
+            GUILayout.BeginHorizontal();
+            address = GUILayout.TextField(address);
+            port = GUILayout.TextField(port, GUILayout.Width(70));
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("Join")) Join(net, transport, address, portNumber);
             if (GUILayout.Button("Run a dedicated server"))
             {
                 transport?.SetConnectionData("0.0.0.0", portNumber);
                 net.StartServer();
             }
             GUILayout.EndArea();
+        }
+
+        void Join(NetworkManager net, UnityTransport transport, string host, ushort gamePort)
+        {
+            address = host;
+            port = gamePort.ToString();
+            PlayerPrefs.SetString(LastAddressKey, host); // the next time, it's already filled in
+            transport?.SetConnectionData(host, gamePort);
+            net.StartClient();
         }
 
         const float TopBarWidth = 680f, SetupWidth = 340f, PanelWidth = 340f;
@@ -323,8 +368,15 @@ namespace Unmasked
                         string next = game.NextCaseFor(lot.id);
                         var nextSpec = Cases.For(next);
                         string tag = game.IsSolved(next) ? " · solved" : nextSpec.IsReturnVisit ? " · return visit" : "";
-                        if (GUILayout.Toggle(active == lot.id, $"{lot.name} ({lot.size}): {nextSpec.CaseName}{tag}", GUI.skin.button) && active != lot.id)
+                        // Every house has its own Play button: it makes that house tonight's call.
+                        bool tonight = active == lot.id;
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label($"<b>{lot.name}</b> ({lot.size})\n{nextSpec.CaseName}{tag}", UITheme.Small);
+                        GUI.enabled = !tonight;
+                        if (GUILayout.Button(tonight ? "Tonight" : "Play", tonight ? GUI.skin.button : UITheme.Primary, GUILayout.Width(84), GUILayout.Height(36)))
                             agent.ChooseCallRpc(lot.id);
+                        GUI.enabled = true;
+                        GUILayout.EndHorizontal();
                     }
                     GUILayout.Space(UITheme.S2);
                     GUILayout.Label(game.SolvedCases.Count == 0
@@ -808,11 +860,8 @@ namespace Unmasked
         {
             if (game.Phase.Value == MatchPhase.Unmasking)
             {
-                // The big reveal: one dark band across the screen, the name large, the reason under it.
-                float y = UITheme.H * 0.22f;
-                UITheme.Rect(new Rect(0, y - UITheme.S5, UITheme.W, 150), UITheme.Scrim);
-                GUI.Label(new Rect(0, y, UITheme.W, 44), $"Unmasked. It was {game.SuspectName(game.RevealedCulprit.Value.ToString())}.", UITheme.DisplayCenter);
-                GUI.Label(new Rect(UITheme.W / 2f - 320, y + 52, 640, 70), game.UnmaskLine(), UITheme.Center);
+                // The big reveal: a dark band, the mask flying off, then the name and the reason (see Moments).
+                Moments.Unmasking(game.SuspectName(game.RevealedCulprit.Value.ToString()), game.UnmaskLine());
                 return;
             }
             if (game.Phase.Value != MatchPhase.Ended) return;

@@ -61,6 +61,24 @@ namespace Unmasked
             Hinge.localRotation = Quaternion.Euler(0f, currentAngle, 0f);
         }
 
+        /// <summary>Server: swing open unless jammed (the costumed stand-in going from room to room).</summary>
+        public void ServerOpen()
+        {
+            if (IsServer && !jammed.Value) open.Value = true;
+        }
+
+        /// <summary>The middle of the doorway, for finding a way from room to room.</summary>
+        public Vector3 Doorway
+        {
+            get
+            {
+                var c = GetComponentInChildren<Collider>();
+                Vector3 p = c != null ? c.bounds.center : transform.position;
+                p.y = transform.position.y;
+                return p;
+            }
+        }
+
         public bool CanInteract(SolverController solver) => !jammed.Value;
         public string GetPrompt(SolverController solver) => open.Value ? "Close" : "Open";
         public void Interact(SolverController solver)

@@ -70,7 +70,7 @@ namespace Unmasked
             [Serializable] public class Landmark { public string kind, name; public float angle, size; public int ring; }
             [Serializable] public class Lights { public int count, seed; public float[] colors; }
             [Serializable] public class Road { public string name, sign; public float[] from, to; }
-            [Serializable] public class Forest { public float inner, outer; public int count, seed; public float[] town; }
+            [Serializable] public class Forest { public float inner, outer; public int count, seed; public float[] town; public float[] clear; }
             public Ring[] rings;
             public Landmark[] landmarks;
             public Lights lights;
@@ -109,8 +109,58 @@ namespace Unmasked
             public string[] lines;
         }
 
+        /// <summary>A lost lantern hidden around town (LostLantern.cs): where it is, and a hint for the Club Book.</summary>
+        [Serializable] public class Collectible { public string id, where; public float[] p; }
+
+        /// <summary>A front door on the new streets (Doorstep.cs): who lives there, where to knock, the
+        /// porch light, and which of the Stories of Hollow Creek they tell (-1 for none).</summary>
+        [Serializable]
+        public class Home
+        {
+            public string id, family, address, street, style;
+            public float[] door, light;
+            public float ry;
+            public int tale = -1;
+        }
+
+        /// <summary>A named part of town (district) or a place to visit (landmark), seen from above.</summary>
+        [Serializable]
+        public class Place
+        {
+            public string n, kind, district;
+            public float[] min, max;
+            public bool Contains(Vector3 p) => min != null && max != null && p.x >= min[0] && p.x <= max[0] && p.z >= min[1] && p.z <= max[1];
+            public Vector3 Center => new((min[0] + max[0]) / 2f, 0f, (min[1] + max[1]) / 2f);
+        }
+
+        /// <summary>A haunted place out past the edge of town (round 39, Docs/tools/regions.py), with the
+        /// blurb shown the first time you arrive (WorldLife.cs).</summary>
+        [Serializable]
+        public class Region
+        {
+            public string id, n, kind, blurb;
+            public float[] min, max;
+            /// <summary>The point the club camera needs in the middle of the picture (Snapshots.cs).</summary>
+            public float[] look;
+            public bool Contains(Vector3 p) => min != null && max != null && p.x >= min[0] && p.x <= max[0] && p.z >= min[1] && p.z <= max[1];
+            public Vector3 Center => new((min[0] + max[0]) / 2f, 0f, (min[1] + max[1]) / 2f);
+        }
+
+        /// <summary>A curiosity hidden somewhere in the world (Curio.cs): what it is, what shape to build,
+        /// a hint for the Club Book, and the little story you read when you find it.</summary>
+        [Serializable] public class CurioInfo { public string id, n, kind, where, lore; public float[] p; }
+
         public string name;
+        public Region[] regions;
+        public CurioInfo[] curios;
+        /// <summary>The whole world for the map: x0, z0, x1, z1 (town plus the haunted places).</summary>
+        public float[] world;
         public LifeInfo life;
+        public Collectible[] collectibles;
+        public Home[] homes;
+        public Place[] districts, landmarks;
+        /// <summary>Every street name, the old four first.</summary>
+        public string[] roads;
         public Folk[] folk;
         public Lot[] lots;
         public EventInfo[] events;
@@ -124,6 +174,20 @@ namespace Unmasked
         static TownLayout cached;
         static bool triedLoading;
         static readonly Dictionary<string, ManorLayout> houses = new();
+
+        /// <summary>The district a point is in ("Mill Fields"), or "".</summary>
+        public string DistrictAt(Vector3 point)
+        {
+            if (districts != null) foreach (var d in districts) if (d.Contains(point)) return d.n;
+            return "";
+        }
+
+        /// <summary>The landmark a point is in (the corn maze, the cemetery...), or null.</summary>
+        public Place LandmarkAt(Vector3 point)
+        {
+            if (landmarks != null) foreach (var l in landmarks) if (l.Contains(point)) return l;
+            return null;
+        }
 
         /// <summary>One of the townsfolk by id, or null.</summary>
         public Folk FolkById(string id)

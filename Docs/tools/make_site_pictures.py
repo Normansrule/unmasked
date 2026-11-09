@@ -9,6 +9,7 @@ Pictures of the website (site/) for the README, taken in a real browser.
   site-phone.png                      phone width, light and dark side by side
   site-strings.gif                    the hero: string runs from two clues to the one suspect they share
   site-play.gif                       searching, crossing off and accusing on the Suspect Board
+  site-night.gif                      scrolling through "How a night goes", dusk to dawn
   site/img/share.png                  the preview picture when someone shares a link to the site
 
 Needs Node and Playwright (npm i playwright); see site_shots.js. Serves site/ on a local port while
@@ -77,6 +78,7 @@ def main():
     print("  site-phone.png")
     gif(os.path.join(tmp, "hero"), "site-strings.gif", 640)
     gif(os.path.join(tmp, "board"), "site-play.gif", 720, 2600)
+    gif(os.path.join(tmp, "night"), "site-night.gif", 720, 2400)
 
 
 if __name__ == "__main__":

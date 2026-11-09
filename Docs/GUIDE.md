@@ -260,6 +260,19 @@ for its card: a live 3D view circling the house, its size, floors, rooms and spo
 **Set waypoint** button and, at HQ, **Take this call**. A minimap and a waypoint arrow stay on screen
 while you drive.
 
+**The Club Book (K)** is the club's scrapbook: 48 challenges in seven chapters (one at every house, the
+eight landmarks, casework, playing the Haunter, trick-or-treat, the four legends), 24 lost lanterns hidden around
+town, the stories you've heard, and a wardrobe of 19 hats, backpieces and torch colours bought with candy you earn by playing.
+Each house challenge has a **Play** button that makes that house tonight's call. Nothing costs
+money, there are no daily streaks, and after every third night a card says it's a good place to stop.
+
+**Trick or treat.** Every house on the new streets has a family behind the door. Where the porch
+light is on, press **E** at the door: it opens a crack, a bowl of candy comes out, and they say
+something. Each door gives one treat a night (more candy the first time), and which families are
+home changes from night to night. Some point you at the nearest lost lantern. Twelve tell one of
+the **Stories of Hollow Creek**; a family with a story you haven't heard is always home, and the
+Club Book's Stories tab says which street to try.
+
 ### Beyond the edge of town
 
 <p align="center"><img src="images/horizon.png" alt="Hollow Creek from above, with forest, far hills, the lights of other towns, the Ravensford church steeple and the Thornbury ruins" width="900"></p>
@@ -267,19 +280,53 @@ while you drive.
 Hollow Creek sits in a valley, and the world doesn't stop at the town line. Three ridges of hills
 ring the horizon in every direction, with the lights of farms and far-off towns scattered across
 them and mist lying in the valley. Landmarks stand on the ridges: the **Ravensford church** steeple,
-the **Gull Point lighthouse** with its beam sweeping round, **Hatcher's old windmill** turning, the
+**Hatcher's old windmill** turning, the
 **Ravensford water tower** with its red light, and the **Thornbury ruins**. The hills follow the
 camera, so they always stay on the horizon however far you drive.
 
 <p align="center"><img src="images/edge-of-town.png" alt="Main Street running on out of town past the woods, with street lamps and a sign to Ravensford" width="800"></p>
 
 Closer in, every road carries on past the edge of town with lamps and signposts ("Ravensford 12 mi",
-"Gull Point 9 mi", "Thornbury 6 mi", "Old Mill Road"), and a band of pines and autumn trees fills
+"Thornbury 6 mi", "Old Mill Road"), and a band of pines and autumn trees fills
 the gap between the town and the hills. It's all built when the town loads by
 [`Town/Horizon.cs`](../Assets/Unmasked/Scripts/Town/Horizon.cs) from the `horizon` block in
 [`HollowCreek.json`](../Assets/Unmasked/Resources/HollowCreek.json).
 
 <p align="center"><img src="images/beyond-town.gif" alt="Looking all the way round from the roof of HQ" width="720"></p>
+
+### The haunted places
+
+<p align="center"><img src="images/world-map.png" alt="The whole world from above, with Hollow Creek in the middle and the six haunted places round it" width="900"></p>
+
+Before the hills, six roads lit by street lamps lead out of town to six haunted places, each one a
+proper place to explore rather than a picture on the horizon:
+
+| Place | Where | What's there |
+|---|---|---|
+| **Ravenhold Castle** | north, in the Blackthorn Hills | a road up the hill, gatehouse, battlements, four towers with flags, the great hall (feast table, throne, armour, chandelier), a well, graves and crows |
+| **The Moonlight Circus** | west, on the fairground | big top with ring, bleachers and trapeze, a turning carousel, a Ferris wheel, booths, caravans, the fortune teller's wagon |
+| **Gloamwood Tower** | south, past HQ | a fourteen-storey high rise with a neon sign, a diner and launderette, and a fire escape to the roof |
+| **Gull Harbor** | east, on the sea | quay, warehouses, fish market, crane, piers and boats, and the breakwater out to **Saltmarsh Lighthouse** (climb the outside stair to the gallery) |
+| **Wreckers' Beach** | north-east | sand, huts, a lifeguard tower, a bonfire, the ghost ship *Mary Grey*, and **Smugglers' Cave** in the cliff |
+| **Hag's Hollow** | south-west | swamp pools, dead trees, green lights over the water, a rowboat and Old Mother Gloam's cottage |
+
+Off the roads there are smaller spots for wanderers: the **Nine Widows** standing stones, a
+**scarecrow field**, a **wishing well** under a crooked oak, **Whisker Hill** pet cemetery and an
+**old mine**. Reach a haunted place for the first time and you hear its story (+15 candy). The castle
+flags flutter, the carousel and Ferris wheel turn, the lighthouse beam sweeps, the tower beacon
+blinks, and the crane hook and the wreck's lantern sway
+([`Town/WorldLife.cs`](../Assets/Unmasked/Scripts/Town/WorldLife.cs)). It's all built from the
+`regions` and `curios` blocks of `HollowCreek.json` by
+[`Docs/tools/regions.py`](tools/regions.py).
+
+<p align="center"><img src="images/regions.png" alt="The six haunted places at night" width="900"></p>
+
+**Curiosities.** 32 curiosities are hidden across the world and back in town, each twinkling until
+you've found it. Press **E** to examine one and read its little story (+10 candy). Found ones stay
+put, so you can show friends. The Club Book's Curiosities page lists them, with the place each one
+is near; find them all for the Explorer's hat. Challenges: reach one haunted place, then all six;
+find one curiosity, ten, then all; climb the lighthouse; reach the tower roof. The album has a frame
+for each haunted place.
 
 ### Someone's always out tonight
 
@@ -454,9 +501,107 @@ trapdoors drop unlucky Solvers a floor.
 The whole town is dressed like LA's [Nights of the Jack](https://secretlosangeles.com/nights-of-the-jack/)
 trail, but kept to what a town that loves Halloween would really put out: carved pumpkins on every
 porch and path, an arch of jack-o'-lanterns here and there, string lights, cornstalks and mums, one
-ghost in a tree. The game uses a cel-shaded toon shader with a violet rim light, bloom so every
-jack-o'-lantern glows, a purple-and-orange colour grade, ground mist, fireflies and bats.
-[Docs/ART_DIRECTION.md](ART_DIRECTION.md) has the references, palette and rules.
+ghost in a tree. The game uses a cel-shaded toon shader, bloom so every jack-o'-lantern glows,
+ground mist, fireflies and bats. [Docs/ART_DIRECTION.md](ART_DIRECTION.md) has the references,
+palette and rules.
+
+**The storybook light (round 33).** The colours mean something. The night is **teal**: teal in the
+shadows, a low creek mist along the ground, a grade with teal shadows and amber highlights.
+**Amber** is lamplight and welcome: windows in a few warm shades, porch lamps, and a warmer picture
+near HQ. **Violet** only ever means a haunting: it creeps into rims, mist and the picture as you get
+scared or step onto the haunted lot, and the Haunter always sees a little of it. **Gold** is the
+unmasking, when the mist lifts. `Spooky/StoryLight.cs` sets the moods; the ToonSpooky shader draws them.
+
+<p align="center"><img src="images/lighting-pass.png" alt="One view down Chapel Lane four ways: the old violet lighting, the teal night, a violet haunting, and the gold unmasking" width="900"></p>
+
+**The storybook cast (round 34).** Heads are 1.3 times bigger (they grow from the top of the neck,
+so collars and scarves stay put), eyes 1.18 times and hands 1.14 times, all in
+`Docs/tools/make_costumes.py` (`storybook()`), so suspects, townsfolk and the club all match.
+Earned hats fit themselves to the bigger heads. Each role has its own outline: the Sleuth a
+capelet, long coat and ear flaps; the Techie headphones, a second aerial with a dish and pouches;
+the Brawn big work gloves and boots; the Snacker a round shape, a bobble hat and a satchel strap.
+
+<p align="center"><img src="images/storybook-cast.png" alt="The four roles before and after, and their silhouettes" width="760"></p>
+
+**The Hook Board (round 34).** In front of the Historical Society, on the grass left of the path,
+stands a board with twenty-four hooks named for the 1823 lantern families. Walk up with lost
+lanterns you've found and press **E**: they go up one by one, +5 candy each. Your Club Book keeps
+the hooks, and every filled hook lowers the creek mist across town (`StoryLight` reads it). With
+all twenty-four home the board reads THE LANTERN WATCH and the mist lies low for good. Two new
+challenges: *Back on its hook* (Around town) and *The new Lantern Watch* (Legend of Hollow Creek).
+
+<p align="center"><img src="images/hook-board.png" alt="The Hook Board empty, half full and full" width="900"></p>
+
+**Will-o'-the-wisps (round 35).** After your third lost lantern, a green light sometimes rises off
+the creek when you're near it between cases (never during an investigation, a trap or the
+unmasking). Walk within 5 metres and it sets off towards the nearest lantern you haven't found,
+keeping about 7 metres ahead, slowing when you lag and stopping if you're more than 13 metres
+behind. It floats up over anything in its way, so you find your own route. At the lantern it circles
+and goes out; the next one rises a little over a minute later. With every lantern found but some not
+yet hung, it leads to the Hook Board. `Town/Wisp.cs`; challenge *Follow the light* (Around town).
+A new rumour in town hints at it.
+
+<p align="center"><img src="images/wisp.png" alt="A wisp leading two Solvers along the creek" width="900"></p>
+
+**Moods (round 35).** `Animation/FaceLife.cs` can show Calm, Happy, Worried, Surprised or Cross
+for a few seconds (`Feel`): brows tilt and lift, lids open wider or narrow, the mouth opens or
+widens, the cheeks rise. Suspects look worried while answering an interview, all of them the same
+way. Townsfolk look worried asking for an errand and happy otherwise. Everyone looks surprised at
+the unmasking.
+
+<p align="center"><img src="images/moods.png" alt="One face in five moods" width="900"></p>
+
+**The carving bench (round 36).** Outside HQ's east door, on the parking-lot side. Press **E** to
+open a small panel on the left: Eyes (Triangles, Round, Angry, Sleepy), Nose (Triangle, Button,
+None) and Mouth (Grin, Toothy, Oh!, Wobbly). The pumpkin on the bench turns gently and shows your
+choice; **‹ ›** or the arrow keys change it, **Enter** carves, **Esc** closes. A carved
+jack-o'-lantern goes on the porch along the HQ wall, lit; the porch keeps your last six. One
+carving a night (+10 candy), saved in your Club Book. Challenges *Jack of all trades* and *A porch
+full of faces* (Trick or treat chapter). `Town/CarvingBench.cs`.
+
+<p align="center"><img src="images/carving.png" alt="The carving choices and a porch of six" width="760"></p>
+
+**The trick-or-treaters (round 36).** `TownLife.BuildKid` gives the kids storybook heads (0.42 m
+instead of 0.32), eyes with whites, pupils and a glint, rosy cheeks and a smile; hats sit higher to
+fit. Two new costumes come from HollowCreek.json `life.costumes`: the mummy and the bat.
+
+<p align="center"><img src="images/kids.png" alt="Nine trick-or-treaters" width="900"></p>
+
+**The club camera (round 37).** **P** takes a snapshot whenever you're on foot and no menu is open.
+The screen flashes (not with reduced motion), and a 320 by 180 photo develops on a cream instant-photo
+card in the bottom-right corner. If an album sight is near the middle of the picture, close enough
+and not behind a wall, the photo is saved under that sight (the one nearest the middle wins; a newer
+photo replaces the old). The sights: the eight landmarks (70 m), a neighbour (10 m), a wisp (25 m),
+the Hook Board (25 m) and your porch once you've carved something (15 m). Neighbours in the frame
+turn and smile for three seconds first; any suspect in the frame looks startled, all alike, so the
+camera never gives the culprit away. The Club Book's **Snapshots** tab shows the album; empty frames
+say where to look. Photos are PNGs in the game's save folder. Challenges *Say cheese* and *The whole
+album* (Around town). `UI/Snapshots.cs`.
+
+<p align="center"><img src="images/snapshots.png" alt="A snapshot developing, and the album" width="900"></p>
+
+**The lamplighter (round 38).** Twelve gas lamps stand on the creek bank 9 m north of the creek's
+middle, just off the Creekside Path: six west of the bridge (x -138 to -18, every 24 m) and six east
+(x 18 to 108, every 18 m). Tobias Wick waits by his bench at the west end of the bridge, north of
+the path. Talk to him (**E**) and he lends you his lighting pole, which you carry on your right side
+(hidden while you ride the van). Press **E** at a dark lamp to light it: the little door clicks, the
+flame catches and sputters for under a second, and the lamp glows amber (a 10 m point light) with two
+moths circling the head. Each lamp is lit once, for good, +5 candy; the Club Book keeps them. Without
+the pole a dark lamp tells you who has one. Talk to Tobias while you carry it and he tells you how
+many are left; bring it back with all twelve lit and he gives you the **Lamplighter's cap** (+30
+candy), a Wardrobe look marked "A gift" that can't be bought. After that he tells old stories of the
+bank. With the whole path lit, wisps rest 50 seconds between rising instead of 75. He's on the map
+with his lamp count, and lit lamps show as amber dots; the album gets a thirteenth frame ("The
+lamplighter", 12 m); the Handbook mentions him after three nights if no lamp is lit; challenge
+*Lamplighter's apprentice* (Around town). Tobias is Costumes.json "Folk.Lamplighter" (make_costumes.py:
+a person() with a greatcoat, muffler, cap, spectacles and mutton chops, white brows on face()'s own
+BrowL and BrowR so moods still move them, and a stoop: a shear above the waist after storybook()),
+built at runtime; his face blinks, talks and smiles through FaceLife. Everything happens on your own
+computer. `Town/Lamplighter.cs`.
+
+<p align="center"><img src="images/lamplighter.png" alt="Tobias Wick from three sides, and a gas lamp dark and lit" width="900"></p>
+
+<p align="center"><img src="images/creekside.png" alt="The Creekside Path with its lamps lit" width="900"></p>
 
 <p align="center"><img src="images/nights-of-jack.png" alt="Set pieces around town: a porch display, jack-o'-lantern arches, a jack-o'-lantern tree, string lights on a porch and across Main Street" width="900"></p>
 
@@ -573,7 +718,7 @@ sequenceDiagram
 | `AI` | `AIDirector` and the interviewable `SuspectNPC` |
 | `Animation` | `PawnAnimator`: walk bob, panic scramble, ghost float, dizzy stun, mask pop |
 | `UI` | Placeholder IMGUI HUD and Suspect Board |
-| `Town` | Hollow Creek: `TownLayout` (the town data), `HouseSite` (one house on its lot), `TownDirector`, the `MysteryVan`, the `TownMap` (M, minimap, waypoints) and `NightEventFX` |
+| `Town` | Hollow Creek: `TownLayout` (the town data), `HouseSite` (one house on its lot), `TownDirector`, the `MysteryVan`, the `TownMap` (M, minimap, waypoints), `NightEventFX`, the `LostLantern` pickups, the `Doorstep` front doors and the `Tales` they tell |
 | `Editor` | **Build Hollow Creek (town)** and **Build Blackwood Manor (3D)** builders, the small test room, and the player `BuildScript` |
 
 Networking is Netcode for GameObjects (host, join or dedicated server). The van is driven on the

@@ -65,7 +65,8 @@ def main():
     src = open(CASES, encoding="utf-8").read()
     table, bits = slot_traits(src)
     with open(os.path.join(RES, "HollowCreek.json")) as f:
-        town_rooms = {r["n"] for r in json.load(f)["rooms"]}
+        town = json.load(f)
+    town_rooms = {r["n"] for r in town["rooms"]}
 
     problems = []
     # The deduction, once for the shared trait table (every case uses it).
@@ -99,6 +100,20 @@ def main():
             bad.append("alibi rooms not found: " + ", ".join(unreachable))
         rows.append((cid, c["name"], "ok" if not bad else "; ".join(bad)))
         problems += [f"{cid}: {b}" for b in bad]
+
+    # The world past the edge of town (round 39): the counts in C# match the town file.
+    scripts = os.path.join(os.path.dirname(RES), "Scripts")
+    def const(path, name):
+        m = re.search(r"const int " + name + r" = (\d+);", open(os.path.join(scripts, path), encoding="utf-8").read())
+        return int(m.group(1)) if m else -1
+    curios, regions = town.get("curios", []), town.get("regions", [])
+    if const("Town/Curio.cs", "Total") != len(curios):
+        problems.append(f"Curio.Total is {const('Town/Curio.cs', 'Total')} but HollowCreek.json has {len(curios)} curiosities")
+    if const("Town/WorldLife.cs", "Places") != len(regions):
+        problems.append(f"WorldLife.Places is {const('Town/WorldLife.cs', 'Places')} but HollowCreek.json has {len(regions)} regions")
+    if len({c["id"] for c in curios}) != len(curios):
+        problems.append("curiosity ids repeat")
+    print(f"World: {len(regions)} haunted places, {len(curios)} curiosities")
 
     print(f"Trait table: {'any two of a culprit' + chr(39) + 's traits name exactly one suspect' if deduction_ok else 'BROKEN'}")
     w = max(len(r[0]) for r in rows)

@@ -37,6 +37,12 @@ namespace Unmasked
 
         public static readonly List<SuspectNPC> All = new();
 
+        // The named culprit wears tonight's costume while it dodges the trap (see StandInHaunter).
+        readonly NetworkVariable<bool> inCostume = new();
+        bool shownCostume;
+        GameObject costume;
+        public bool InCostume => inCostume.Value;
+
         public override void OnNetworkSpawn() => All.Add(this);
         public override void OnNetworkDespawn() => All.Remove(this);
 
@@ -107,12 +113,14 @@ namespace Unmasked
             {
                 string house = game.ActiveHouse.Value.ToString();
                 if (house != shownHouse) { shownHouse = house; ShowOutfit(house); }
+                if (inCostume.Value != shownCostume) { shownCostume = inCostume.Value; ShowCostume(game, shownCostume); }
             }
             if (NameLabel == null) return;
             if (game != null && game.IsSpawned)
             {
                 string label = game.SuspectName(SuspectId);
                 if (game.IsCleared(SuspectId)) label += "\n(innocent)";
+                if (inCostume.Value) label = Costumes.NameOf(game.Villain.Value); // in costume, the legend is all you see
                 if (Time.time < eekUntil) label = "Eek!\n" + label;
                 else if (Time.time < hesitateUntil) label = "...\n" + label;
                 NameLabel.text = label;
@@ -132,6 +140,40 @@ namespace Unmasked
             if (pick == null) return;
             foreach (Transform child in model)
                 if (child.name.StartsWith(OutfitPrefix)) child.gameObject.SetActive(child == pick);
+        }
+
+        /// <summary>Server: put tonight's costume on (the Trap phase with no Haunter player) or take it off (the unmasking).</summary>
+        public void ServerSetCostume(bool on)
+        {
+            if (IsServer && inCostume.Value != on) inCostume.Value = on;
+        }
+
+        /// <summary>Server: a jump and an "eek" without running anywhere (the stand-in smelling the trap).</summary>
+        public void ServerStartleOnly() { if (IsServer) StartleRpc(); }
+
+        /// <summary>
+        /// Every client: swap the suspect's clothes for a copy of the Haunter's costume for tonight's
+        /// legend (from MysteryGameManager.HaunterPrefab), or put the clothes back.
+        /// </summary>
+        void ShowCostume(MysteryGameManager game, bool on)
+        {
+            var model = transform.Find("Model");
+            if (on && costume == null && game.HaunterPrefab != null)
+            {
+                var source = game.HaunterPrefab.transform.Find("CostumeVisual");
+                if (source != null)
+                {
+                    costume = Instantiate(source.gameObject, transform, false);
+                    costume.name = "StandInCostume";
+                    foreach (var c in costume.GetComponentsInChildren<Collider>()) Destroy(c);
+                    foreach (Transform child in costume.transform)
+                        if (child.GetComponent<Light>() == null) child.gameObject.SetActive(child.name == game.Villain.Value.ToString());
+                }
+            }
+            if (costume != null) costume.SetActive(on);
+            if (model != null && costume != null) model.gameObject.SetActive(!on);
+            if (!on && costume != null) { Destroy(costume); costume = null; }
+            Sfx.Play(on ? "rattle" : "eek", transform.position + Vector3.up * 1.5f, 0.6f, 20f, on ? 0.7f : 1.1f);
         }
 
         /// <summary>
@@ -209,7 +251,11 @@ namespace Unmasked
             var anim = GetComponent<PawnAnimator>();
             if (anim != null) anim.Hesitate(pause);
             var face = GetComponent<FaceLife>();
-            if (face != null) face.Talk(2.4f, pause); // then the answer
+            if (face != null)
+            {
+                face.Talk(2.4f, pause); // then the answer
+                face.Feel(FaceLife.Mood.Worried, pause + 2.6f); // every suspect looks nervous when questioned, culprit or not
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Unmasked
 
         [Tooltip("Width of the minimap view in metres.")]
         public float MinimapSpan = 110f;
-        public int MapResolution = 1400;
+        public int MapResolution = 2048;
 
         bool open;
         Camera mapCam, previewCam;
@@ -84,6 +84,8 @@ namespace Unmasked
 
         static Rect TownBounds(TownLayout t)
         {
+            // Since round 39 the map covers the whole world: the town and the haunted places round it.
+            if (t?.world != null && t.world.Length >= 4) return Rect.MinMaxRect(t.world[0], t.world[1], t.world[2], t.world[3]);
             if (t?.rooms != null)
                 foreach (var room in t.rooms)
                     if (room.n == t.name) return Rect.MinMaxRect(room.min[0], room.min[2], room.max[0], room.max[2]);
@@ -199,7 +201,7 @@ namespace Unmasked
             if (mapW > UITheme.W * 0.62f) { mapW = UITheme.W * 0.62f; mapH = mapW * world.height / world.width; }
             var r = new Rect(UITheme.S6, 72, mapW, mapH);
             GUI.Label(new Rect(UITheme.S6, 20, 420, 40), town.name, UITheme.Display);
-            GUI.Label(new Rect(UITheme.S6 + 300, 32, 400, 22), "M or Esc to close · click a house", UITheme.Small);
+            GUI.Label(new Rect(UITheme.S6 + 300, 32, 400, 22), "M or Esc to close · click a house · gold dots are lanterns, stars are curiosities you found", UITheme.Small);
             GUI.DrawTexture(r, mapTexture, ScaleMode.StretchToFill);
 
             // HQ
@@ -224,6 +226,38 @@ namespace Unmasked
                 if (GUI.Button(new Rect(p.x - 16, p.y - 16, 32, 32), GUIContent.none, GUIStyle.none)) selected = lot;
             }
 
+            // Landmarks (worldgen.py) by name, and the lost lanterns you've already found
+            if (town.landmarks != null)
+                foreach (var place in town.landmarks)
+                {
+                    var p = ToMap(place.Center, r);
+                    bool been = ClubBook.Has("place:" + place.n);
+                    GUI.Label(new Rect(p.x - 90, p.y - 10, 180, 20), been ? place.n : UITheme.Tint(place.n, UITheme.InkFaint), small);
+                }
+            if (town.collectibles != null)
+                foreach (var c in town.collectibles)
+                    if (ClubBook.Has("lantern:" + c.id))
+                        UITheme.Rect(new Rect(ToMap(new Vector3(c.p[0], 0, c.p[2]), r) - new Vector2(2.5f, 2.5f), new Vector2(5, 5)), new Color(1f, 0.78f, 0.42f));
+
+            // The haunted places past the edge of town (regions.py): big names, faint until you've been
+            if (town.regions != null)
+                foreach (var region in town.regions)
+                {
+                    var p = ToMap(region.Center, r);
+                    bool been = ClubBook.Has("region:" + region.id);
+                    string label = been ? region.n : UITheme.Tint(region.n, UITheme.InkFaint);
+                    GUI.Label(new Rect(p.x - 120, p.y - 14, 240, 28), $"<size=15><b>{label}</b></size>", small);
+                }
+            if (town.curios != null)
+                foreach (var c in town.curios)
+                    if (ClubBook.HasCurio(c.id))
+                    {
+                        var p = ToMap(new Vector3(c.p[0], 0, c.p[2]), r);
+                        GUI.color = new Color(1f, 0.9f, 0.6f);
+                        GUI.Label(new Rect(p.x - 8, p.y - 9, 16, 18), "★", small);
+                        GUI.color = Color.white;
+                    }
+
             // The van and the club
             var van = MysteryVan.Instance;
             // Townsfolk: a "!" while they're waiting on an errand, a tick once it's done
@@ -234,6 +268,12 @@ namespace Unmasked
                 Pin(ToMap(folk.transform.position, r), UITheme.InkMuted, $"{folk.DisplayName}{mark}", 6f);
             }
 
+            var tobias = Lamplighter.Instance;
+            if (tobias != null)
+                Pin(ToMap(tobias.transform.position, r), UITheme.InkMuted, Lamplighter.AllLit ? "Tobias Wick" : $"Tobias Wick ({Lamplighter.Lit}/{Lamplighter.Lamps} lamps)", 6f);
+            for (int i = 0; i < Lamplighter.Lamps; i++)
+                if (ClubBook.CreekLampLit(i))
+                    UITheme.Rect(new Rect(ToMap(new Vector3(Lamplighter.LampX[i], 0, town.creekZ + Lamplighter.BankZ), r) - new Vector2(2f, 2f), new Vector2(4, 4)), new Color(1f, 0.8f, 0.45f));
             if (van != null) Pin(ToMap(van.transform.position, r), UITheme.Good, "Van", 8f);
             foreach (var solver in SolverController.All)
             {
@@ -284,7 +324,7 @@ namespace Unmasked
             {
                 bool isCall = game.ActiveHouse.Value.ToString() == selected.id;
                 GUI.enabled = !isCall;
-                if (GUILayout.Button(isCall ? "This is tonight's call" : "Take this call", isCall ? GUI.skin.button : UITheme.Primary, GUILayout.Height(34)))
+                if (GUILayout.Button(isCall ? "This is tonight's call" : "Play this call", isCall ? GUI.skin.button : UITheme.Primary, GUILayout.Height(34)))
                     agent.ChooseCallRpc(selected.id);
                 GUI.enabled = true;
             }

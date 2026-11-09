@@ -147,6 +147,10 @@ namespace Unmasked
 
             Part(PrimitiveType.Capsule, body, new Vector3(-0.1f, 0.18f, 0), new Vector3(0.13f, 0.18f, 0.13f), dark);
             Part(PrimitiveType.Capsule, body, new Vector3(0.1f, 0.18f, 0), new Vector3(0.13f, 0.18f, 0.13f), dark);
+            // Little shoes poking out in front (round 39).
+            var shoe = new Color(0.3f, 0.18f, 0.12f);
+            Part(PrimitiveType.Sphere, body, new Vector3(-0.1f, 0.035f, 0.06f), new Vector3(0.14f, 0.08f, 0.2f), shoe);
+            Part(PrimitiveType.Sphere, body, new Vector3(0.1f, 0.035f, 0.06f), new Vector3(0.14f, 0.08f, 0.2f), shoe);
             Part(PrimitiveType.Cylinder, body, new Vector3(0.3f, 0.5f, 0.12f), new Vector3(0.18f, 0.09f, 0.18f), bucket, true); // the candy bucket
             Part(PrimitiveType.Capsule, body, new Vector3(0.24f, 0.68f, 0.08f), new Vector3(0.09f, 0.16f, 0.09f), main, false, new Vector3(0, 0, 20)); // arm holding it
 
@@ -164,30 +168,71 @@ namespace Unmasked
                     Part(PrimitiveType.Capsule, body, new Vector3(0, 0.56f, 0), new Vector3(0.42f, 0.34f, 0.36f), main);
                     break;
             }
-            var headColor = costume.kind == "skeleton" ? accent : skin;
-            Part(PrimitiveType.Sphere, body, new Vector3(0, 1.02f, 0), Vector3.one * 0.32f, headColor);
-            var eye = costume.kind == "cat" ? accent : dark;
-            Part(PrimitiveType.Sphere, body, new Vector3(-0.06f, 1.05f, 0.14f), Vector3.one * 0.05f, eye, costume.kind == "cat");
-            Part(PrimitiveType.Sphere, body, new Vector3(0.06f, 1.05f, 0.14f), Vector3.one * 0.05f, eye, costume.kind == "cat");
+            // Storybook heads (round 36): bigger, with eyes that have whites and a glint, rosy cheeks
+            // and a smile, so the trick-or-treaters match the rest of the cast. Hats sit on "top".
+            var top = new GameObject("Top").transform;
+            top.SetParent(body, false);
+            top.localPosition = new Vector3(0f, 0.08f, 0f);
+            var headColor = costume.kind == "skeleton" || costume.kind == "mummy" ? accent : skin;
+            Part(PrimitiveType.Sphere, body, new Vector3(0, 1.08f, 0), new Vector3(0.42f, 0.4f, 0.4f), headColor);
+            bool catEyes = costume.kind == "cat";
+            // Round 39: coloured irises (brown, blue or green by costume), a second glint, lashes and a button nose.
+            var irises = new[] { new Color(0.42f, 0.28f, 0.16f), new Color(0.3f, 0.5f, 0.75f), new Color(0.35f, 0.55f, 0.3f) };
+            var iris = irises[costume.kind.Length % 3];
+            if (costume.kind != "skeleton")
+                Part(PrimitiveType.Sphere, body, new Vector3(0, 1.05f, 0.2f), new Vector3(0.045f, 0.035f, 0.035f), headColor * 0.96f);
+            for (int s = -1; s <= 1; s += 2)
+            {
+                var at = new Vector3(s * 0.08f, 1.11f, 0.17f);
+                if (costume.kind == "skeleton")
+                {
+                    Part(PrimitiveType.Sphere, body, at, new Vector3(0.1f, 0.11f, 0.05f), dark); // sockets
+                    continue;
+                }
+                Part(PrimitiveType.Sphere, body, at, new Vector3(0.085f, 0.09f, 0.04f), catEyes ? accent : new Color(0.95f, 0.93f, 0.88f), catEyes);
+                if (!catEyes) Part(PrimitiveType.Sphere, body, at + new Vector3(0, -0.004f, 0.012f), new Vector3(0.062f, 0.066f, 0.02f), iris);
+                Part(PrimitiveType.Sphere, body, at + new Vector3(0, -0.005f, 0.018f), new Vector3(catEyes ? 0.02f : 0.036f, 0.04f, 0.02f), dark);
+                Part(PrimitiveType.Sphere, body, at + new Vector3(0.012f, 0.014f, 0.026f), Vector3.one * 0.016f, Color.white, true);
+                Part(PrimitiveType.Sphere, body, at + new Vector3(-0.01f, -0.012f, 0.026f), Vector3.one * 0.008f, Color.white, true);
+                Part(PrimitiveType.Capsule, body, at + new Vector3(s * 0.008f, 0.042f, 0.012f), new Vector3(0.012f, 0.045f, 0.012f), dark, false, new Vector3(0, 0, 90 - s * 10));
+                if (costume.kind != "mummy")
+                    Part(PrimitiveType.Sphere, body, new Vector3(s * 0.13f, 1.04f, 0.15f), new Vector3(0.07f, 0.04f, 0.03f), Color.Lerp(skin, new Color(0.95f, 0.45f, 0.45f), 0.45f));
+            }
+            Part(PrimitiveType.Capsule, body, new Vector3(0, 1.0f, 0.18f), new Vector3(0.018f, 0.045f, 0.018f), dark, false, new Vector3(0, 0, 90)); // a smile
 
             switch (costume.kind)
             {
                 case "witch":
-                    Part(PrimitiveType.Cylinder, body, new Vector3(0, 1.17f, 0), new Vector3(0.5f, 0.01f, 0.5f), main);
-                    Part(PrimitiveType.Cylinder, body, new Vector3(0, 1.26f, 0), new Vector3(0.26f, 0.08f, 0.26f), accent);
-                    Part(PrimitiveType.Cylinder, body, new Vector3(0, 1.4f, 0), new Vector3(0.17f, 0.06f, 0.17f), main);
-                    Part(PrimitiveType.Cylinder, body, new Vector3(0.02f, 1.51f, 0), new Vector3(0.09f, 0.05f, 0.09f), main, false, new Vector3(0, 0, -12));
+                    Part(PrimitiveType.Cylinder, top, new Vector3(0, 1.17f, 0), new Vector3(0.58f, 0.01f, 0.58f), main);
+                    Part(PrimitiveType.Cylinder, top, new Vector3(0, 1.26f, 0), new Vector3(0.3f, 0.08f, 0.3f), accent);
+                    Part(PrimitiveType.Cylinder, top, new Vector3(0, 1.4f, 0), new Vector3(0.2f, 0.06f, 0.2f), main);
+                    Part(PrimitiveType.Cylinder, top, new Vector3(0.03f, 1.53f, 0), new Vector3(0.1f, 0.06f, 0.1f), main, false, new Vector3(0, 0, -16));
                     break;
                 case "pumpkin":
-                    Part(PrimitiveType.Cylinder, body, new Vector3(0, 1.2f, 0), new Vector3(0.06f, 0.05f, 0.06f), accent);
+                    Part(PrimitiveType.Cylinder, top, new Vector3(0, 1.22f, 0), new Vector3(0.06f, 0.05f, 0.06f), accent);
+                    break;
+                case "mummy": // bandages wound round and round, one loose end
+                    for (int i = 0; i < 5; i++)
+                        Part(PrimitiveType.Cylinder, body, new Vector3(0, 0.38f + i * 0.11f, 0), new Vector3(0.44f - Mathf.Abs(i - 2) * 0.03f, 0.02f, 0.38f), accent, false, new Vector3(0, i * 37, (i % 2 == 0 ? 8 : -8)));
+                    for (int i = 0; i < 3; i++)
+                        Part(PrimitiveType.Cylinder, top, new Vector3(0, 0.95f + i * 0.09f, 0), new Vector3(0.44f, 0.018f, 0.42f), main, false, new Vector3(0, 0, i % 2 == 0 ? 10 : -10));
+                    Part(PrimitiveType.Cube, body, new Vector3(-0.2f, 0.42f, 0.1f), new Vector3(0.05f, 0.24f, 0.01f), accent, false, new Vector3(0, 0, -12));
+                    break;
+                case "bat": // wings out to the sides and two pointed ears
+                    for (int s = -1; s <= 1; s += 2)
+                    {
+                        Part(PrimitiveType.Cube, body, new Vector3(s * 0.38f, 0.66f, -0.06f), new Vector3(0.42f, 0.26f, 0.02f), accent, false, new Vector3(0, s * 20, s * -18));
+                        Part(PrimitiveType.Cube, body, new Vector3(s * 0.52f, 0.56f, -0.1f), new Vector3(0.2f, 0.16f, 0.02f), accent, false, new Vector3(0, s * 20, s * 30));
+                        Part(PrimitiveType.Cube, top, new Vector3(s * 0.12f, 1.2f, 0), new Vector3(0.08f, 0.14f, 0.04f), main, false, new Vector3(0, 0, s * -18));
+                    }
                     break;
                 case "skeleton":
                     for (int i = 0; i < 3; i++)
                         Part(PrimitiveType.Cube, body, new Vector3(0, 0.72f - i * 0.1f, 0.17f), new Vector3(0.3f - i * 0.04f, 0.035f, 0.03f), accent);
                     break;
                 case "cat":
-                    Part(PrimitiveType.Cube, body, new Vector3(-0.1f, 1.17f, 0), Vector3.one * 0.09f, main, false, new Vector3(0, 0, 45));
-                    Part(PrimitiveType.Cube, body, new Vector3(0.1f, 1.17f, 0), Vector3.one * 0.09f, main, false, new Vector3(0, 0, 45));
+                    Part(PrimitiveType.Cube, top, new Vector3(-0.12f, 1.17f, 0), Vector3.one * 0.1f, main, false, new Vector3(0, 0, 45));
+                    Part(PrimitiveType.Cube, top, new Vector3(0.12f, 1.17f, 0), Vector3.one * 0.1f, main, false, new Vector3(0, 0, 45));
                     Part(PrimitiveType.Capsule, body, new Vector3(0, 0.4f, -0.25f), new Vector3(0.06f, 0.22f, 0.06f), main, false, new Vector3(-50, 0, 0));
                     break;
                 case "vampire":
@@ -195,9 +240,9 @@ namespace Unmasked
                     Part(PrimitiveType.Cube, body, new Vector3(0, 0.88f, -0.1f), new Vector3(0.5f, 0.16f, 0.04f), main, false, new Vector3(-20, 0, 0));
                     break;
                 case "pirate":
-                    Part(PrimitiveType.Sphere, body, new Vector3(0, 1.1f, 0), new Vector3(0.34f, 0.16f, 0.34f), main);
+                    Part(PrimitiveType.Sphere, top, new Vector3(0, 1.1f, 0), new Vector3(0.44f, 0.18f, 0.43f), main);
                     Part(PrimitiveType.Cube, body, new Vector3(0, 0.56f, 0.17f), new Vector3(0.34f, 0.06f, 0.04f), accent); // the sash
-                    Part(PrimitiveType.Sphere, body, new Vector3(0.06f, 1.05f, 0.15f), Vector3.one * 0.065f, dark); // eye patch
+                    Part(PrimitiveType.Sphere, body, new Vector3(0.08f, 1.11f, 0.2f), new Vector3(0.1f, 0.1f, 0.03f), dark); // eye patch, over the right eye
                     break;
             }
             return kid;

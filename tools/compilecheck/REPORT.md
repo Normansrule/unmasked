@@ -6,7 +6,14 @@ Post Processing 3.4.0 and Unity.Collections 2.2.1. Nothing in Assets/ is touched
 
     bash tools/compilecheck/check.sh    # needs dotnet-sdk-8.0; the first run downloads from api.nuget.org
 
-## Latest result (2026-10-20, round 25)
+## Latest result (2026-10-21, round 26)
+Runtime: 0 errors, 0 warnings. Editor: 0 errors. RPC naming check: 0 problems.
+
+New this round: Core/SmokeTest.cs (plays one night by itself, started by the editor menu,
+`unmasked smoke` or the player argument -unmasked-smoke) and Editor/SelfTest.cs (Check Project
+Data, Run Smoke Test, RunBatch for the terminal). GameHUD gained keyboard control of the board.
+
+## Round 25 (2026-10-20)
 Runtime: 0 errors, 0 warnings. Editor: 0 errors. RPC naming check: 0 problems.
 
 New this round: the Case Book look. UITheme.cs gets the paper-and-ink palette, the fonts in

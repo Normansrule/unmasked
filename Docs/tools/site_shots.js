@@ -80,6 +80,21 @@ async function frames(page, name, clip, ms, act) {
     await page.screenshot({ path: path.join(out, "site-board.png") });
   });
 
+  // The night, told by scrolling: step down through #night and take a frame at each step.
+  await shot({ ...desk, colorScheme: "light" }, async (page) => {
+    const dir = path.join(out, "night");
+    fs.mkdirSync(dir, { recursive: true });
+    const box = await page.evaluate(() => { const r = document.querySelector("[data-nightfall]").getBoundingClientRect(); return { top: r.top + scrollY, h: r.height }; });
+    const steps = 72, times = [];
+    for (let i = 0; i <= steps; i++) {
+      await page.evaluate((y) => scrollTo(0, y), box.top + (i / steps) * (box.h - 900) * 0.995);
+      await page.waitForTimeout(140);
+      await page.screenshot({ path: path.join(dir, `${String(i).padStart(4, "0")}.png`) });
+      times.push(i * 110);
+    }
+    fs.writeFileSync(path.join(dir, "times.json"), JSON.stringify(times));
+  });
+
   // The picture link previews show when someone shares the site (og:image, 1200 by 630).
   await shot({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, colorScheme: "light" }, async (page) => {
     await page.addStyleTag({ content: ".hero { min-height: 630px; align-items: center; padding: 0 64px !important; margin: 0 !important; max-width: none !important; } .top { display: none; } .cta { display: none; }" });

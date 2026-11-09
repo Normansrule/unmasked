@@ -467,8 +467,10 @@ namespace Unmasked
             foreach (var piece in FindObjectsByType<TrapPiece>(FindObjectsSortMode.None).Where(HouseSite.InPlay))
                 piece.Activate();
 
-            // Named! The Haunter is stuck in costume and has to dodge the trap.
+            // Named! The Haunter is stuck in costume and has to dodge the trap. With nobody playing
+            // it, the named suspect puts the costume on and dodges by itself (StandInHaunter).
             if (haunter != null) haunter.SetForcedPhysical(true);
+            else if (HaunterAgent == null) StandInHaunter.Begin(this, sites[0].transform.position);
 
             float duration = Mathf.Max(MinTrapDuration, Mathf.Min(MaxTrapDuration, PhaseTimeRemaining));
             SetPhase(MatchPhase.Trap, duration);
@@ -954,7 +956,15 @@ namespace Unmasked
 
             if (HaunterAgent == null)
             {
-                // Nobody is playing the Haunter: an armed trap catches the AI stand-in.
+                // Nobody is playing the Haunter: the costumed stand-in has to be in the trap, like a player.
+                var standIn = StandInHaunter.Active;
+                if (standIn != null)
+                {
+                    if (Vector3.Distance(standIn.Position, trap.transform.position) > trap.CatchRadius) return false;
+                    BeginUnmasking(standIn.Position);
+                    return true;
+                }
+                // No suspect to play the part (a test room): the armed trap simply catches it.
                 BeginUnmasking(trap.transform.position);
                 return true;
             }
@@ -967,11 +977,13 @@ namespace Unmasked
             return true;
         }
 
-        /// <summary>A trap finished building. With no Haunter player, the AI stand-in walks right into it.</summary>
+        /// <summary>
+        /// A trap finished building. With no Haunter player the costumed stand-in decides for itself
+        /// whether to walk in; only when there is no suspect to play it does the trap catch at once.
+        /// </summary>
         public void NotifyTrapArmed(TrapSite trap)
         {
-            // TODO(AI milestone): the AI Director should try to dodge the trap like a player would.
-            if (HaunterAgent == null) StartCoroutine(AutoCatch(trap));
+            if (HaunterAgent == null && StandInHaunter.Active == null) StartCoroutine(AutoCatch(trap));
         }
 
         System.Collections.IEnumerator AutoCatch(TrapSite trap)

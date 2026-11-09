@@ -37,7 +37,7 @@ namespace Unmasked
                 When = (g, a) => a.Side.Value == PlayerSide.Solver && g.CanAccuseNow },
             new() { Title = "Scared!", Text = "Stay near a teammate to calm down. Three panics and you are out for the night.",
                 When = (g, a) => a.Side.Value == PlayerSide.Solver && a.PanicCount.Value >= 1 && !a.ScaredOut.Value },
-            new() { Title = "Build the trap", Text = "Right suspect! Carry trap pieces to the trap site, build it, then lure the costumed Haunter into it.",
+            new() { Title = "Build the trap", Text = "Right suspect! Carry trap pieces to the trap site and build it, then step back out of sight, or the costumed Haunter won't come near it.",
                 When = (g, a) => g.Phase.Value == MatchPhase.Trap && a.Side.Value == PlayerSide.Solver },
             new() { Title = "You are the Haunter", Text = "Possess furniture, slam doors and use your legend's power (6 or Q). Scare the club out before dawn, and keep your suspect's secret.",
                 When = (g, a) => a.Side.Value == PlayerSide.Haunter && g.Phase.Value == MatchPhase.Investigation },
@@ -45,6 +45,12 @@ namespace Unmasked
                 When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && g.SolvedCases.Count >= 1 },
             new() { Title = "Case closed", Text = "That house throws a party now, and the town remembers. Back at HQ, the next call is waiting.",
                 When = (g, a) => g.Phase.Value == MatchPhase.Ended && g.Winner.Value == MatchWinner.Solvers },
+            new() { Title = "The club camera", Text = "Press P to take a snapshot. Landmarks, neighbours, wisps and your porch go in the Club Book's album (K).",
+                When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 2 },
+            new() { Title = "The lamplighter", Text = "Old Tobias Wick sits by the bridge on the Creekside Path. He'll lend you his pole to light the twelve gas lamps along the creek.",
+                When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 3 && ClubBook.CreekLampsLit == 0 },
+            new() { Title = "Past the edge of town", Text = "The roads out of town lead somewhere now: a castle, a circus, a high rise, a harbor, a beach and a swamp. Open the map (M), and look for things that twinkle.",
+                When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 2 && ClubBook.RegionsVisited == 0 },
         };
 
         readonly Queue<int> queue = new();

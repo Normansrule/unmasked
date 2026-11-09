@@ -7,9 +7,11 @@ using UnityEngine.Rendering.PostProcessing;
 namespace Unmasked.EditorTools
 {
     /// <summary>
-    /// The Halloween-night look, built from code like everything else: an indigo sky with a moon, violet
-    /// ambient light and fog, post-processing (bloom so every jack-o'-lantern glows, a vignette, a purple
-    /// and orange colour grade, ambient occlusion, film grain), particle mist, fireflies, embers and bats.
+    /// The Halloween-night look, built from code like everything else: a deep teal sky with a moon, teal
+    /// ambient light and fog, post-processing (bloom so every jack-o'-lantern glows, a vignette, a
+    /// teal-shadow, amber-highlight colour grade, ambient occlusion, film grain), particle mist, fireflies,
+    /// embers and bats. The moods on top (violet hauntings, amber home, the gold unmasking) are
+    /// Spooky/StoryLight.cs at runtime.
     /// Inspired by LA's "Nights of the Jack" trail and stylized Halloween art (see Docs/ART_DIRECTION.md).
     /// </summary>
     internal static class SpookyLook
@@ -29,26 +31,27 @@ namespace Unmasked.EditorTools
             sky.SetFloat("_SunSize", 0.07f);
             sky.SetFloat("_SunSizeConvergence", 4f);
             sky.SetFloat("_AtmosphereThickness", 0.35f);
-            sky.SetColor("_SkyTint", new Color(0.32f, 0.2f, 0.55f));
-            sky.SetColor("_GroundColor", new Color(0.08f, 0.05f, 0.1f));
+            sky.SetColor("_SkyTint", new Color(0.2f, 0.3f, 0.46f));
+            sky.SetColor("_GroundColor", new Color(0.05f, 0.07f, 0.09f));
             sky.SetFloat("_Exposure", 0.3f);
             Save(sky, "NightSky");
             RenderSettings.skybox = sky;
 
-            // Violet ambient: brighter from the sky, almost black from the ground.
+            // Teal night (the storybook pass, round 33): blue-green from the sky, almost black from the
+            // ground. Violet is kept for hauntings only (Spooky/StoryLight.cs brings it in at runtime).
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.17f, 0.11f, 0.3f);
-            RenderSettings.ambientEquatorColor = new Color(0.11f, 0.07f, 0.16f);
-            RenderSettings.ambientGroundColor = new Color(0.04f, 0.03f, 0.05f);
+            RenderSettings.ambientSkyColor = new Color(0.12f, 0.17f, 0.25f);
+            RenderSettings.ambientEquatorColor = new Color(0.08f, 0.1f, 0.13f);
+            RenderSettings.ambientGroundColor = new Color(0.035f, 0.035f, 0.04f);
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Exponential;
-            RenderSettings.fogColor = new Color(0.1f, 0.05f, 0.15f);
+            RenderSettings.fogColor = new Color(0.07f, 0.11f, 0.14f);
             RenderSettings.fogDensity = fogDensity;
 
             var moon = new GameObject("Moonlight").AddComponent<Light>();
             moon.type = LightType.Directional;
-            moon.color = new Color(0.62f, 0.56f, 1f);
-            moon.intensity = 0.35f;
+            moon.color = new Color(0.72f, 0.82f, 0.95f);
+            moon.intensity = 0.38f;
             moon.shadows = LightShadows.Soft;
             moon.shadowStrength = 0.8f;
             moon.transform.rotation = Quaternion.Euler(38, 155, 0);
@@ -102,16 +105,19 @@ namespace Unmasked.EditorTools
             vignette.enabled.Override(true);
             vignette.intensity.Override(0.42f);
             vignette.smoothness.Override(0.45f);
-            vignette.color.Override(new Color(0.06f, 0f, 0.1f));
+            vignette.color.Override(new Color(0.02f, 0.04f, 0.06f));
 
             var grade = profile.AddSettings<ColorGrading>();
             grade.enabled.Override(true);
             grade.gradingMode.Override(GradingMode.LowDefinitionRange);
-            grade.temperature.Override(-12f);
-            grade.tint.Override(18f);
+            // Storybook split: teal in the shadows, amber in the highlights (lamps, windows, jack-o'-lanterns).
+            grade.temperature.Override(-6f);
+            grade.tint.Override(0f);
             grade.saturation.Override(12f);
-            grade.contrast.Override(18f);
-            grade.colorFilter.Override(new Color(0.92f, 0.86f, 1f));
+            grade.contrast.Override(16f);
+            grade.colorFilter.Override(new Color(0.94f, 0.98f, 1f));
+            grade.lift.Override(new Vector4(0.94f, 1.02f, 1.06f, 0f));
+            grade.gain.Override(new Vector4(1.06f, 1f, 0.9f, 0f));
 
             var ao = profile.AddSettings<AmbientOcclusion>();
             ao.enabled.Override(true);
@@ -257,7 +263,7 @@ namespace Unmasked.EditorTools
         }
 
         internal static void Mist(Transform parent, Vector3 center, Vector3 size) =>
-            Field("Ground Mist", parent, center, size, false, new Color(0.5f, 0.42f, 0.68f, 0.14f), new Color(0.3f, 0.24f, 0.45f, 0.1f),
+            Field("Ground Mist", parent, center, size, false, new Color(0.42f, 0.58f, 0.62f, 0.14f), new Color(0.24f, 0.36f, 0.4f, 0.1f),
                   size.x * size.z / 220f, new Vector2(14f, 22f), new Vector2(6f, 11f), new Vector2(0.1f, 0.35f), 0f, 500, 0.2f);
 
         internal static void Fireflies(Transform parent, Vector3 center, Vector3 size, Color color) =>

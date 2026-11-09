@@ -9,6 +9,8 @@ site can never drift from what's in Unity.
             alibis, motives and traits, and the eight clues (read with tools/casecheck's parser)
   houses    the five lots in Resources/HollowCreek.json: name, street, size, blurb
   legends   the four folklore masks in Resources/Costumes.json: legend, origin, power
+  club      the Club Book in Assets/Unmasked/Scripts/Core/ClubBook.cs: challenge chapters and the
+            wardrobe (earned with candy, never bought), plus the town's landmarks and lanterns
   rounds    the build log from make_readme_anim.py, plus milestone progress from Docs/PROGRESS.md
   portraits site/img/legend-<id>.jpg, each legend cut from Docs/images/villains.png (needs Pillow)
 
@@ -75,6 +77,40 @@ def legend_portraits(legends):
         crop.save(os.path.join(ROOT, "site", "img", f"legend-{l['id']}.jpg"), quality=86, optimize=True, progressive=True)
 
 
+def read_club():
+    """Challenge chapters and wardrobe looks from ClubBook.cs, and the town's places from HollowCreek.json."""
+    src = open(os.path.join(ROOT, "Assets", "Unmasked", "Scripts", "Core", "ClubBook.cs"), encoding="utf-8").read()
+    chapters = []
+    for m in re.finditer(r'new\(\) \{ Name = ' + STR + r', Blurb = ' + STR + r', Items = new\[\](.*?)\}\},', src, re.S):
+        items = []
+        for c in re.finditer(r'C\(' + STR + r', ' + STR + r', ' + STR + r', ([^,]+), (\d+),(.*?)\),?\n', m.group(3)):
+            house = re.search(r'\), "(\w+)"$', c.group(6).strip())
+            items.append({"id": c.group(1), "title": c.group(2), "text": c.group(3), "reward": int(c.group(5)),
+                          "house": house.group(1) if house else None})
+        chapters.append({"name": m.group(1), "blurb": m.group(2), "items": items})
+    wardrobe = [{"id": w.group(1), "name": w.group(2), "slot": w.group(3), "price": int(w.group(4)), "a": "#" + w.group(5), "b": "#" + w.group(6),
+                 "blurb": w.group(7)}
+                for w in re.finditer(r'W\(' + STR + r', ' + STR + r', ' + STR + r', (\d+), ' + STR + r', ' + STR + r', ' + STR + r'\)', src)]
+    # Gift(W(...), "how to earn it"): given in play, never sold (the lamplighter's cap)
+    for g in re.finditer(r'Gift\(W\(' + STR + r'.*?\),\s*' + STR + r'\)', src, re.S):
+        for w in wardrobe:
+            if w["id"] == g.group(1):
+                w["gift"] = g.group(2)
+    town = json.load(open(os.path.join(RES, "HollowCreek.json"), encoding="utf-8"))
+    # The Stories of Hollow Creek (Town/Tales.cs): T("title", "text" + "text" ...)
+    tales_src = open(os.path.join(ROOT, "Assets", "Unmasked", "Scripts", "Town", "Tales.cs"), encoding="utf-8").read()
+    tales = []
+    for t in re.finditer(r'T\(' + STR + r',\s*((?:' + STR + r'\s*\+?\s*)+)\)', tales_src):
+        text = "".join(m.group(1) for m in re.finditer(STR, t.group(2)))
+        tales.append({"title": t.group(1), "text": text})
+    homes = town.get("homes", [])
+    return {"chapters": chapters, "wardrobe": wardrobe, "tales": tales, "doors": len(homes),
+            "families": [h["family"] for h in homes[:3]],
+            "landmarks": [{"name": l["n"], "district": l["district"]} for l in town.get("landmarks", [])],
+            "lanterns": len(town.get("collectibles", [])), "streets": len(town.get("roads", [])),
+            "districts": [d["n"] for d in town.get("districts", [])]}
+
+
 def main():
     src = open(casecheck.CASES, encoding="utf-8").read()
     table, bits = casecheck.slot_traits(src)
@@ -109,12 +145,15 @@ def main():
                for v in json.load(open(os.path.join(RES, "Costumes.json"), encoding="utf-8"))["villains"]]
     rounds, milestones = read_rounds_and_progress()
 
-    out = {"cases": cases, "houses": list(houses.values()), "legends": legends, "rounds": rounds, "milestones": milestones}
+    club = read_club()
+    out = {"cases": cases, "houses": list(houses.values()), "legends": legends, "club": club, "rounds": rounds, "milestones": milestones}
     path = os.path.join(ROOT, "site", "data", "game.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     legend_portraits(legends)
+    print(f"  club: {len(club['chapters'])} chapters, {sum(len(c['items']) for c in club['chapters'])} challenges, "
+          f"{len(club['wardrobe'])} looks, {len(club['landmarks'])} landmarks")
     print(f"{path}: {len(cases)} cases, {len(houses)} houses, {len(legends)} legends, {len(rounds)} rounds, {len(milestones)} milestones")
 
 

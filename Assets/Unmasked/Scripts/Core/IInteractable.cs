@@ -13,6 +13,15 @@ namespace Unmasked
     }
 
     /// <summary>
+    /// An interactable that only matters on this computer (a door you knock on for candy): E runs
+    /// LocalInteract straight away instead of asking the server, so it needs no NetworkObject.
+    /// </summary>
+    public interface ILocalInteractable : IInteractable
+    {
+        void LocalInteract(SolverController solver);
+    }
+
+    /// <summary>
     /// Hollow Creek: anything in a house (or the van) that must go back to how it was when the club
     /// drives back to HQ for another night. Server only; MysteryGameManager.StartNextNight calls it.
     /// </summary>

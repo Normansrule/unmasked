@@ -367,7 +367,7 @@ def layout_mesh(L, levels=None, cut_level=None, cut_height=1.3, roof=True, doors
             if top <= bottom:
                 continue
             p[1], s[1] = (top + bottom) / 2, top - bottom
-        emissive = window_glow if b["m"] == "glass" else 0.0
+        emissive = window_glow if b["m"] == "glass" else 1.0 if b["m"] == "emissive" else 0.0
         m.add_shape(b["t"], p, s, b["r"], b["c"], emissive, surface=SURFACE_ID.get(b.get("sf", ""), 0))
     for item in L["possessables"]:
         if levels is None or item["l"] in levels:
@@ -572,10 +572,16 @@ def rasterize(cam, mesh, base=None):
 # ---------------------------------------------------------------------------
 # Shading
 # ---------------------------------------------------------------------------
-def sky(W, H, seed=4, moon=None):
-    """Halloween night sky: deep indigo fading to a plum and ember horizon, stars. moon: (x, y, radius)."""
+def sky(W, H, seed=4, moon=None, palette="plum", haunt=0.0):
+    """Halloween night sky: deep indigo fading to a plum and ember horizon, stars. moon: (x, y, radius).
+    palette "storybook" (round 33): deep teal-blue fading to a warm ember line; haunt drifts it to plum."""
     y = np.linspace(0, 1, H)[:, None, None]
     top, mid, bottom = np.array([0.02, 0.015, 0.07]), np.array([0.10, 0.05, 0.20]), np.array([0.30, 0.12, 0.20])
+    if palette == "storybook":
+        k = haunt
+        top = np.array([0.012, 0.025, 0.05]) * (1 - k) + top * k
+        mid = np.array([0.045, 0.095, 0.15]) * (1 - k) + mid * k
+        bottom = np.array([0.20, 0.17, 0.15]) * (1 - k) + bottom * k
     img = np.where(y < 0.6, top + (mid - top) * (y / 0.6), mid + (bottom - mid) * ((y - 0.6) / 0.4))
     img = np.repeat(img, W, axis=1)
     rng = np.random.default_rng(seed)
@@ -601,7 +607,13 @@ def toon(x, bands=3):
 
 def shade(gbuf, lights, cam, moon_dir=(0.37, -0.77, 0.52), ambient=(0.10, 0.08, 0.17), moon=(0.34, 0.30, 0.60),
           fog=(0.10, 0.05, 0.15), fog_density=0.012, light_boost=1.0, background=None, cel=True,
-          rim=(0.42, 0.30, 0.75), rim_strength=0.35, ao=0.5, textures=True):
+          rim=(0.42, 0.30, 0.75), rim_strength=0.35, ao=0.5, textures=True,
+          shadow_tint=None, edge=0.0, mist=None, haunt=0.0, haunt_color=(0.62, 0.42, 1.0)):
+    """
+    The storybook extras (round 33) match the ToonSpooky shader's _Story* globals:
+    shadow_tint (r, g, b): teal leaning into the moon's unlit side; edge: the painted light edge on
+    lamps; mist (r, g, b, height, density): low creek mist; haunt 0..1: rims and mist drift violet.
+    """
     depth, pos, nor, alb, emi, sid = gbuf
     H, W = depth.shape
     hit = np.isfinite(depth)
@@ -616,6 +628,8 @@ def shade(gbuf, lights, cam, moon_dir=(0.37, -0.77, 0.52), ambient=(0.10, 0.08, 
     lam = lam[..., None]
     up = np.clip(nor[..., 1:2], 0, 1)
     color = alb * (np.array(ambient) * (0.7 + 0.6 * up) + np.array(moon) * lam)
+    if shadow_tint is not None:
+        color += alb * np.array(shadow_tint) * (1 - lam) * float(np.mean(moon)) * 0.35
     if not hit.any():
         lights = []
     for lt in lights:
@@ -649,11 +663,17 @@ def shade(gbuf, lights, cam, moon_dir=(0.37, -0.77, 0.52), ambient=(0.10, 0.08, 
         if cel:
             k = toon(np.clip(k * 1.4, 0, 1), 4) / 1.4
         color[sub] += alb[sub] * (np.array(lt["c"]) * lt["intensity"] * light_boost * 1.6)[None, None, :] * k[..., None]
+        if edge:
+            lit = ndl * att * near
+            band = np.clip((lit - 0.02) / 0.1, 0, 1) * (1 - np.clip((lit - 0.12) / 0.18, 0, 1)) * near
+            warm = np.array(lt["c"]) * np.array([1.15, 1.0, 0.8]) * lt["intensity"] * light_boost
+            color[sub] += alb[sub] * warm[None, None, :] * (band * edge)[..., None]
     if rim_strength:
         view = cam.pos - pos
         view /= np.linalg.norm(view, axis=-1, keepdims=True) + 1e-6
         fres = (1 - np.clip(np.einsum("hwc,hwc->hw", nor, view), 0, 1)) ** 3
-        color += np.array(rim) * (rim_strength * fres)[..., None] * (0.4 + 0.6 * alb)
+        rim_c = np.array(rim) * (1 - haunt) + np.array(haunt_color) * haunt
+        color += rim_c * (rim_strength * (1 + 0.8 * haunt) * fres)[..., None] * (0.4 + 0.6 * alb)
     if ao:
         # Screen-space ambient occlusion: pixels farther away than their neighbours sit in a corner or crease.
         dd = np.where(hit, depth, 1e4)
@@ -666,9 +686,43 @@ def shade(gbuf, lights, cam, moon_dir=(0.37, -0.77, 0.52), ambient=(0.10, 0.08, 
     if fog_density:
         f = 1 - np.exp(-np.where(hit, depth, 0) * fog_density)
         color = color * (1 - f[..., None]) + np.array(fog) * f[..., None]
+    if mist is not None:
+        mc, mh, md_ = np.array(mist[:3]), mist[3], mist[4]
+        mc = mc * (1 - 0.7 * haunt) + np.array(haunt_color) * 0.6 * 0.7 * haunt
+        dist = np.where(hit, depth, 0)
+        amount = (1 - np.exp(-dist * md_)) * np.exp(-np.maximum(0, pos[..., 1]) / mh)
+        amount *= 1 - np.clip(emi * 1.5, 0, 1)
+        amount = np.clip(np.where(hit, amount, 0), 0, 1)[..., None]
+        color = color * (1 - amount) + mc * amount
     bg = background if background is not None else sky(W, H)
     out = np.where(hit[..., None], color, bg)
     return np.clip(out, 0, 1)
+
+
+# The storybook lighting pass (round 33): teal night, amber practicals, violet only for hauntings.
+# Same numbers as Editor/SpookyLook.cs and Spooky/StoryLight.cs.
+STORYBOOK = dict(ambient=(0.12, 0.17, 0.25), moon_color=(0.30, 0.36, 0.44), fog=(0.07, 0.11, 0.14), rim=(0.55, 0.78, 0.86),
+                 shadow_tint=(0.2, 0.55, 0.62), edge=0.35, mist=(0.11, 0.2, 0.24, 2.2, 0.012), sky="storybook")
+
+
+def story_grade(img, haunt=0.0, gold=0.0):
+    """The post-processing grade: teal lifted into the shadows, amber gain on the highlights; violet
+    and a heavier vignette as a haunting sets in; gold warmth at the unmasking."""
+    a = np.asarray(img).astype(np.float32) / 255.0
+    lum = (a @ np.array([0.3, 0.59, 0.11]))[..., None]
+    shadows = (1 - lum) ** 2
+    a = a + shadows * np.array([-0.012, 0.012, 0.03]) + lum ** 2 * np.array([0.05, 0.0, -0.06])
+    if haunt:
+        a = a * (1 - 0.35 * haunt) + (a * np.array([0.86, 0.78, 1.0]) + np.array([0.02, 0.0, 0.05])) * 0.35 * haunt
+    if gold:
+        a = a * (1 + 0.45 * gold) * np.array([1.06, 1 - 0.02 * gold, 1 - 0.3 * gold]) + np.array([0.05, 0.03, 0.0]) * gold
+    H, W = a.shape[:2]
+    yy, xx = np.mgrid[0:H, 0:W]
+    r = np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2)
+    vig = np.clip((r - 0.55) / 0.7, 0, 1) ** 1.6 * (0.35 + 0.3 * haunt)
+    tint = np.array([0.02, 0.04, 0.06]) * (1 - haunt) + np.array([0.12, 0.02, 0.2]) * haunt
+    a = a * (1 - vig[..., None]) + tint * vig[..., None]
+    return Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8))
 
 
 def to_image(arr, glow=True):
@@ -699,6 +753,7 @@ def render(L, cam, mesh, ss=2, base=None, overlay=None, moon=True, extra_mesh=No
     gbuf = rasterize(big, mesh, base)
     if extra_mesh is not None:
         gbuf = rasterize(big, extra_mesh, gbuf)
+    sky_palette = shade_args.pop("sky", "plum")
     if "background" not in shade_args:
         disc = None
         if moon:
@@ -706,7 +761,7 @@ def render(L, cam, mesh, ss=2, base=None, overlay=None, moon=True, extra_mesh=No
             sp = big.project(big.pos + d * 1000)[0]
             if sp[2] > 0:
                 disc = (sp[0], sp[1], 0.045 * big.h)
-        shade_args["background"] = sky(big.w, big.h, moon=disc)
+        shade_args["background"] = sky(big.w, big.h, moon=disc, palette=sky_palette, haunt=shade_args.get("haunt", 0.0))
         if horizon is not None:
             shade_args["background"] = horizon_sky(shade_args["background"], big, horizon, horizon_t)
     lights = shade_args.pop("lights", None)
@@ -824,6 +879,9 @@ def horizon_mesh(town, m=None):
                 continue
             if _near_road(h, x, z, 9.0):
                 continue
+            cl = f.get("clear", [])
+            if any(cl[k] <= x <= cl[k + 2] and cl[k + 1] <= z <= cl[k + 3] for k in range(0, len(cl) - 3, 4)):
+                continue  # a haunted place or a road out to one (round 39)
             m.add_shape("box", (x, height * 0.2, z), (0.5, height * 0.4, 0.5), (0, 0, 0), (0.22, 0.15, 0.1))
             col = crowns[0 if kind < 0.55 else 1 if kind < 0.82 else 2]
             m.add_shape("pyr", (x, height * 0.25, z), (height * 0.32, height * 0.55, height * 0.32), (0, 45, 0), col)

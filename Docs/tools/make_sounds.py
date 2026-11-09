@@ -384,6 +384,18 @@ def unmask_fanfare():
     return norm(band(place(2.0, events), 0, 3500), 0.8)
 
 
+def knock():
+    """Three knuckle raps on a wooden door: a low thump with a short woody click on top."""
+    def rap():
+        sec = 0.18
+        n = int(sec * SR)
+        tt = t_axis(sec)
+        body = np.sin(2 * np.pi * 150 * tt * (1 - 0.6 * tt)) * decay(n, 35)
+        click = band(noise(sec), 600, 3500) * decay(n, 90) * 0.6
+        return body + click
+    return norm(place(1.0, [(0.0, rap()), (0.2, rap() * 0.85), (0.4, rap() * 1.05)]), 0.85)
+
+
 SOUNDS = {
     # name: (maker, loop, where it plays)
     "wind": (wind, True, "always, outdoors and in"),
@@ -414,6 +426,7 @@ SOUNDS = {
     "alibi_broken": (alibi_broken, False, "an alibi that falls apart"),
     "trap_sting": (trap_sting, False, "the culprit named: build the trap!"),
     "unmask": (unmask_fanfare, False, "the unmasking"),
+    "knock": (knock, False, "knocking on a front door for trick-or-treat"),
 }
 
 

@@ -47,6 +47,27 @@ corkboard Suspect Board right in the browser, no install needed.
 - **A town that remembers.** Solved houses keep their party lights on, tonight's call glows violet,
   townsfolk have errands that earn favours and pieces of the Lantern Watch costume, and the host's
   game saves all of it.
+- **A world past the town.** Roads out of Hollow Creek lead to six haunted places: a castle in the
+  hills, a shut-down circus, a fourteen-storey high rise, a harbor with a lighthouse you can climb, a
+  beach with a wrecked ghost ship and a smugglers' cave, and a witch's swamp. 32 curiosities with
+  little stories are hidden across all of it.
+- **A whole town to walk.** Eleven streets of lit-up houses with porches, fences and yards, and
+  landmarks between the calls: a corn maze, the old cemetery with its crypt, the mill pond, an
+  orchard, a pumpkin farm, a scout camp, a hayride field and a park. 24 lost lanterns are hidden
+  around town. The town is grown by a seeded generator, so every computer builds the same one.
+- **Trick-or-treat at 35 front doors.** Every house on the new streets has a family, an address
+  and a porch light. Knock (**E**) where the light is on for a treat; some families know where a
+  lost lantern is, and twelve of them tell one of the Stories of Hollow Creek, which together say
+  where the lanterns came from.
+- **A storybook night.** Teal shadows and a low creek mist, warm amber windows and lamps, and violet
+  only when something is haunting you. The picture warms up at HQ and goes gold at the unmasking.
+- **Challenges and looks you earn, never buy.** The Club Book (**K**) has 55 challenges in eight
+  chapters and a Wardrobe of 21 looks (hats, capes, wings, a pocket ghost, a pumpkin pail, flashlight colours, and two hats you can only be given).
+  Candy comes only from playing. Nothing is sold for money, nothing expires, and after three
+  nights in a row the game suggests a good place to stop.
+- **A Play button on everything.** Every house on the call list, every house challenge and every
+  house card on the map has its own Play button; on the website, every house and legend opens its
+  case on the Suspect Board.
 - **People with faces.** Every character has a face that blinks, glances and talks, real hands and
   hair, and their own height and build, so you can tell suspects apart by their silhouette.
 - **Friendly to new players.** The Club Handbook shows a short hint the first time each moment comes
@@ -81,6 +102,13 @@ fits both:
 
 <p align="center"><img src="Docs/images/site-play.gif" alt="Playing a case on the website: clue tags appear, a suspect is crossed off, and the accusation unmasks the culprit" width="720"></p>
 
+**How a night goes.** On a wide screen this section is told by scrolling: the street stays put
+while the evening passes, from dusk at HQ to the van, the house, the clues, the string, the
+accusation, the trap and the mask coming off at dawn. Phones and reduced motion get the same story
+as a pinned timeline.
+
+<p align="center"><img src="Docs/images/site-night.gif" alt="Scrolling through How a night goes on the website: the van drives from HQ to the house, clues and red string appear, the Haunter is trapped under a crate and the mask flies off at dawn" width="720"></p>
+
 <p align="center"><img src="Docs/images/site-board.png" alt="Screenshot of a solved case on the website's Suspect Board, with the unmasking line" width="900"></p>
 
 **On a phone**, light and dark. The strings step aside and the Search button sits at the bottom
@@ -99,6 +127,176 @@ bottom left, news bottom right, and hint cards pinned in the middle.
 fit, and cards that swing when you push them.
 
 <p align="center"><img src="Docs/images/hud-board.png" alt="Mockup of the corkboard Suspect Board: clue tags, red string and four suspect cards with Hunch, Cross off and Accuse" width="900"></p>
+
+**The night moves on, and the game says so.** A pinned note drops onto its pin under the phase
+bar for the van, the house, every hour of the investigation and the trap, swings, and goes. At the
+end the Haunter's mask holds for a beat, dips, then flies off, and the culprit's name types itself
+in underneath:
+
+<p align="center"><img src="Docs/images/hud-moments.gif" alt="Mockup of two in-game moments: a 10:00 PM hour card dropping in under the phase bar, then the violet domino mask flying off before 'Unmasked. It was Leonard Crisp.' types in" width="720"></p>
+
+**Playing without a Haunter.** When nobody picks the Haunter, the house haunts itself during the
+investigation, and once you name the culprit that suspect puts on tonight's costume and plays the
+part. It keeps away from the club, runs from anyone who gets close, and finds its way room to
+room through the doors. It only goes near an armed trap when nobody is standing guard, and it may
+smell the trap at the last moment and back off. If it's still free when time runs out, the Haunter
+wins.
+
+<p align="center"><img src="Docs/images/standin.gif" alt="Diagram of two rooms seen from above: a Solver builds the trap and walks away, the costumed culprit comes through the doorway, backs off once near the trap, comes back and is caught" width="720"></p>
+
+**Hollow Creek, filled in.** Between the hand-made landmarks (HQ, the five haunted lots, the shops,
+the square and the church), the rest of the town is grown by `Docs/tools/worldgen.py`. It stamps
+everything already built onto a 1 metre grid, lays new side streets only where they fit, cuts a
+house plot wherever there's room along a street, and dresses each yard with a small Wave Function
+Collapse solver (lawn, stepping stones, flower beds, pumpkin patches, a shed, a tree or a
+gravestone, with rules for what may sit next to what). The biggest gaps left become landmarks.
+
+<p align="center"><img src="Docs/images/town-map.png" alt="Top-down map of Hollow Creek: Main Street and seven side streets lined with houses, the five haunted lots, and landmarks including a corn maze, a mill pond, an orchard and a cemetery north of the creek" width="720"></p>
+
+<p align="center"><img src="Docs/images/worldgen.png" alt="Four panels: the town stamped on a grid, then new streets and house plots, then landmarks in the gaps, then one yard solved tile by tile" width="900"></p>
+
+The ideas come from open-source world builders: the simple tiled model from
+[mxgmn/WaveFunctionCollapse](https://github.com/mxgmn/WaveFunctionCollapse), the staged pipeline of
+[Azgaar's Fantasy Map Generator](https://github.com/Azgaar/Fantasy-Map-Generator), city plots from
+[fegennari/3DWorld](https://github.com/fegennari/3DWorld), rooms joined by doors from
+[BenPyton/ProceduralDungeon](https://github.com/BenPyton/ProceduralDungeon) (the corn maze) and
+placement with rules from [princeton-vl/infinigen](https://github.com/princeton-vl/infinigen). The
+code is written from scratch in plain Python; nothing from those projects is copied in.
+
+**The Club Book (K).** Challenges in chapters, a Wardrobe, the lost lanterns you've found and the
+places you've been. Every house challenge has a Play button that makes it tonight's call. Candy is
+earned by playing a night, solving a case, finding clues, running errands, finding lanterns and
+finishing challenges; there is no money in it anywhere.
+
+<p align="center"><img src="Docs/images/club-book.png" alt="Mockup of the Club Book page: 385 candy, tabs for Challenges, Wardrobe, Lost lanterns and Places, and House calls challenges with Play buttons" width="720"></p>
+
+**Trick or treat.** A lit porch light means somebody's home. Knock and the door opens a crack, a
+bowl comes out and they say something: a treat (+5 candy at a new door, +3 after that, once per
+door per night), sometimes where a lost lantern is, and at twelve houses one of the **Stories of
+Hollow Creek**, the town's own legend of the twenty-four lanterns, the Lantern Watch and the
+flood of 1891. Which families are in changes every night, but anyone with a story you haven't
+heard is always home, so none can be missed. The stories go in the Club Book's Stories tab.
+
+<p align="center"><img src="Docs/images/trick-or-treat.png" alt="The town map with every door marked: porch lights on, doors dark tonight, and nine houses ringed with a story still to hear; beside it a knock at the Vances' on Hollow Lane and the Club Book's Stories tab" width="900"></p>
+
+**The storybook lighting pass.** The night is teal now, not purple: teal in the shadows, a low creek
+mist that pools along the ground and thickens with distance, and a thin warm edge where each lamp's
+light runs out, like a watercolour wash. Lit windows glow amber (a few with curtains, the odd
+blue-green television), and they shine through the mist. Violet is kept for hauntings: it creeps
+into the rims, the mist and the picture as your fear rises or on a haunted lot, and whoever plays
+the Haunter always sees a little of it. Near HQ the picture warms up, and when the mask comes off the
+mist lifts and the street goes gold.
+
+<p align="center"><img src="Docs/images/lighting-pass.png" alt="One view down Chapel Lane four ways: the old violet lighting, the new teal night with amber windows, a violet haunting, and the gold unmasking" width="900"></p>
+
+**A storybook cast.** Everyone in town has picture-book proportions now: a bigger head and bigger
+eyes, so faces read from across a street, and slightly bigger hands. Each Mystery Club role has an
+outline of its own that still reads in plain black: the Sleuth's capelet and long coat, the
+Techie's headphones and aerials, the Brawn's work gloves and boots, the Snacker's round shape and
+bobble hat.
+
+<p align="center"><img src="Docs/images/storybook-cast.png" alt="The four Mystery Club roles before and after the storybook pass, and their silhouettes in black" width="760"></p>
+
+**The Hook Board.** Outside the Historical Society hangs a board with twenty-four brass hooks, one
+for each of the 1823 lantern families. Bring the lost lanterns you find there and press **E** to
+hang each on its family's hook (+5 candy each). Every lantern you hang pushes the creek mist a
+little further down all over town; hang all twenty-four and the Club becomes the new Lantern Watch.
+With nothing to hang, the board tells you whose lantern is still missing and roughly where.
+
+<p align="center"><img src="Docs/images/hook-board.png" alt="The Hook Board empty, with twelve lanterns, and full, the mist lower each time" width="900"></p>
+
+**Will-o'-the-wisps.** Once you've found three lost lanterns on your own, little green lights start
+rising off the creek between cases. Walk up to one and it drifts off ahead of you, waiting if you
+fall behind and floating up over roofs, until it circles a lantern you've missed and goes out. With
+every lantern found, it leads you to the Hook Board instead.
+
+<p align="center"><img src="Docs/images/wisp.png" alt="A green wisp leading two Solvers along the creek bank, its trail behind it" width="900"></p>
+
+**Faces that feel something.** Faces now show moods for a few seconds: every suspect looks worried
+when questioned (culprit or not, so a face never gives anyone away), neighbours smile when they say
+thank you and look worried asking a favour, and everyone gasps when the mask comes off.
+
+<p align="center"><img src="Docs/images/moods.png" alt="One face in five moods: calm, happy, worried, surprised and cross" width="900"></p>
+
+**The carving bench.** On the porch outside HQ's east door there's a trestle table with a pumpkin
+and a knife. Press **E** and pick the eyes, the nose and the mouth (the pumpkin on the bench changes
+as you choose; arrow keys work too), then carve it: it joins the lit row of jack-o'-lanterns along
+the HQ wall. One carving a night, +10 candy, and the porch keeps your last six. Two new challenges.
+
+<p align="center"><img src="Docs/images/carving.png" alt="Every eye, nose and mouth you can carve, and six jack-o'-lanterns on the HQ porch" width="760"></p>
+
+**Trick-or-treaters with storybook heads.** The kids walking the streets have bigger heads with real
+eyes (whites, pupils and a glint), rosy cheeks and a smile, and two new costumes: a mummy wound in
+bandages and a bat with its wings out.
+
+<p align="center"><img src="Docs/images/kids.png" alt="Nine trick-or-treaters in a row: bat, mummy, pirate, vampire, cat, skeleton, pumpkin, witch and sheet" width="900"></p>
+
+**The club camera.** Press **P** for a snapshot: a flash, a click, and an instant photo develops in
+the corner of the screen. The Club Book has a new Snapshots album with twelve frames to fill: the
+eight landmarks, a neighbour, a will-o'-the-wisp, the Hook Board and your porch of jack-o'-lanterns.
+Get one in the middle of the picture and its photo goes in the album (+5 candy the first time).
+Neighbours turn to the camera and smile before the shutter goes; suspects look startled, all alike.
+
+<p align="center"><img src="Docs/images/snapshots.png" alt="A snapshot developing in the corner of the screen, and the Snapshots album with ten of twelve photos" width="900"></p>
+
+**The lamplighter.** Twelve old gas lamps stand along the creek bank beside the Creekside Path, six
+each side of the bridge, and nobody has lit them in years. Tobias Wick still waits on his bench by
+the bridge with his lighting pole, but his knees won't do the bank any more. Talk to him and he
+lends you the pole; press **E** at each dark lamp to light it (+5 candy each). Lit lamps glow amber,
+throw a warm pool of light on the path and draw a couple of moths, and they stay lit. Bring the pole
+back with all twelve burning and he gives you his spare cap: the Lamplighter's cap, a look you can
+only be given, never bought. One new challenge, a thirteenth frame in the album, and with the path
+lit the creek's wisps come round a little more often.
+
+<p align="center"><img src="Docs/images/lamplighter.png" alt="Tobias Wick, a tall stooped old man in a plum greatcoat, mustard muffler and flat cap, from the front, three-quarter and side, beside a gas lamp dark and lit" width="900"></p>
+
+<p align="center"><img src="Docs/images/creekside.png" alt="The Creekside Path at night: gas lamps lit along the creek bank, the far one still dark, and Tobias by his bench at the bridge" width="900"></p>
+
+**Past the edge of town.** Hollow Creek isn't the whole map any more. Real roads, lit by street
+lamps, run out of town in every direction to six haunted places, and the map (**M**) now shows the
+whole world:
+
+- **Ravenhold Castle**, up in the Blackthorn Hills past Blackwood Manor: a road ramps up the hill to
+  a gatehouse, curtain walls with battlements, four towers with flags in the wind, a courtyard well,
+  a graveyard, crows, and the keep's great hall with its feast table, throne, suits of armour and
+  chandelier.
+- **The Moonlight Circus**, on the fairground west of town: a striped big top with its ring and
+  bleachers, a carousel that still turns, a Ferris wheel that never stops, game booths, caravans and
+  a fortune teller's wagon.
+- **Gloamwood Tower**, south of HQ: fourteen floors with a few windows lit (and one or two violet), a
+  neon sign, a diner and a launderette at street level, and a fire escape you can climb all the way
+  to the roof, where somebody left a deckchair facing the moon.
+- **Gull Harbor**, the port to the east: a quay with warehouses, a fish market, a crane, piers and
+  fishing boats, and a breakwater out to **Saltmarsh Lighthouse**, where an iron stair spirals up
+  the outside to the gallery and the beam sweeps right over your head.
+- **Wreckers' Beach**, north of the harbor: sand, beach huts, a lifeguard tower, a bonfire, the wreck
+  of the ghost ship *Mary Grey*, and **Smugglers' Cave** in the cliff with stalactites, glowing
+  mushrooms, crystals and a treasure chest.
+- **Hag's Hollow**, a swamp south of the circus: dead trees, green lights over the water, a rowboat in
+  the reeds and Old Mother Gloam's crooked cottage, cauldron bubbling.
+
+Between them, for anyone who wanders off the road: the Nine Widows stone circle, a scarecrow field, a
+wishing well, Whisker Hill pet cemetery and an old mine. The first time you reach each haunted place
+you get its story (+15 candy), and climbing the lighthouse or the tower counts too.
+
+**Curiosities.** 32 strange little things are hidden all over the world, each with a twinkle until
+you've found it: a rusted helm in the great hall, a squeaky red nose in the circus ring, the lift
+button for floor 13, a message in a bottle dated tomorrow, a gnome with fangs under the Main Street
+bridge. Press **E** to read its little story (+10 candy). The Club Book has a new Curiosities page
+and a chapter of seven challenges, the album has six new frames, and finding every curiosity earns
+the Explorer's hat, another look that can't be bought.
+
+<p align="center"><img src="Docs/images/world-map.png" alt="The whole world from above: Hollow Creek in the middle, Ravenhold Castle to the north, the Moonlight Circus and Hag's Hollow to the west, Gloamwood Tower to the south, Gull Harbor and Wreckers' Beach by the sea to the east, with stars marking curiosities" width="900"></p>
+
+<p align="center"><img src="Docs/images/regions.png" alt="Six night scenes: the castle on its hill, the circus with its big top and carousel, the high rise with lit windows, the lighthouse on the breakwater, the beach with the wrecked ship, and the witch's cottage in the swamp" width="900"></p>
+
+**Closer, cuter faces.** Everyone in Hollow Creek got a close-up makeover this round. Eyes now have
+two-tone irises with a second sparkle, little lower lashes and a soft crease above the lid. Cheeks
+carry a gentle blush that lifts when someone smiles, and noses and lips catch the light. Look closer
+and you'll find fingernails, shoe laces and eyelets, sock cuffs, and folds at the elbows and knees.
+The trick-or-treaters got cuter too, with button noses, coloured eyes, lashes and real little shoes.
+
+<p align="center"><img src="Docs/images/characters-detail.png" alt="The cast up close with the new eyes, blush and hands, and the Mayor before and after" width="900"></p>
 
 **First-night hints**, which ease in by themselves and step aside when you're done with them:
 
@@ -131,20 +329,20 @@ always matches the checklist.
 
 <!-- tracker:start (written by Docs/tools/make_readme_anim.py from Docs/PROGRESS.md) -->
 
-**Overall: `████████████████████░░░░` 83%**, 129 of 156 tasks. 3 milestones done, 18 in progress, 1 not started. Built means the code and data exist and compile; **nothing has been played in Unity yet**.
+**Overall: `████████████████████░░░░` 83%**, 195 of 235 tasks. 3 milestones done, 32 in progress, 1 not started. Built means the code and data exist and compile; **nothing has been played in Unity yet**.
 
 | Milestone | Progress | Tasks | State | Played in Unity |
 |---|---|---|---|---|
 | Milestone 1: Core | `████████████` 100% | 5/5 | ✅ Built, compiles | Not yet |
 | Milestone 2: Haunter toolkit | `████████████` 100% | 3/3 | ✅ Built, compiles | Not yet |
 | Milestone 3: Solve it | `████████████` 100% | 3/3 | ✅ Built, compiles | Not yet |
-| Milestone 4: Play without a full lobby | `█████████░░░` 75% | 3/4 | 🟡 In progress | Not yet |
+| Milestone 4: Play without a full lobby | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
 | Milestone 5: The 3D world | `█████████░░░` 75% | 6/8 | 🟡 In progress | Not yet |
 | Milestone 6: Halloween night | `███████████░` 89% | 8/9 | 🟡 In progress | Not yet |
 | Milestone 7: Hollow Creek, the town | `██████████░░` 80% | 8/10 | 🟡 In progress | Not yet |
 | Milestone 8: The Nights of the Jack look | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
 | Milestone 9: A case for every house | `███████████░` 91% | 10/11 | 🟡 In progress | Not yet |
-| Milestone 10: Storybook direction | `██████████░░` 85% | 17/20 | 🟡 In progress | Not yet |
+| Milestone 10: Storybook direction | `███████████░` 90% | 18/20 | 🟡 In progress | Not yet |
 | Milestone 11: A bigger world | `███████████░` 89% | 8/9 | 🟡 In progress | Not yet |
 | Milestone 12: A living town | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
 | Milestone 13: The fifth call | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
@@ -155,18 +353,32 @@ always matches the checklist.
 | Milestone 18: The Club Handbook and a README you can watch | `█████████░░░` 75% | 3/4 | 🟡 In progress | Not yet |
 | Milestone 19: The design pass | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
 | Milestone 20: The Case Book | `███████████░` 89% | 8/9 | 🟡 In progress | Not yet |
+| Milestone 21: Ready for the first Unity session | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
+| Milestone 22: The website's moving pictures | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 23: Moments in the game | `█████████░░░` 75% | 3/4 | 🟡 In progress | Not yet |
+| Milestone 24: Playing together in one house | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 25: A town worth walking | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
+| Milestone 26: The Club Book | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 27: Trick or treat | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
+| Milestone 28: The storybook lighting pass | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
+| Milestone 29: Storybook cast and the Hook Board | `██████████░░` 83% | 5/6 | 🟡 In progress | Not yet |
+| Milestone 30: Wisps and moods | `█████████░░░` 75% | 3/4 | 🟡 In progress | Not yet |
+| Milestone 31: The carving bench and the trick-or-treaters | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 32: The club camera | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 33: The lamplighter | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
+| Milestone 34: Past the edge of town | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
 | Release pipeline | `█████████░░░` 71% | 5/7 | 🟡 In progress | Not yet |
 | Later | `░░░░░░░░░░░░` 0% | 0/4 | ⬜ Not started | Not yet |
 
 <details><summary><b>What's left</b> (every unticked task)</summary>
 
-- **Milestone 4: Play without a full lobby**: AI Haunter wears the costume and dodges the trap
+- **Milestone 4: Play without a full lobby**: Watch the stand-in in Unity and tune how often it backs off
 - **Milestone 5: The 3D world**: Real 3D models and textures for the manor; Baked lighting and occlusion culling for speed
 - **Milestone 6: Halloween night**: Hand-made models to replace the shape-built characters
 - **Milestone 7: Hollow Creek, the town**: Sitting and steering animations; More houses and calls that chain into a bigger case
 - **Milestone 8: The Nights of the Jack look**: Check the look in Unity and tune light counts for frame rate
 - **Milestone 9: A case for every house**: A short search animation and a clue-style prop in the alibi room
-- **Milestone 10: Storybook direction**: First playable slice played start to finish in Unity; Storybook lighting pass (amber, teal, violet) on the cottage first; Original van look with keepsakes from solved cases
+- **Milestone 10: Storybook direction**: First playable slice played start to finish in Unity; Original van look with keepsakes from solved cases
 - **Milestone 11: A bigger world**: Check the horizon in Unity (draw order, fog, far clip) and tune it
 - **Milestone 12: A living town**: Check the crowd and the train in Unity and tune counts for frame rate
 - **Milestone 13: The fifth call**: Playtest the whole arc in Unity, five calls in one sitting
@@ -177,6 +389,20 @@ always matches the checklist.
 - **Milestone 18: The Club Handbook and a README you can watch**: See the hints on screen in Unity and adjust the wording after a first playtest
 - **Milestone 19: The design pass**: Check the new look in Unity at 720p, 1080p and 4K
 - **Milestone 20: The Case Book**: Check the board's swing and string in Unity, and turn the site on once the repo is public
+- **Milestone 21: Ready for the first Unity session**: Run the smoke test in Unity and fix whatever it finds
+- **Milestone 22: The website's moving pictures**: Watch it on a real phone and a slow laptop once the site is live
+- **Milestone 23: Moments in the game**: See both in Unity at 720p and 4K, and tune the timings by feel
+- **Milestone 24: Playing together in one house**: Try it on two computers on one Wi-Fi, and check the Windows firewall prompt
+- **Milestone 25: A town worth walking**: Walk the whole town in Unity and check the frame rate with the new houses
+- **Milestone 26: The Club Book**: Play ten nights and tune the candy prices so the Wardrobe takes a fair while, not forever
+- **Milestone 27: Trick or treat**: Knock on a few doors in Unity and check the prompt, the bowl and the bubble read well
+- **Milestone 28: The storybook lighting pass**: See it in Unity and tune the mist, the edge and the haunting by eye
+- **Milestone 29: Storybook cast and the Hook Board**: In Unity: check the board sits clear of the path and the bigger heads clear doorways and the van roof
+- **Milestone 30: Wisps and moods**: In Unity: follow a wisp end to end and check it never gets stuck, and that the moods read at a few metres
+- **Milestone 31: The carving bench and the trick-or-treaters**: In Unity: check the bench and porch sit clear of the door and the van, and the panel reads at every text size
+- **Milestone 32: The club camera**: In Unity: check the photo crop, the album at every text size, and that walls block a sight
+- **Milestone 33: The lamplighter**: In Unity: walk the path, check the lamp lights and Tobias's face, the pole on each role, and the cap on each head
+- **Milestone 34: Past the edge of town**: In Unity: drive every road, climb the lighthouse stair and the fire escape, check the moving pieces and the frame rate with the whole world loaded
 - **Release pipeline**: First compile in Unity and fix errors; First real in-game screenshots (F12) in the README
 - **Later**: Real characters, house art, audio; Styled UI (UI Toolkit) to replace the debug HUD; Several cases per house, campaign; Lobby and online matchmaking (Unity Relay)
 
@@ -193,9 +419,9 @@ The current playable slice, what has and hasn't been tested, and where every ass
 [`Docs/ASSET_MANIFEST.md`](Docs/ASSET_MANIFEST.md). In a terminal, `unmasked status` shows the same
 checklist with the last compile check and recent commits.
 
-**Next up:** the first open in Unity and a playtest of the first case, switching the website on once
-the repo is public, then real screenshots here,
-an AI Haunter that wears the costume and dodges the trap, and an online lobby through Unity Relay so
+**Next up:** the first open in Unity, where the smoke test plays a night by itself and points at
+whatever breaks, then a playtest of the first case, switching the website on once
+the repo is public, then real screenshots here, and an online lobby through Unity Relay so
 friends can join without port forwarding.
 
 ## Setup and usage
@@ -231,9 +457,16 @@ the case tabs, starts your case book over. The site goes live after `unmasked pa
 
 ### Play together
 
-One person clicks **Host a game**. Friends click **Join** and type the host's Internet Protocol (IP)
-address. On the same Wi-Fi, use the host's local IP address. Over the internet, the host forwards
-port 7777 for the User Datagram Protocol (UDP) on their router.
+One person clicks **Host a game**. On the same Wi-Fi, the game shows up for everyone else under
+**Games on your Wi-Fi**, with the host's computer, how many are playing and what they're doing, so
+friends just click **Join**. The first time someone hosts, Windows may ask whether to let Unmasked
+through the firewall: allow it on private networks.
+
+Over the internet, friends type the host's Internet Protocol (IP) address under **Or type an
+address**, and the host forwards port 7777 for the User Datagram Protocol (UDP) on their router.
+The game remembers the last address you joined.
+
+<p align="center"><img src="Docs/images/hud-join.png" alt="Mockup of the start screen: Host a game, then Games on your Wi-Fi listing two games with Join buttons, then a box to type an address" width="720"></p>
 
 ### Controls
 
@@ -241,7 +474,7 @@ port 7777 for the User Datagram Protocol (UDP) on their router.
 
 **Click** the game window to look around, **Esc** frees the mouse. **E** interacts (and gets you in
 and out of the van; **W/S** and **A/D** drive it). **Tab** opens the Suspect Board, **M** the town
-map and **F1** the Club Handbook. On the Suspect Board, the **arrow keys** (or **1** to **4**) pick
+map, **K** the Club Book, **P** the club camera and **F1** the Club Handbook. Walk into a lost lantern to pick it up, and press **E** at a front door with its porch light on to trick-or-treat. On the Suspect Board, the **arrow keys** (or **1** to **4**) pick
 a card, **H** marks a hunch, **X** crosses someone off, **C** checks their alibi and **A** accuses
 (press it twice, so you can't accuse by accident). As the Haunter, **1** to **5** use your powers, **6** or **Q** your
 legend's signature power, **G** plants a fake clue and **H** fakes your alibi. **F12** saves a
@@ -253,7 +486,13 @@ screenshot.
 2. Open it with Unity **6000.0.32f1** (Hub offers to install it). The first open takes a few minutes.
 3. If Unity asks to restart for the Input System, click **Restart Unity**.
 4. When **Welcome to UNMASKED** appears, click **Build Hollow Creek**.
-5. Choose **Unmasked > Play Hollow Creek**, then click **Host a game** in the game window.
+5. Choose **Unmasked > Run Smoke Test (plays one night by itself)**. The game hosts, takes the
+   first call, finds clues, accuses, builds the trap and unmasks the Haunter on its own, and says
+   which step broke if one does. The report lands in `Logs/smoke-test.txt`.
+6. Choose **Unmasked > Play Hollow Creek**, then click **Host a game** in the game window.
+
+The whole first session, and what to send back if something breaks, is in
+[`Docs/FIRST_RUN.md`](Docs/FIRST_RUN.md).
 
 ### Terminal commands (Ubuntu or WSL)
 
@@ -307,6 +546,7 @@ unmasked save "Add new clue"    # commit everything and push to GitHub
 ```bash
 unmasked open     # opens the project in Unity (it offers to build the town; then Unmasked > Play Hollow Creek, Host)
 unmasked check    # compiles headless and lists any errors (log: Logs/check.log)
+unmasked smoke    # plays one whole night headless by itself; prints which step broke (report: Logs/smoke-test.txt)
 unmasked world    # regenerates the town, houses and manor and rebuilds both Unity scenes headless
 unmasked build    # builds Windows/macOS/Linux players into Builds/ and zips them
 unmasked play 2   # opens two game windows: click Host in one, Join 127.0.0.1 in the other
@@ -315,6 +555,19 @@ unmasked play 2   # opens two game windows: click Host in one, Join 127.0.0.1 in
 No Unity yet? On Windows, install [Unity Hub](https://unity.com/download) and add Unity
 **6000.0.32f1** with the *Windows, Mac and Linux Build Support* modules. On native Ubuntu run
 `unmasked install-unity`. If Unity is installed somewhere unusual: `export UNITY_PATH=/path/to/Unity`.
+
+**Something not working?** `unmasked doctor` checks git, WSL and which Unity versions you have, and
+prints the fix for anything missing.
+
+- *"cannot execute binary file: Exec format error"* (WSL): Ubuntu has lost the setting that lets it
+  start Windows programs like Unity.exe. `unmasked build` offers to fix it; by hand it's
+  `sudo sh -c 'echo :WSLInterop:M::MZ::/init:PF > /usr/lib/binfmt.d/WSLInterop.conf'` and
+  `sudo sh -c 'echo :WSLInterop:M::MZ::/init:PF > /proc/sys/fs/binfmt_misc/register'`. If it still
+  fails, run `wsl --shutdown` in Windows PowerShell and open Ubuntu again.
+- *A different Unity version* (for example 6000.6.5f1): any 6000.0.x works as it is. A newer Unity 6
+  upgrades the project the first time it opens it, so the tool asks first. Install 6000.0.32f1 next
+  to it by pasting `unityhub://6000.0.32f1/b2e806cf271c` into the Windows Run box (Win+R), or say yes
+  to the upgrade with `UNMASKED_ALLOW_UPGRADE=1 unmasked build`.
 
 #### The website
 
@@ -345,6 +598,7 @@ gh repo clone Normansrule/unmasked ~/unmasked && bash ~/unmasked/tools/unmasked.
 
 ```bash
 nano "$(unmasked where)/Docs/tools/make_town.py"             # roads, HQ, shops, the square, where each house's lot is
+nano "$(unmasked where)/Docs/tools/worldgen.py"             # the rest of town: side streets, house plots, yards (WFC), landmarks, lost lanterns
 nano "$(unmasked where)/Docs/tools/make_houses.py"           # the cottage, the farm and the Victorian, room by room
 nano "$(unmasked where)/Docs/tools/make_manor.py"            # Blackwood Manor: walls, rooms, furniture, pumpkins, clue spots...
 nano "$(unmasked where)/Docs/tools/make_costumes.py"         # villains, outfits, Halloween props, the van
@@ -365,7 +619,15 @@ python3 "$(unmasked where)/Docs/tools/make_images_museum.py"  # the Historical S
 python3 "$(unmasked where)/Docs/tools/make_images_folk.py"    # the townsfolk and an errand
 python3 "$(unmasked where)/Docs/tools/make_images_people.py"  # character portraits and heights/builds
 python3 "$(unmasked where)/Docs/tools/make_images_hub.py"     # the street remembers, the Lantern Watch, the silhouette check
-python3 "$(unmasked where)/Docs/tools/make_readme_anim.py"    # this page's animations, the tracker and the interface mockups (hud-refresh.png, hud-board.png)
+python3 "$(unmasked where)/Docs/tools/make_world_pictures.py" # how the town is grown (worldgen.png), the Club Book mockup and trick-or-treat.png
+python3 "$(unmasked where)/Docs/tools/make_images_light.py"   # the storybook lighting pass, before and after (lighting-pass.png)
+python3 "$(unmasked where)/Docs/tools/make_images_cast.py"    # the storybook cast and the Hook Board (storybook-cast.png, hook-board.png)
+python3 "$(unmasked where)/Docs/tools/make_images_moods.py"   # face moods and the will-o'-the-wisp (moods.png, wisp.png)
+python3 "$(unmasked where)/Docs/tools/make_images_porch.py"   # the carving bench and the trick-or-treaters (carving.png, kids.png)
+python3 "$(unmasked where)/Docs/tools/make_images_album.py"   # the club camera and the album (snapshots.png)
+python3 "$(unmasked where)/Docs/tools/make_images_lamplighter.py" # Tobias Wick and the creekside lamps (lamplighter.png, creekside.png)
+python3 "$(unmasked where)/Docs/tools/make_images_regions.py"     # the world map and the six haunted places (world-map.png, regions.png)
+python3 "$(unmasked where)/Docs/tools/make_readme_anim.py"    # this page's animations, the tracker and the interface mockups (hud-refresh.png, hud-board.png, hud-moments.gif)
 python3 "$(unmasked where)/Docs/tools/make_site_data.py"      # the website's case data (site/data/game.json), read from Cases.cs
 python3 "$(unmasked where)/Docs/tools/make_site_pictures.py"  # the website screenshots and GIFs (needs Node and Playwright: npm i playwright)
 python3 "$(unmasked where)/Docs/tools/make_reference.py"      # "Reference renders": big house stills and gameplay-tour.mp4 (needs ffmpeg)
@@ -390,16 +652,16 @@ bash "$(unmasked where)/tools/compilecheck/check.sh"           # builds every sc
 Unmasked Game/
 ├── Assets/Unmasked/
 │   ├── Scripts/
-│   │   ├── Core/        the match: MysteryGameManager (phases, rules, saves), PlayerAgent, CameraRig
+│   │   ├── Core/        the match: MysteryGameManager (phases, rules, saves), PlayerAgent, CameraRig, the Club Book
 │   │   ├── Mystery/     cases, suspects and clues (Cases.cs holds all nine), the server-only MysteryServer
 │   │   ├── Solvers/     Solver movement, the flashlight and the fear meter
 │   │   ├── Haunter/     the Haunter, possession, powers, fog and phantoms
 │   │   ├── House/       doors, trapdoors and furniture that can be possessed
 │   │   ├── Traps/       trap pieces and the trap site
-│   │   ├── Town/        Hollow Creek: the van, the map, townsfolk, the horizon, house moods
-│   │   ├── AI/          the AI Director and the suspects' behaviour
+│   │   ├── Town/        Hollow Creek: the van, the map, townsfolk, lost lanterns, doorsteps and stories, the horizon, house moods
+│   │   ├── AI/          the AI Director, the suspects, and the stand-in Haunter that dodges the trap
 │   │   ├── Animation/   procedural animation and faces
-│   │   ├── Spooky/      costumes, sound, ambience and Halloween effects
+│   │   ├── Spooky/      costumes, sound, ambience, Halloween effects and the StoryLight moods
 │   │   ├── UI/          the heads-up display (HUD), the Handbook and UITheme, the shared look
 │   │   ├── Net/         spawn points and networked movement
 │   │   └── Editor/      builders that turn the level files into Unity scenes, plus the build script
@@ -409,6 +671,7 @@ Unmasked Game/
 │   └── Textures/        generated surface patterns
 ├── Docs/
 │   ├── GUIDE.md         the full tour of the game
+│   ├── FIRST_RUN.md     the first session in Unity: open, check, smoke test, play
 │   ├── ART_DIRECTION.md the story and the look
 │   ├── PROGRESS.md      the checklist the tracker reads
 │   ├── SLICE_PLAN.md, TEST_REPORT.md, ASSET_MANIFEST.md
@@ -463,7 +726,12 @@ design runs through the game ([`UITheme.cs`](Assets/Unmasked/Scripts/UI/UITheme.
   gets a pen stroke. Things you open yourself (Tab, M, F1) appear instantly. With reduced motion,
   cards stop swinging, string appears without drawing, and a wrong guess is marked with a red
   outline instead of a shake.
-- **Nothing generic.** No gradients, glows, stock icons or card grids. The cork texture is generated
+- **Moments worth scrolling for.** On the website, "How a night goes" is a small scene that the
+  scroll position plays like a clock, with one pinned note per hour. Section headings set
+  themselves a word at a time, the front-page board leans a few degrees toward the mouse, and
+  solving a case knocks the Haunter's mask off the culprit's card with a little anticipation dip
+  first. All of it is off with reduced motion, and none of it hides text from screen readers.
+- **Nothing generic.** No interface gradients, glows, stock icons or card grids. The cork texture is generated
   noise, the pins are drawn, and the empty, loading and error states are written like the club
   would say them ("Opening the case file…", "The case file wouldn't open.").
 - **Accessible on purpose.** The website works by keyboard with visible focus, announces each clue

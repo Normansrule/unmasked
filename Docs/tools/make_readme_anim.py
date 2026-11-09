@@ -18,6 +18,7 @@ night-loop.gif are cut from their pictures.
 """
 import glob
 import math
+import random
 import os
 import re
 import shutil
@@ -91,16 +92,31 @@ ROUNDS = [
     ("The Club Handbook", "First-time hints for new players, and an animated README", "handbook.gif"),
     ("The design pass", "One look for every panel: colour, type, spacing and calm motion", "hud-refresh.png"),
     ("The Case Book", "A corkboard look for the game, and a website with a playable Suspect Board", "hud-board.png"),
+    ("The smoke test", "The game plays a whole night by itself in Unity and says which step broke", "hud-board.png"),
+    ("Moving pictures", "The website's night plays as you scroll, and solving a case knocks the mask off", "hud-board.png"),
+    ("Moments in the game", "An hour card for each part of the night, and a mask that flies off at the unmasking", "hud-board.png"),
+    ("A Haunter for one", "With nobody playing it, the culprit puts on the costume and dodges your trap", "hud-board.png"),
+    ("Games on your Wi-Fi", "Friends in the same house see the host's game and click Join, no address needed", "hud-board.png"),
+    ("A town to walk", "Side streets, 35 houses with yards, eight landmarks, lost lanterns and the Club Book", "town-map.png"),
+    ("Trick or treat", "35 doors to knock on, the Stories of Hollow Creek and a new Club Book chapter", "trick-or-treat.png"),
+    ("Storybook light", "A teal night with amber windows; violet only when something's haunting you", "lighting-pass.png"),
+    ("A storybook cast", "Bigger heads and eyes, a shape for every role, and the Hook Board for found lanterns", "storybook-cast.png"),
+    ("Wisps and moods", "Green lights off the creek that lead to lost lanterns, and faces that feel something", "wisp.png"),
+    ("Carve a pumpkin", "A carving bench at HQ, a porch of your jack-o'-lanterns, and storybook trick-or-treaters", "carving.png"),
+    ("The club camera", "Press P for an instant photo; fill a twelve-frame album; neighbours smile for it", "snapshots.png"),
+    ("The lamplighter", "Old Tobias Wick lends you his pole to light twelve gas lamps along the creek", "creekside.png"),
+    ("Past the edge of town", "A castle, a circus, a high rise, a lighthouse, a cave and a swamp, with 32 curiosities to find", "world-map.png"),
 ]
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-def save_gif(frames, durations, name, colors=200):
-    """Like make_images.save_gif, but every frame keeps its own duration (holds on the cards)."""
+def save_gif(frames, durations, name, colors=200, extra=()):
+    """Like make_images.save_gif, but every frame keeps its own duration (holds on the cards).
+    `extra` frames only feed the palette, for small colours that matter (the violet mask)."""
     path = os.path.join(OUT, name)
-    picks = frames[:: max(1, len(frames) // 16)]
+    picks = frames[:: max(1, len(frames) // 16)] + list(extra)
     sheet = Image.new("RGB", (frames[0].width, frames[0].height * len(picks)))
     for i, f in enumerate(picks):
         sheet.paste(f, (0, i * f.height))
@@ -860,7 +876,307 @@ def draw_mock_card(ui, rect, suspect):
     ui.pin(x + w_ / 2, y + 2)
 
 
-JOBS = {"hud": make_hud, "tracker": make_tracker, "table": make_readme_table, "handbook": make_handbook, "rounds": make_rounds, "loop": make_loop, "cast": make_cast}
+# ---------------------------------------------------------------------------
+# hud-moments.gif: the hour card and the unmasking from UI/Moments.cs, same timings
+# ---------------------------------------------------------------------------
+def moment_mask(width_px):
+    """The domino mask from Moments.BuildMask, as an RGBA image."""
+    W_, H_ = 240, 100
+    m = Image.new("RGBA", (W_, H_))
+    px = m.load()
+
+    def ell(u, v, cx, cy, rx, ry):
+        du, dv = (u - cx) / rx, (v - cy) / ry
+        return (math.sqrt(du * du + dv * dv) - 1) * min(rx, ry)
+    for y in range(H_):
+        for x in range(W_):
+            u, v = (x + .5) / W_ * 2 - 1, -((y + .5) / H_ * 2 - 1)
+            s_ = min(min(ell(u, v, -.46, .02, .52, .86), ell(u, v, .46, .02, .52, .86)), ell(u, v, 0, .38, .4, .42))
+            for e in (ell(u, v, 0, -.86, .2, .62), ell(u, v, -.44, .08, .2, .3), ell(u, v, .44, .08, .2, .3)):
+                s_ = max(s_, -e)
+            a = max(0.0, min(1.0, .5 - s_ * W_ * .25))
+            shade = 1.08 + (0.82 - 1.08) * max(0.0, min(1.0, .5 - v * .5))
+            px[x, y] = tuple(min(255, round(c * shade)) for c in HAUNT) + (round(a * 255),)
+    return m.resize((width_px, round(width_px * 0.42)), Image.LANCZOS)
+
+
+def make_moments():
+    base = ui_canvas("01-PembertonCottage-outside.png", 0.66)
+    K = UI.K
+    W, H, E = UI.W, UI.H, 16
+    frames, durations = [], []
+
+    def top_bar(ui, title, sub):
+        bw = 680
+        bx = W / 2 - bw / 2
+        ui.box(bx, E, bw, 62 if sub else 40)
+        ui.text(bx + 16, E + 8, title, 19, "Bold")
+        if sub:
+            ui.text(bx + 16, E + 38, sub, 13, "Medium", MUTED)
+
+    def back(t):
+        c, u = 1.7, t - 1
+        return 1 + (c + 1) * u ** 3 + c * u ** 2
+
+    # The hour card: drops 28 points onto its pin with an overshoot, swings, holds, fades.
+    card = ("10:00 PM", "The Suspect Board", "Tab opens it. Cross off whoever doesn't fit and check the alibis that are left.")
+    for i in range(34):
+        t = i * 0.07
+        img = base.copy()
+        ui = UI(img)
+        top_bar(ui, "Investigation · 10:00 PM", "Mask in play: the Headless Horseman. Who is wearing it?")
+        alpha = min(1.0, t / 0.18) * max(0.0, min(1.0, (2.3 - t) / 0.14))
+        if alpha > 0:
+            drop = (1 - back(min(1.0, t / 0.42))) * -28
+            angle = -1.2 + 9 * math.exp(-3.75 * t) * math.cos(11.6 * t)  # the Swing spring after a push
+            layer = Image.new("RGBA", img.size)
+            lu = UI(layer)
+            cw = 360
+            th = len(lu.wrap(card[2], 15, "Medium", cw - 40)) * 21
+            x0, y0 = W / 2 - cw / 2, E + 104 + drop
+            lu.box(x0 + 2, y0 + 6, cw, 74 + th, (0, 0, 0, 97))
+            lu.box(x0, y0, cw, 74 + th, SURFACE + (255,))
+            lu.text(x0 + 20, y0 + 18, card[0], 15, "Bold", ACCENT)
+            lu.text(x0 + 20, y0 + 38, card[1], 19, "Bold")
+            lu.para(x0 + 20, y0 + 68, card[2], 15, "Medium", INK, cw - 40, 1.4)
+            lu.pin(W / 2, y0 + 6)
+            layer = layer.rotate(-angle, resample=Image.BICUBIC, center=(W / 2 * K, (y0 + 6) * K))
+            if alpha < 1:
+                layer.putalpha(layer.getchannel("A").point(lambda v: round(v * alpha)))
+            img.paste(layer, (0, 0), layer)
+        frames.append(img.resize((720, 405), Image.LANCZOS))
+        durations.append(70)
+    durations[14] = 900
+
+    # The unmasking: band, mask holds, dips, flies off; the name types in; the reason fades up.
+    name, line = "Leonard Crisp", "Leonard Crisp wore the Headless Horseman mask to sell a 'charmingly haunted' cottage."
+    full = f"Unmasked. It was {name}."
+    mask = moment_mask(round(220 * K))
+    for i in range(44):
+        t = i * 0.06
+        img = base.copy()
+        ui = UI(img)
+        top_bar(ui, "Unmasking", "")
+        y = H * 0.22
+        ui.box(0, y - 24, W, 150, (0, 0, 0, round(184 * min(1.0, t / 0.25))))
+        ma = min(1.0, t / 0.2) * (1 - max(0.0, min(1.0, (t - 1.0) / 0.3)))
+        dip = max(0.0, min(1.0, (t - .3) / .18)) * (1 - max(0.0, min(1.0, (t - .48) / .12)))
+        fly = max(0.0, min(1.0, (t - .6) / .7)) ** 2
+        dx, dy = 260 * fly, 10 * math.sin(dip * math.pi / 2) - 320 * fly
+        sx, sy = (1 + .06 * dip) * (1 - .25 * fly), (1 - .08 * dip) * (1 - .25 * fly)
+        if ma > 0:
+            m = mask.resize((max(1, round(mask.width * sx)), max(1, round(mask.height * sy))), Image.LANCZOS).rotate(42 * fly, expand=True, resample=Image.BICUBIC)
+            if ma < 1:
+                m.putalpha(m.getchannel("A").point(lambda v: round(v * ma)))
+            cx, cy = (W / 2 + dx) * K, (y + 22 + dy) * K
+            img.paste(m, (round(cx - m.width / 2), round(cy - m.height / 2)), m)
+        shown = max(0, min(len(full), int((t - 0.8) * 34)))
+        if shown:
+            ui.text(W / 2, y + 22, full[:shown], 34, "Bold", INK, "mm")
+        la = max(0.0, min(1.0, (t - 0.8 - len(full) / 34) / 0.4))
+        if la > 0:
+            ui.text(W / 2, y + 74, line, 15, "Medium", INK + (round(255 * la),), "mm")
+        frames.append(img.resize((720, 405), Image.LANCZOS))
+        durations.append(60)
+    durations[-1] = 1800
+    for f in frames:
+        label_mock(f, "mockup of UI/Moments.cs, not an engine capture")
+    swatch = Image.new("RGB", frames[0].size, HAUNT)
+    swatch.paste(mask.convert("RGB").resize((360, 151)), (0, 0), mask.resize((360, 151)))
+    save_gif(frames, durations, "hud-moments.gif", colors=220, extra=[swatch, frames[48], frames[50]])
+
+
+
+# ---------------------------------------------------------------------------
+# standin.gif: the AI Haunter's rules from AI/StandInHaunter.cs, played on a plan of two rooms
+# ---------------------------------------------------------------------------
+def make_standin():
+    """A top-down diagram: the club builds the trap and steps back, the costumed culprit prowls,
+    takes the bait once nobody guards it, smells it and backs off, comes back and is caught.
+    The movement is the same as StandInHaunter.Move (straight on, else the first clear side step)."""
+    W, H, S = 720, 405, 2
+    M = 21  # pixels per metre
+    ox, oy = 32, 52
+    walls = [(0, 0, 24, 0.3), (0, 11.7, 24, 12), (0, 0, 0.3, 12), (23.7, 0, 24, 12), (11.85, 0, 12.15, 7.4)]  # x0, z0, x1, z1
+    furniture = [(3, 2, 6, 3.4), (15.5, 9, 18.5, 10.4), (7.5, 8.2, 9.5, 10.2)]
+    trap = (18.5, 4.5)
+    GUARD, BALK, CATCH = 6.0, 3.0, 1.5
+    random.seed(4)
+
+    def blocked(x, z):
+        for (x0, z0, x1, z1) in walls + furniture:
+            if x0 - 0.35 < x < x1 + 0.35 and z0 - 0.35 < z < z1 + 0.35:
+                return True
+        return False
+
+    def px(x, z):
+        return (ox + x * M) * S, (oy + z * M) * S
+
+    doors = [(12.0, 9.55)]  # the doorway in the dividing wall
+
+    def clear(a, b):
+        n = max(2, int(math.dist(a, b) / 0.2))
+        return not any(blocked(a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n) for i in range(1, n))
+
+    def waypoint(at, target):
+        # StandInHaunter.Waypoint: straight there if clear, else through the doorway that sees both.
+        if clear(at, target):
+            return target
+        for door in doors:
+            if clear(at, door):
+                return door
+        return target
+
+    hx, hz, hdir = 4.0, 6.5, 0.0
+    sx, sz = 17.0, 4.6
+    trail = []
+    frames, durations = [], []
+    state, balked, caught_at, note = "prowl", False, None, ""
+    run_until, goal = 0.0, (6.5, 4.5)
+    dt = 1 / 12
+    t = 0.0
+    while t < 26:
+        # The club: builds for 3 s, then walks back to the door at the left, out of the trap's reach.
+        armed = t >= 3.0
+        if t >= 3.4:
+            tx, tz = 13.0, 10.2
+            d = math.hypot(tx - sx, tz - sz)
+            if d > 0.05:
+                sx += (tx - sx) / d * min(d, 2.6 * dt)
+                sz += (tz - sz) / d * min(d, 2.6 * dt)
+        guarded = math.hypot(sx - trap[0], sz - trap[1]) < GUARD
+        to_trap = math.hypot(trap[0] - hx, trap[1] - hz)
+        if caught_at is None:
+            if not armed or guarded:
+                if t >= run_until and math.hypot(goal[0] - hx, goal[1] - hz) < 0.3:
+                    goal = (random.uniform(2, 10), random.uniform(4, 11))
+                state = "prowl" if not armed else "waits: the trap is guarded"
+            elif t >= run_until:
+                if to_trap < BALK and not balked:
+                    balked = True
+                    ang = math.atan2(hz - trap[1], hx - trap[0])
+                    goal = (hx + math.cos(ang) * 5, hz + math.sin(ang) * 5)
+                    run_until = t + 2.2
+                    note = "smells the trap and backs off"
+                    state = "balk"
+                else:
+                    goal = trap
+                    state = "takes the bait"
+            speed = 3.8 if t < run_until else 2.0
+            way = waypoint((hx, hz), goal)
+            dx, dz = way[0] - hx, way[1] - hz
+            dist = math.hypot(dx, dz)
+            if dist > 0.2:
+                a = math.atan2(dz, dx)
+                for turn in (0, 40, -40, 80, -80, 120, -120):
+                    b = a + math.radians(turn)
+                    if not blocked(hx + math.cos(b) * 0.6, hz + math.sin(b) * 0.6):
+                        hx += math.cos(b) * min(speed * dt, dist)
+                        hz += math.sin(b) * min(speed * dt, dist)
+                        hdir = b
+                        break
+            if armed and math.hypot(trap[0] - hx, trap[1] - hz) <= CATCH:
+                caught_at = t
+                state = "caught: the trap snaps shut"
+        trail.append((hx, hz))
+
+        img = Image.new("RGB", (W * S, H * S), GROUND)
+        d = ImageDraw.Draw(img, "RGBA")
+        d.rectangle([*px(0, 0), *px(24, 12)], fill=SURFACE)
+        for (x0, z0, x1, z1) in walls:
+            d.rectangle([*px(x0, z0), *px(x1, z1)], fill=MUTED)
+        for (x0, z0, x1, z1) in furniture:
+            d.rectangle([*px(x0, z0), *px(x1, z1)], fill=RAISED, outline=FAINT, width=S)
+        d.line([px(12, 7.4), px(13.6, 8.4)], fill=MUTED, width=2 * S)  # the door, swung open
+        # The guard ring and the trap.
+        cx, cz = px(*trap)
+        r = GUARD * M * S
+        d.ellipse([cx - r, cz - r, cx + r, cz + r], outline=ACCENT + ((150 if guarded else 60),), width=S)
+        rb = BALK * M * S
+        d.ellipse([cx - rb, cz - rb, cx + rb, cz + rb], outline=FAINT + (110,), width=S)
+        size = 0.7 * M * S
+        snap = caught_at is not None
+        d.rectangle([cx - size, cz - size, cx + size, cz + size], fill=(ACCENT if armed else RAISED), outline=INK, width=S)
+        if snap:
+            d.line([cx - size, cz - size, cx + size, cz + size], fill=ON_ACCENT, width=3 * S)
+            d.line([cx - size, cz + size, cx + size, cz - size], fill=ON_ACCENT, width=3 * S)
+        # The trail, the Haunter (violet, with its mask) and the Solver.
+        if len(trail) > 1:
+            d.line([px(x, z) for x, z in trail[-60:]], fill=HAUNT + (110,), width=2 * S)
+        hxp, hzp = px(hx, hz)
+        hr = 0.45 * M * S
+        d.ellipse([hxp - hr, hzp - hr, hxp + hr, hzp + hr], fill=HAUNT)
+        ex, ez = hxp + math.cos(hdir) * hr * 0.55, hzp + math.sin(hdir) * hr * 0.55
+        d.ellipse([ex - hr * 0.35, ez - hr * 0.2, ex + hr * 0.35, ez + hr * 0.2], fill=GROUND)
+        sxp, szp = px(sx, sz)
+        d.ellipse([sxp - hr, szp - hr, sxp + hr, szp + hr], fill=GREEN)
+        # Keep the rings on the floor plan.
+        x0p, z0p = px(0, 0)
+        x1p, z1p = px(24, 12)
+        d.rectangle([0, 0, W * S, z0p - 1], fill=GROUND)
+        d.rectangle([0, z1p + 1, W * S, H * S], fill=GROUND)
+        d.rectangle([x1p + 1, 0, W * S, H * S], fill=GROUND)
+        d.rectangle([0, 0, x0p - 1, H * S], fill=GROUND)
+        d.text((ox * S, 16 * S), "When nobody plays the Haunter", font=font(18 * S, "Bold"), fill=INK)
+        # Labels.
+        f = font(13 * S, "Bold")
+        fs = font(11 * S, "Medium")
+        d.text(((ox + 24 * M + 16) * S, oy * S), "The Haunter", font=f, fill=HAUNT)
+        d.text(((ox + 24 * M + 16) * S, (oy + 18) * S), "the culprit, in costume", font=fs, fill=MUTED)
+        d.text(((ox + 24 * M + 16) * S, (oy + 48) * S), "A Solver", font=f, fill=GREEN)
+        d.text(((ox + 24 * M + 16) * S, (oy + 96) * S), "Red ring: guard zone", font=f, fill=ACCENT)
+        d.text(((ox + 24 * M + 16) * S, (oy + 114) * S), "it won't come in while", font=fs, fill=MUTED)
+        d.text(((ox + 24 * M + 16) * S, (oy + 130) * S), "a Solver is inside", font=fs, fill=MUTED)
+        d.text(((ox + 24 * M + 16) * S, (oy + 160) * S), "Grey ring: where it", font=f, fill=FAINT)
+        d.text(((ox + 24 * M + 16) * S, (oy + 178) * S), "may smell the trap", font=fs, fill=MUTED)
+        status = ("Building the trap" if not armed else "The trap is armed") + "  ·  Haunter: " + (note if state == "balk" else state)
+        d.text((ox * S, (oy + 12 * M + 14) * S), status, font=font(14 * S, "Bold"), fill=INK)
+        frame = img.resize((W, H), Image.LANCZOS)
+        label_mock(frame, "diagram of the AI/StandInHaunter.cs rules, not an engine capture")
+        frames.append(frame)
+        durations.append(83)
+        if caught_at is not None and t - caught_at > 0.05:
+            durations[-1] = 2200
+            break
+        t += dt
+    print(f"  stand-in: caught at {caught_at:.1f} s" if caught_at else "  stand-in: NOT caught")
+    save_gif(frames, durations, "standin.gif", colors=96, extra=[Image.new("RGB", frames[0].size, HAUNT), Image.new("RGB", frames[0].size, GREEN)])
+
+
+
+def make_join():
+    """hud-join.png: the start screen from GameHUD.DrawConnectMenu with two games found on the Wi-Fi."""
+    img = ui_canvas("01-PembertonCottage-outside.png", 0.6)
+    ui = UI(img)
+    x, y, w = 32, 32, 380
+    games = [("ALEK-DESKTOP", 2, "At HQ, picking a call"), ("Sams-Laptop", 1, "On a case at Pemberton Cottage")]
+    h = 300 + len(games) * 46
+    ui.box(x, y, w, h)
+    px_, yy = x + 16, y + 14
+    ui.text(px_, yy, "Unmasked", 34, "Bold"); yy += 48
+    ui.text(px_, yy, "A Halloween mystery. Host a game, or join a friend's.", 14, "Medium", MUTED); yy += 32
+    ui.box(px_, yy, w - 32, 38, ACCENT + (255,))
+    ui.text(px_ + (w - 32) / 2, yy + 19, "Host a game", 15, "Bold", ON_ACCENT, "mm"); yy += 56
+    ui.text(px_, yy, "Games on your Wi-Fi", 19, "Bold"); yy += 34
+    for name, n, status in games:
+        ui.text(px_, yy, f"{name} · {n} {'player' if n == 1 else 'players'}", 15, "Medium")
+        ui.text(px_, yy + 21, status, 13, "Medium", MUTED)
+        ui.box(x + w - 16 - 84, yy + 2, 84, 36, RAISED + (255,))
+        ui.text(x + w - 16 - 42, yy + 20, "Join", 14, "SemiBold", INK, "mm")
+        yy += 46
+    yy += 18
+    ui.text(px_, yy, "Or type an address", 13, "Medium", MUTED); yy += 22
+    ui.box(px_, yy, w - 32 - 78, 32, RAISED + (255,))
+    ui.text(px_ + 10, yy + 8, "192.168.1.20", 15, "Medium")
+    ui.box(x + w - 16 - 70, yy, 70, 32, RAISED + (255,))
+    ui.text(x + w - 16 - 60, yy + 8, "7777", 15, "Medium"); yy += 44
+    for lab in ("Join", "Run a dedicated server"):
+        ui.box(px_, yy, w - 32, 34, RAISED + (255,))
+        ui.text(px_ + (w - 32) / 2, yy + 17, lab, 14, "SemiBold", INK, "mm"); yy += 42
+    ui.done("hud-join.png", MOCK_NOTE)
+
+
+JOBS = {"hud": make_hud, "join": make_join, "moments": make_moments, "standin": make_standin, "tracker": make_tracker, "table": make_readme_table, "handbook": make_handbook, "rounds": make_rounds, "loop": make_loop, "cast": make_cast}
 
 if __name__ == "__main__":
     for job in sys.argv[1:] or list(JOBS):

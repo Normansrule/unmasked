@@ -24,7 +24,9 @@
 - [x] AI Director haunts the house when nobody plays the Haunter
 - [x] Solver roles: Sleuth clue sense, Techie ecto-detector, Brawn builder, Snacker interviews
 - [x] Procedural animations: walk bob, panic scramble, ghost float, dizzy stun, mask flies off
-- [ ] AI Haunter wears the costume and dodges the trap
+- [x] AI Haunter wears the costume and dodges the trap
+- [x] It finds its way through doorways, takes the bait only when nobody guards the trap, and can smell it and back off
+- [ ] Watch the stand-in in Unity and tune how often it backs off
 
 ## Milestone 5: The 3D world
 - [x] Blackwood Manor: cellar, ground floor, upstairs, roof (11 rooms)
@@ -99,7 +101,7 @@
 - [x] Hunches: each player pins their own suspicions without changing anyone else's board
 - [x] Night clock (8 PM to dawn at 6 AM) on the top bar
 - [x] Reference renders folder: house stills and a gameplay tour video
-- [ ] Storybook lighting pass (amber, teal, violet) on the cottage first
+- [x] Storybook lighting pass (amber, teal, violet), the whole town at once (round 33)
 - [ ] Original van look with keepsakes from solved cases
 
 ## Milestone 11: A bigger world
@@ -187,6 +189,111 @@
 - [x] Suspect Board works by keyboard in the game (arrows pick, H, X, C, A twice to accuse)
 - [x] Website remembers solved cases, shows each legend's portrait, and has a link preview picture
 - [ ] Check the board's swing and string in Unity, and turn the site on once the repo is public
+
+## Milestone 21: Ready for the first Unity session
+- [x] Smoke test that plays a whole night by itself: host, call, drive, clues, accusation, trap, unmasking, next night
+- [x] Any error or exception during the run fails it; saved progress is put back afterwards
+- [x] Unmasked > Check Project Data: every level, costume, case and font file loads
+- [x] `unmasked smoke` runs it headless from a terminal with an exit code
+- [x] Docs/FIRST_RUN.md: the first session step by step, and what to send back
+- [ ] Run the smoke test in Unity and fix whatever it finds
+
+## Milestone 22: The website's moving pictures
+- [x] "How a night goes" plays as a scroll-driven scene, dusk to dawn, with the timeline kept for phones and screen readers
+- [x] Solving a case knocks the Haunter's mask off the culprit's card
+- [x] Section headings set themselves word by word; the front-page board leans toward the mouse
+- [x] All of it switches off with reduced motion, and the site still passes axe in both modes
+- [ ] Watch it on a real phone and a slow laptop once the site is live
+
+## Milestone 23: Moments in the game
+- [x] An hour card under the phase bar for the van, the house, each hour of the investigation and the trap, worded for your side
+- [x] The unmasking plays out: the mask dips, flies off, and the culprit's name types in
+- [x] Both fall back to plain fades with Reduce motion on, and hide while the board or map is open
+- [ ] See both in Unity at 720p and 4K, and tune the timings by feel
+
+## Milestone 24: Playing together in one house
+- [x] Hosts announce themselves on the Wi-Fi, and the Join screen lists them with a one-click Join
+- [x] Each game shows the host's computer, how many are playing and what they're doing
+- [x] A different version shows up greyed out instead of failing to connect
+- [x] The last address you joined is remembered
+- [ ] Try it on two computers on one Wi-Fi, and check the Windows firewall prompt
+
+## Milestone 25: A town worth walking
+- [x] Seven new side streets, each laid only where it fits, with lamps, sidewalks and trick-or-treaters
+- [x] 35 more houses in five styles, each with a porch, path, mailbox, fence or hedge and a yard dressed by Wave Function Collapse
+- [x] Eight landmarks: corn maze, cemetery and crypt, mill pond, orchard, pumpkin farm, scout camp, hayride field, park
+- [x] Every part of town has a name, so "where am I?" always has an answer
+- [x] 24 lost lanterns to find, shown on the map once found
+- [ ] Walk the whole town in Unity and check the frame rate with the new houses
+
+## Milestone 26: The Club Book
+- [x] 34 challenges in six chapters, finished automatically, none of them timed or expiring
+- [x] Candy earned only by playing; a Wardrobe of 17 looks that everyone in the game sees
+- [x] A Play button on every house: the call list, the map card, the house challenges and the website
+- [x] A gentle "good place to stop" after three nights in a row, which can be turned off
+- [ ] Play ten nights and tune the candy prices so the Wardrobe takes a fair while, not forever
+
+## Milestone 27: Trick or treat
+- [x] A family, a house number and a porch light at all 35 doors on the new streets
+- [x] Knock where the light is on: a treat once per door per night, and who's home changes nightly
+- [x] Twelve Stories of Hollow Creek told at the doors, kept in the Club Book's Stories tab
+- [x] Neighbours who point you at the nearest lost lantern
+- [x] A Trick or treat chapter (six challenges), a pumpkin pail and a scarecrow hat, a knock sound
+- [ ] Knock on a few doors in Unity and check the prompt, the bowl and the bubble read well
+
+## Milestone 28: The storybook lighting pass
+- [x] A teal night: ambient, fog, moon, sky and mist; a teal-and-amber colour grade
+- [x] Toon shader: teal shadows, creek mist that lit windows shine through, a painted edge on lamplight
+- [x] Violet only for hauntings: fear, the haunted lot and the Haunter's own view (StoryLight)
+- [x] Amber near HQ and a gold swell at the unmasking
+- [x] Warm window light in several shades, curtains, a few television glows; the same windows lit on every build
+- [ ] See it in Unity and tune the mist, the edge and the haunting by eye
+
+## Milestone 29: Storybook cast and the Hook Board
+- [x] Storybook proportions for everyone: heads 1.3x, eyes 1.18x, hands 1.14x (make_costumes.py)
+- [x] A silhouette for each role: Sleuth capelet and coat, Techie headphones and aerials, Brawn gloves and boots, Snacker round with a bobble hat
+- [x] The Hook Board outside the Historical Society: 24 named hooks, hang found lanterns (+5 candy each)
+- [x] Every filled hook lowers the creek mist across town; all 24 makes the Club the new Lantern Watch
+- [x] Two new challenges (42 in all)
+- [ ] In Unity: check the board sits clear of the path and the bigger heads clear doorways and the van roof
+
+## Milestone 30: Wisps and moods
+- [x] Will-o'-the-wisps off the creek that lead to a lantern you've missed (or the Hook Board), between cases only
+- [x] A rumour about the creek lights and a Follow the light challenge (43 in all)
+- [x] Face moods: happy, worried, surprised and cross, the same for every suspect
+- [ ] In Unity: follow a wisp end to end and check it never gets stuck, and that the moods read at a few metres
+
+## Milestone 31: The carving bench and the trick-or-treaters
+- [x] A carving bench outside HQ: pick eyes, nose and mouth, see it on the bench, carve one a night
+- [x] A lit porch row along the HQ wall that keeps your last six jack-o'-lanterns
+- [x] Two new challenges (45 in all)
+- [x] Trick-or-treaters with storybook heads, real eyes, cheeks and a smile; mummy and bat costumes
+- [ ] In Unity: check the bench and porch sit clear of the door and the van, and the panel reads at every text size
+
+## Milestone 32: The club camera
+- [x] P takes a snapshot: flash, shutter, an instant photo that develops in the corner
+- [x] A twelve-frame album in the Club Book (landmarks, a neighbour, a wisp, the Hook Board, your porch)
+- [x] Neighbours turn and smile for the camera; suspects look startled, all alike
+- [x] Two new challenges (47 in all)
+- [ ] In Unity: check the photo crop, the album at every text size, and that walls block a sight
+
+## Milestone 33: The lamplighter
+- [x] Tobias Wick, the old lamplighter: stooped, greatcoat and muffler, flat cap, spectacles, mutton chops; blinks, talks and smiles (FaceLife)
+- [x] Twelve gas lamps on the creek bank by the Creekside Path, dark until you light them with his pole; they stay lit
+- [x] Lit lamps glow amber with a warm pool of light and two moths each; the dark ones show a blue pilot
+- [x] Bring the pole back with every lamp lit: the Lamplighter's cap, a Wardrobe look that's a gift, never sold
+- [x] A new challenge (48 in all), a thirteenth album frame, a map pin and lamps on the map, a Handbook hint
+- [x] With the whole path lit, the creek's wisps rise a little more often
+- [ ] In Unity: walk the path, check the lamp lights and Tobias's face, the pole on each role, and the cap on each head
+
+## Milestone 34: Past the edge of town
+- [x] Six haunted places joined to town by lit roads: Ravenhold Castle, the Moonlight Circus, Gloamwood Tower, Gull Harbor with Saltmarsh Lighthouse, Wreckers' Beach with Smugglers' Cave, Hag's Hollow
+- [x] Five wayside spots between them: the Nine Widows, a scarecrow field, a wishing well, Whisker Hill, an old mine
+- [x] 32 curiosities with little stories (E to examine), a Curiosities page in the Club Book, and the Explorer's hat for finding them all
+- [x] Moving pieces: flags, carousel, Ferris wheel, lighthouse beam, tower beacon, crane hook; first-visit stories and two climbs
+- [x] The map covers the whole world, with the places named and found curiosities starred; six new album frames; seven new challenges (55 in all)
+- [x] A character detail pass: two-tone irises, second glints, lower lashes, blush, fingernails, laces and cuffs, cuter trick-or-treaters
+- [ ] In Unity: drive every road, climb the lighthouse stair and the fire escape, check the moving pieces and the frame rate with the whole world loaded
 
 ## Release pipeline
 - [x] One-click test room generator

@@ -56,7 +56,7 @@ def stars(img, seed=5, n=60):
 # ---------------------------------------------------------------------------
 @timed("map")
 def make_map():
-    X0, X1, Z0, Z1 = -150.0, 110.0, -102.0, 292.0
+    X0, X1, Z0, Z1 = -158.0, 118.0, -104.0, 294.0
     W = 900
     H = int(W * (Z1 - Z0) / (X1 - X0))
     cx, cz = (X0 + X1) / 2, (Z0 + Z1) / 2
@@ -98,10 +98,22 @@ def make_map():
     street("MAIN STREET", 9.5, 60, 90)
     street("ELM STREET", -30, -9, 0)
     street("WILLOW LANE", 30, 98, 0)
-    street("~ Hollow Creek ~", -105, TOWN["creekZ"], 0)
+    street("~ Hollow Creek ~", -60, TOWN["creekZ"], 0)
+    # The side streets worldgen.py added
+    for text, x, z, ang in (("MILL ROAD", -79.0, -76, 90), ("HOLLOW LANE", -122, -60.5, 0), ("CHAPEL LANE", -118, 101.5, 0),
+                            ("ORCHARD ROAD", -118, 151.5, 0), ("PINE STREET", 22, 41.5, 0), ("ASH STREET", 47, 80, 90),
+                            ("BIRCH LANE", 107, -44, 90), ("FOUNDERS WAY", 22, -92.5, 0)):
+        if text.split()[0].title() + " " + text.split()[1].title() in TOWN.get("roads", []) or text == "FOUNDERS WAY":
+            street(text, x, z, ang)
     street("Town Square", -23, -40, 0)
     street("Church", -26, 50, 0)
     d = ImageDraw.Draw(img, "RGBA")
+
+    # Landmarks (worldgen.py): name over the middle, in lantern yellow
+    for lm in TOWN.get("landmarks", []):
+        (x0, z0), (x1, z1) = lm["min"], lm["max"]
+        px, py = P((x0 + x1) / 2, (z0 + z1) / 2)
+        label(d, (px, py), lm["n"].replace("Hatcher's ", ""), 13, (255, 214, 150))
 
     # Pins
     def pin(x, z, color, title, sub, dy=-34, big=True):
@@ -142,36 +154,38 @@ def make_map():
         w = d.textlength(text, font=font(11)) / 2 + 14
         label(d, (px + w if right else px - w, py), text, 11, PINK)
 
-    # Title, legend, compass, scale
-    d.rounded_rectangle([14, 14, 330, 92], radius=12, fill=(12, 10, 24, 225))
-    d.text((30, 22), "HOLLOW CREEK", font=font(30, "Black"), fill=(255, 236, 200))
-    d.text((31, 62), "Town map (press M in game)", font=font(14, "Bold"), fill=MUTED)
-    lx, ly = 14, H - 200
-    d.rounded_rectangle([lx, ly, lx + 300, ly + 186], radius=12, fill=(12, 10, 24, 225))
-    items = [(CYAN, "Mystery Club HQ (start)"), (ORANGE, "Haunted house (click for its card)"), (RED, "Tonight's call"),
-             (YELLOW, "Waypoint route for the van"), ((255, 190, 215), "Townsfolk (! = waiting on an errand)")]
-    for i, (col, txt) in enumerate(items):
-        y = ly + 18 + i * 24
-        if col == YELLOW:
-            d.line([(lx + 14, y), (lx + 34, y)], fill=col, width=4)
-        else:
-            d.ellipse([lx + 16, y - 7, lx + 30, y + 7], fill=col)
-        d.text((lx + 44, y), txt, font=font(13, "Bold"), fill=INK, anchor="lm")
-    y = ly + 18 + 5 * 24
-    for i, (size, col) in enumerate(SIZE_COL.items()):
-        d.rectangle([lx + 16 + i * 70, y - 6, lx + 28 + i * 70, y + 6], outline=col, width=2)
-        d.text((lx + 34 + i * 70, y), size, font=font(12, "Bold"), fill=col, anchor="lm")
-    d.text((lx + 16, y + 24), "Lots are drawn to scale. Roofs off: every room is built.", font=font(11, "Medium"), fill=MUTED, anchor="lm")
-    # compass
+    # Compass and scale on the map; the title and the key go in a strip under it, so they cover no streets
     cxp, cyp = W - 46, 50
     d.ellipse([cxp - 26, cyp - 26, cxp + 26, cyp + 26], fill=(12, 10, 24, 225))
     d.polygon([(cxp, cyp - 20), (cxp - 8, cyp + 6), (cxp + 8, cyp + 6)], fill=(255, 120, 90))
     d.text((cxp, cyp + 14), "N", font=font(12, "Bold"), fill=INK, anchor="mm")
-    # scale bar
     a, b = P(X1 - 70, Z0 + 10), P(X1 - 20, Z0 + 10)
     d.rounded_rectangle([a[0] - 10, a[1] - 22, b[0] + 10, a[1] + 10], radius=6, fill=(12, 10, 24, 200))
     d.line([a, b], fill=INK, width=3)
     d.text(((a[0] + b[0]) / 2, a[1] - 11), "50 m", font=font(12, "Bold"), fill=INK, anchor="mm")
+    FOOT = 138
+    full = Image.new("RGB", (W, H + FOOT), (12, 10, 24))
+    full.paste(img, (0, 0))
+    img = full
+    d = ImageDraw.Draw(img, "RGBA")
+    fy = H + 16
+    d.text((24, fy), "HOLLOW CREEK", font=font(30, "Black"), fill=(255, 236, 200))
+    d.text((25, fy + 40), "Town map (press M in game)", font=font(14, "Bold"), fill=MUTED)
+    d.text((25, fy + 64), "Lots are drawn to scale.", font=font(11, "Medium"), fill=MUTED)
+    d.text((25, fy + 80), "Roofs off: every room is built.", font=font(11, "Medium"), fill=MUTED)
+    items = [(CYAN, "Mystery Club HQ (start)"), (ORANGE, "Haunted house"), (RED, "Tonight's call"),
+             (YELLOW, "Route for the van"), ((255, 190, 215), "Townsfolk (! = errand)"), ((255, 214, 150), "Landmark to visit")]
+    for i, (col, txt) in enumerate(items):
+        x, y = 300 + (i // 3) * 210, fy + 10 + (i % 3) * 26
+        if col == YELLOW:
+            d.line([(x, y), (x + 20, y)], fill=col, width=4)
+        else:
+            d.ellipse([x + 3, y - 7, x + 17, y + 7], fill=col)
+        d.text((x + 30, y), txt, font=font(13, "Bold"), fill=INK, anchor="lm")
+    y = fy + 10 + 3 * 26 + 4
+    for i, (size, col) in enumerate(SIZE_COL.items()):
+        d.rectangle([303 + i * 80, y - 6, 315 + i * 80, y + 6], outline=col, width=2)
+        d.text((321 + i * 80, y), size, font=font(12, "Bold"), fill=col, anchor="lm")
     save_png(img, "town-map.png")
 
 

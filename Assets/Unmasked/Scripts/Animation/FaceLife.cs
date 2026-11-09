@@ -6,7 +6,10 @@ namespace Unmasked
     /// <summary>
     /// Small signs of life on the shape-built faces (make_costumes.py face()): the eyelids blink every
     /// few seconds (the lashes riding on them), the eyes glance at whoever is nearest the camera, and
-    /// the lips move and the brows lift a little while someone talks. Works on every outfit under
+    /// the lips move and the brows lift a little while someone talks. Since round 35 faces also show a
+    /// <see cref="Mood"/> for a few seconds (Feel): worried brows when a suspect is questioned, a smile
+    /// when a neighbour says thank you, wide eyes and an open mouth for everyone at the unmasking.
+    /// Works on every outfit under
     /// this object, so it follows a suspect's outfit swaps. Purely
     /// cosmetic and local; PawnAnimator adds it to every pawn and townsfolk can add it themselves.
     /// </summary>
@@ -16,9 +19,17 @@ namespace Unmasked
         {
             public Transform T;
             public Vector3 Pos, Scale;
+            public Quaternion Rot;
+            public float Side; // -1 for the left one, +1 for the right
         }
 
-        readonly List<Feature> lids = new(), lashes = new(), eyes = new(), lips = new(), brows = new();
+        /// <summary>What a face can show. Each is a few shapes: brow tilt and height, lid height, mouth.</summary>
+        public enum Mood { Calm, Happy, Worried, Surprised, Cross }
+
+        readonly List<Feature> lids = new(), lashes = new(), eyes = new(), lips = new(), brows = new(), cheeks = new();
+        Mood mood;
+        float moodUntil, moodWeight;
+        MatchPhase lastPhase;
         float nextBlink, blinkAt = -10f, talkFrom = -10f, talkUntil = -10f, nextScan;
         Vector2 look, lookTarget;
         float nextGlance;
@@ -39,6 +50,7 @@ namespace Unmasked
             eyes.Clear();
             lips.Clear();
             brows.Clear();
+            cheeks.Clear();
             foreach (var t in GetComponentsInChildren<Transform>(false))
             {
                 string n = t.name;
@@ -46,8 +58,10 @@ namespace Unmasked
                     : n == "LashL" || n == "LashR" ? lashes
                     : n == "EyeL" || n == "EyeR" || n == "IrisL" || n == "IrisR" || n == "PupilL" || n == "PupilR" || n == "GlintL" || n == "GlintR" ? eyes
                     : n == "Lips" ? lips
-                    : n == "BrowL" || n == "BrowR" ? brows : null;
-                if (list != null) list.Add(new Feature { T = t, Pos = t.localPosition, Scale = t.localScale });
+                    : n == "BrowL" || n == "BrowR" ? brows
+                    : n == "CheekL" || n == "CheekR" ? cheeks : null;
+                if (list != null)
+                    list.Add(new Feature { T = t, Pos = t.localPosition, Scale = t.localScale, Rot = t.localRotation, Side = n.EndsWith("L") ? -1f : 1f });
             }
             nextScan = Time.time + 3f;
         }
@@ -59,10 +73,38 @@ namespace Unmasked
             talkUntil = talkFrom + seconds;
         }
 
+        /// <summary>Show a mood for a while; it eases in and back out to calm.</summary>
+        public void Feel(Mood m, float seconds)
+        {
+            if (m != mood) moodWeight = 0f;
+            mood = m;
+            moodUntil = Time.time + seconds;
+        }
+
         void LateUpdate()
         {
             if (Time.time >= nextScan) Scan();
             float now = Time.time;
+
+            // Everyone gasps when the mask comes off.
+            var game = MysteryGameManager.Instance;
+            if (game != null && game.IsSpawned)
+            {
+                var phase = game.Phase.Value;
+                if (phase != lastPhase && phase == MatchPhase.Unmasking) Feel(Mood.Surprised, Random.Range(2.5f, 3.5f));
+                lastPhase = phase;
+            }
+            moodWeight = Mathf.MoveTowards(moodWeight, now < moodUntil && mood != Mood.Calm ? 1f : 0f, Time.deltaTime * 4f);
+            float w = moodWeight;
+            // Per mood: brow tilt (+ raises the inner ends), brow lift, lid lift, mouth open, mouth width, cheek lift.
+            float tilt = 0f, browUp = 0f, lidUp = 0f, mouthOpen = 0f, mouthWide = 0f, cheekUp = 0f;
+            switch (mood)
+            {
+                case Mood.Happy: browUp = 0.004f; mouthWide = 0.25f; cheekUp = 0.008f; break;
+                case Mood.Worried: tilt = 14f; browUp = 0.004f; mouthWide = -0.15f; break;
+                case Mood.Surprised: browUp = 0.016f; lidUp = 0.008f; mouthOpen = 1.4f; mouthWide = -0.25f; break;
+                case Mood.Cross: tilt = -16f; browUp = -0.006f; lidUp = -0.005f; mouthWide = -0.1f; break;
+            }
 
             // Blink: a quick close and open, sometimes twice in a row.
             if (now >= nextBlink)
@@ -76,7 +118,7 @@ namespace Unmasked
             {
                 if (f.T == null) continue;
                 // The lid sits just above the eye: slide it down over the eye and stretch it to cover.
-                f.T.localPosition = f.Pos + Vector3.down * 0.024f * closed;
+                f.T.localPosition = f.Pos + Vector3.down * 0.024f * closed + Vector3.up * lidUp * w * (1f - closed);
                 f.T.localScale = Vector3.Scale(f.Scale, new Vector3(1f, 1f + 1.2f * closed, 1.1f));
             }
             // The lashes ride on the lid's lower edge.
@@ -105,9 +147,16 @@ namespace Unmasked
             bool talking = now >= talkFrom && now < talkUntil;
             float open = talking ? Mathf.Abs(Mathf.Sin(now * 13f) * 0.6f + Mathf.Sin(now * 7.3f) * 0.4f) : 0f;
             foreach (var f in lips)
-                if (f.T != null) f.T.localScale = Vector3.Scale(f.Scale, new Vector3(1f + 1.6f * open, 1f, 1f));
+                if (f.T != null) f.T.localScale = Vector3.Scale(f.Scale, new Vector3(1f + 1.6f * open + mouthOpen * w, 1f + mouthWide * w, 1f));
             foreach (var f in brows)
-                if (f.T != null) f.T.localPosition = f.Pos + Vector3.up * 0.006f * open;
+            {
+                if (f.T == null) continue;
+                f.T.localPosition = f.Pos + Vector3.up * (0.006f * open + browUp * w);
+                // The left brow's inner end is on its +x side, the right one's on its -x side.
+                f.T.localRotation = Quaternion.Euler(0f, 0f, -f.Side * tilt * w) * f.Rot;
+            }
+            foreach (var f in cheeks)
+                if (f.T != null) f.T.localPosition = f.Pos + Vector3.up * cheekUp * w;
         }
     }
 }

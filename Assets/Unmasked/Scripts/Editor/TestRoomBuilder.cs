@@ -120,6 +120,7 @@ namespace Unmasked.EditorTools
             var hud = new GameObject("HUD");
             hud.AddComponent<GameHUD>();
             hud.AddComponent<Handbook>();
+            hud.AddComponent<ClubBook>();
 
             var managerGo = new GameObject("MysteryGameManager");
             managerGo.AddComponent<NetworkObject>();

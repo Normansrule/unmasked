@@ -139,6 +139,11 @@
    "id": "unmask",
    "loop": false,
    "where": "the unmasking"
+  },
+  {
+   "id": "knock",
+   "loop": false,
+   "where": "knocking on a front door for trick-or-treat"
   }
  ]
 }

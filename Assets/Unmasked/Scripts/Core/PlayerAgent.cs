@@ -24,6 +24,8 @@ namespace Unmasked
         public readonly NetworkVariable<bool> ScaredOut = new();
         public readonly NetworkVariable<int> CluesFound = new();
         public readonly NetworkVariable<int> CarriedTrapPieces = new();
+        /// <summary>The look this player picked in their Club Book wardrobe (ClubLook.Pack). Cosmetic only.</summary>
+        public readonly NetworkVariable<int> Look = new();
 
         /// <summary>Server only: the pawn this player currently controls.</summary>
         public NetworkObject Pawn { get; set; }
@@ -84,6 +86,13 @@ namespace Unmasked
         public void ChooseVillainRpc(VillainKind villain, RpcParams p = default)
         {
             if (Accept(p)) MysteryGameManager.Instance.HandleVillainChoice(this, villain);
+        }
+
+        /// <summary>Show everyone the look you put on in the Club Book. Earned with candy, cosmetic only.</summary>
+        [Rpc(SendTo.Server)]
+        public void SetLookRpc(int look, RpcParams p = default)
+        {
+            if (Accept(p) && ClubLook.Valid(look)) Look.Value = look;
         }
 
         /// <summary>Hollow Creek: pick tonight's call on the HQ call board.</summary>

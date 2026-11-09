@@ -126,9 +126,23 @@
       byId("s1").classList.add("left");
     };
     const drawAll = (animate) => {
+      hero.classList.add("measuring"); // the string is measured on screen, so measure the board flat
       svg.replaceChildren();
       links.forEach(([c, s], i) => string(svg, byId(c), byId(s), { draw: animate, delay: i * 220 + (i > 1 ? 260 : 0) }));
+      void hero.offsetWidth;
+      hero.classList.remove("measuring");
     };
+    // The board leans a few degrees toward a mouse, like a corkboard propped on a desk.
+    if (matchMedia("(pointer: fine)").matches) {
+      hero.classList.add("tilt");
+      hero.addEventListener("pointermove", (e) => {
+        if (still()) return;
+        const r = hero.getBoundingClientRect();
+        hero.style.setProperty("--tx", (((e.clientX - r.left) / r.width - 0.5) * 8).toFixed(2) + "deg");
+        hero.style.setProperty("--ty", (-((e.clientY - r.top) / r.height - 0.5) * 6).toFixed(2) + "deg");
+      });
+      hero.addEventListener("pointerleave", () => { hero.style.removeProperty("--tx"); hero.style.removeProperty("--ty"); });
+    }
     const play = () => {
       if (played) return;
       played = true;
@@ -229,8 +243,8 @@
     start(order[i]);
   }
 
-  function start(c) {
-    const legend = game.legends[Math.floor(Math.random() * game.legends.length)];
+  function start(c, legendId) {
+    const legend = game.legends.find((l) => l.id === legendId) || game.legends[Math.floor(Math.random() * game.legends.length)];
     S = {
       c, legend,
       culprit: Math.floor(Math.random() * 4),
@@ -390,9 +404,30 @@
     say("");
     refresh();
     Swing.push(li, 50);
+    if (won) maskOff(li);
     $$(".case-tab", tabsEl)[current].classList.toggle("solved", solved.has(c.id));
     v.focus({ preventScroll: true });
     v.scrollIntoView({ block: "nearest", behavior: still() ? "auto" : "smooth" });
+  }
+
+  /* The Haunter's mask comes off the culprit's card: a held breath, a little dip, then up and away. */
+  function maskOff(li) {
+    const fx = document.createElement("div");
+    fx.className = "unmask-fx";
+    fx.setAttribute("aria-hidden", "true");
+    fx.innerHTML = '<svg viewBox="0 0 96 40"><path fill="currentColor" d="M4 10 Q48 -6 92 10 Q96 30 74 34 Q60 34 54 24 Q48 20 42 24 Q36 34 22 34 Q0 30 4 10Z"/><ellipse cx="28" cy="19" rx="9" ry="6" fill="var(--sheet)"/><ellipse cx="68" cy="19" rx="9" ry="6" fill="var(--sheet)"/></svg>';
+    li.appendChild(fx);
+    const done = () => fx.remove();
+    if (!fx.animate) return setTimeout(done, 900);
+    const frames = still()
+      ? [{ opacity: 1 }, { opacity: 1, offset: 0.5 }, { opacity: 0 }]
+      : [
+          { transform: "translate(0, 0) rotate(0deg) scale(1)", opacity: 1 },
+          { transform: "translate(0, 6px) rotate(3deg) scale(1.04, .94)", opacity: 1, offset: 0.22, easing: "cubic-bezier(.3,0,.2,1)" },
+          { transform: "translate(0, -14px) rotate(-6deg) scale(.96, 1.06)", opacity: 1, offset: 0.4, easing: "cubic-bezier(.2,.7,.2,1)" },
+          { transform: "translate(90px, -220px) rotate(-38deg) scale(.8)", opacity: 0 },
+        ];
+    fx.animate(frames, { duration: still() ? 900 : 1100, easing: "linear", fill: "forwards" }).finished.then(done, done);
   }
 
   file.addEventListener("click", (e) => {
@@ -418,8 +453,54 @@
         <p class="where">${esc(h.street || "")}${h.size ? ` · ${esc(h.size)}` : ""}${h.floors ? `, ${h.floors} ${h.floors === 1 ? "floor" : "floors"}` : ""}</p>
         ${h.blurb ? `<p>${esc(h.blurb)}</p>` : ""}
         <p class="calls">Cases here: <b>${esc(listNames(cases))}</b></p>
+        <p class="play-row">${game.cases.filter((c) => c.house === h.id).map((c) =>
+          `<button class="btn btn-small${c.visit > 1 ? "" : " btn-primary"}" type="button" data-play-case="${esc(c.id)}">Play: ${esc(c.name)}</button>`).join("")}</p>
       </li>`;
     }).join("");
+  }
+
+  /* Every house, legend and challenge has a Play button: it opens that case on the Suspect Board. */
+  function playCase(caseId, legendId) {
+    let i = caseId ? order.findIndex((c) => c.id === caseId) : current;
+    if (i < 0) i = current;
+    select(i);
+    if (legendId) start(order[i], legendId);
+    $("#play").scrollIntoView({ behavior: still() ? "auto" : "smooth", block: "start" });
+    $$(".case-tab", tabsEl)[i]?.focus({ preventScroll: true });
+    say(`${order[i].name} is open on the Suspect Board${legendId ? ", with " + S.legend.name : ""}.`);
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-play-case]");
+    if (!b || !order.length) return;
+    e.preventDefault();
+    playCase(b.dataset.playCase, b.dataset.playLegend);
+  });
+
+  function renderTown() {
+    const club = game.club;
+    if (!club) return;
+    $("[data-places]").innerHTML = club.landmarks.map((l) => `<li><b>${esc(l.name)}</b><span>${esc(l.district)}</span></li>`).join("");
+    $("[data-lanterns]").innerHTML = nums(`${club.lanterns} lost lanterns are hidden around ${club.streets} streets and ${club.districts.length} parts of town.`);
+    if (club.tales && club.tales.length) {
+      $("[data-doors]").innerHTML = nums(`${club.doors} front doors to knock on. Where the porch light is on, somebody's home with a treat, and ${club.tales.length} families tell one of the Stories of Hollow Creek. This is the first:`);
+      const t = club.tales[0];
+      $("[data-tale]").innerHTML = `<p><b>${esc(t.title)}.</b> ${nums(esc(t.text))}</p>`;
+    }
+    const total = club.chapters.reduce((n, c) => n + c.items.length, 0);
+    const candy = club.chapters.reduce((n, c) => n + c.items.reduce((m, it) => m + it.reward, 0), 0);
+    $("[data-club-lead]").innerHTML = nums(`${total} challenges in ${club.chapters.length} chapters, worth ${candy} candy. None of them expire, nothing is lost for taking a break, and after three nights the game suggests a good place to stop.`);
+    const first = Object.fromEntries(order.filter((c) => c.visit === 1).map((c) => [c.house, c.id]));
+    $("[data-chapters]").innerHTML = club.chapters.map((ch) => `<li class="chapter">
+      <h4>${esc(ch.name)}</h4>
+      <p class="blurb">${esc(ch.blurb)}</p>
+      <ul>${ch.items.map((it) => `<li><span><b>${esc(it.title)}</b> ${esc(it.text)}</span><span class="reward">${nums("+" + it.reward)}</span>${
+        it.house && first[it.house] ? `<button class="btn btn-small" type="button" data-play-case="${esc(first[it.house])}">Play</button>` : ""}</li>`).join("")}</ul>
+    </li>`).join("");
+    const slots = { hat: "Hat", back: "On your back", beam: "Flashlight beam" };
+    $("[data-wardrobe]").innerHTML = club.wardrobe.map((w) => `<li>
+      <span class="swatch" style="--a:${esc(w.a)};--b:${esc(w.b)}" aria-hidden="true"></span>
+      <b>${esc(w.name)}</b><span class="slot">${esc(slots[w.slot] || w.slot)}</span><span class="price">${w.gift ? "A gift" : nums(String(w.price)) + " candy"}</span>
+    </li>`).join("");
   }
 
   // Atkinson's zero is slashed for legibility, which reads oddly in years: set numbers in Fraunces.
@@ -434,6 +515,7 @@
       <p class="origin">${nums(esc(l.origin))}</p>
       <p>${esc(l.legend)}</p>
       <p class="power">${esc(l.power)}: <span>${esc(l.powerBlurb)}</span></p>
+      <p><button class="btn btn-small" type="button" data-play-case="" data-play-legend="${esc(l.id)}">Play against ${esc(l.name)}</button></p>
       </div>
     </li>`).join("");
   }
@@ -478,6 +560,136 @@
     draw(false);
   }
 
+  /* ---------------- The night, told by scrolling ----------------
+     On wide screens with motion on, the stage sticks while #night scrolls past it, and the scroll
+     position is the clock: dusk at HQ, the van, the house, clues, string, the accusation, the trap
+     and the unmasking at dawn. The timeline list stays in the page for screen readers. */
+  (() => {
+    const night = $("#night"), nf = $("[data-nightfall]", night);
+    if (!nf) return;
+    const wide = matchMedia("(min-width: 861px)");
+    const el = Object.fromEntries($$("[data-nf]", nf).map((n) => [n.dataset.nf, n]));
+    const chapters = $$(".clock li", night).map((li) => ({ time: $("time", li).textContent, title: $("h3", li).textContent, text: $("p", li).textContent }));
+    const N = chapters.length;
+    const card = $("[data-nf-card]", nf), steps = $("[data-nf-steps]", nf);
+    steps.innerHTML = chapters.map(() => "<li></li>").join("");
+    Swing.add(card);
+
+    // Stars: the same sky every visit (a small seeded random).
+    let seed = 7;
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    el.stars.innerHTML = Array.from({ length: 46 }, () => `<circle cx="${(rnd() * 1600).toFixed(0)}" cy="${(rnd() * 470).toFixed(0)}" r="${(0.8 + rnd() * 1.6).toFixed(1)}" opacity="${(0.35 + rnd() * 0.65).toFixed(2)}"/>`).join("");
+
+    const clamp = (v) => Math.max(0, Math.min(1, v));
+    const smooth = (v) => v * v * (3 - 2 * v);
+    const mix = (a, b, k) => a.map((x, i) => Math.round(x + (b[i] - x) * k));
+    const rgb = (c) => `rgb(${c.join(",")})`;
+    const DUSK = [58, 42, 69], MIDNIGHT = [18, 14, 28], DAWN = [70, 46, 62];
+    const bounce = (k) => { // a crate landing: one big drop, one small hop
+      if (k < 0.72) return (k / 0.72) ** 2;
+      const u = (k - 0.86) / 0.14;
+      return 1 - 0.07 * (1 - u * u);
+    };
+    let T = -1, chapter = -1, on = false, raf = 0;
+
+    function paint() {
+      raf = 0;
+      const r = nf.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const t = clamp(-r.top / (r.height - innerHeight));
+      const now = t * N;
+      if (Math.abs(now - T) < 0.0005) return;
+      T = now;
+      const at = (a, b) => smooth(clamp((T - a) / (b - a)));
+      const set = (n, k, v) => n.setAttribute(k, v);
+
+      el.sky.setAttribute("fill", rgb(T < 6.5 ? mix(DUSK, MIDNIGHT, at(0, 3)) : mix(MIDNIGHT, DAWN, at(6.5, 8))));
+      set(el.dawn, "opacity", (at(6.8, 8) * 0.42).toFixed(3));
+      set(el.stars, "opacity", (at(0.4, 2) * (1 - at(6.9, 8))).toFixed(3));
+      set(el.moon, "cy", (520 - 380 * at(0, 4.5) + 260 * at(6.2, 8)).toFixed(1));
+
+      // The van leaves HQ and parks before tonight's house, with a little bob on the way.
+      const drive = at(1, 2.1), vx = 300 + 650 * drive;
+      const bob = drive > 0 && drive < 1 ? Math.sin(vx / 9) * 1.4 : 0;
+      set(el.van, "transform", `translate(${vx.toFixed(1)} ${(698 + bob).toFixed(1)})`);
+
+      set(el.lit, "opacity", at(1.7, 2.4).toFixed(3));
+      set(el.people, "opacity", at(2, 2.7).toFixed(3));
+
+      // A flashlight sweeps the porch.
+      const sweep = at(3, 4.2);
+      set(el.cone, "opacity", (at(2.9, 3.25) * (1 - at(4.2, 4.7)) * 0.3).toFixed(3));
+      set(el.cone, "transform", `translate(960 690) rotate(${(-22 + 26 * sweep + Math.sin(T * 6) * 3).toFixed(2)})`);
+      set(el.clues, "opacity", at(3.3, 3.8).toFixed(3));
+      $$("path", el.strings).forEach((p, i) => { p.style.strokeDashoffset = (1 - at(4 + i * 0.22, 4.6 + i * 0.22)).toFixed(3); });
+
+      // The accusation: a red ring on one neighbour, the others fade back; then they slip away.
+      const accuse = at(5, 5.4), gone = at(5.6, 6);
+      set(el.ring, "opacity", (accuse * (1 - gone)).toFixed(3));
+      ["p0", "p2", "p3"].forEach((id) => set(el[id], "opacity", (1 - 0.6 * accuse).toFixed(3)));
+      set(el.p1, "opacity", (1 - gone).toFixed(3));
+
+      // The trap: the Haunter steps out onto the road, and the crate comes down.
+      const hx = 620 + 140 * at(5.8, 6.6);
+      set(el.haunter, "opacity", at(5.8, 6.2).toFixed(3));
+      set(el.haunter, "transform", `translate(${hx.toFixed(1)} 762)`);
+      const drop = clamp((T - 6.4) / 0.45);
+      set(el.crate, "opacity", T < 6.4 ? "0" : "1");
+      set(el.crate, "transform", `translate(${hx.toFixed(1)} ${(762 - 300 * (1 - bounce(drop))).toFixed(1)})`);
+
+      // The unmasking: the mask lifts, turns and flies off.
+      const off = at(7, 7.7);
+      set(el.mask, "transform", `translate(${(70 * off).toFixed(1)} ${(-150 * off).toFixed(1)}) rotate(${(-50 * off).toFixed(1)} 0 -106)`);
+      set(el.mask, "opacity", (1 - at(7.5, 7.9)).toFixed(3));
+      set(el.party, "opacity", at(7.3, 7.8).toFixed(3));
+
+      const c = Math.min(N - 1, Math.floor(T));
+      if (c !== chapter) show(c, chapter);
+    }
+
+    function show(c, before) {
+      chapter = c;
+      $$("li", steps).forEach((li, i) => { li.className = i < c ? "past" : i === c ? "now" : ""; });
+      const fill = () => {
+        $("[data-nf-time]", card).textContent = chapters[c].time;
+        $("[data-nf-title]", card).textContent = chapters[c].title;
+        $("[data-nf-text]", card).textContent = chapters[c].text;
+        card.classList.remove("swap");
+      };
+      if (before < 0) return fill();
+      card.classList.add("swap");
+      setTimeout(fill, 90);
+      Swing.push(card, c > before ? 24 : -24);
+    }
+
+    const onScroll = () => { if (on && !raf) raf = requestAnimationFrame(paint); };
+    function mode() {
+      on = wide.matches && !still();
+      nf.hidden = !on;
+      night.classList.toggle("cinema", on);
+      T = -1;
+      if (on) paint();
+    }
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    wide.addEventListener("change", mode);
+    motionQuery.addEventListener("change", mode);
+    mode();
+  })();
+
+  /* ---------------- Headlines set themselves, a word at a time ---------------- */
+  if (!still() && "IntersectionObserver" in window) {
+    const heads = $$(".sec-head h2");
+    heads.forEach((h) => {
+      const words = h.textContent.trim().split(/\s+/);
+      h.setAttribute("aria-label", h.textContent.trim());
+      h.innerHTML = words.map((w, i) => `<span class="w" aria-hidden="true" style="--i:${i}">${esc(w)}</span>`).join(" ");
+      h.classList.add("words");
+    });
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -12% 0px" });
+    heads.forEach((h) => io.observe(h));
+  }
+
   /* ---------------- Copy buttons ---------------- */
   $$("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
     const code = btn.parentElement.querySelector("code");
@@ -503,6 +715,7 @@
       show("ready");
       select(0);
       renderHouses();
+      renderTown();
       renderLegends();
       renderProgress();
     } catch (err) {
@@ -513,7 +726,7 @@
         : `The cases didn't load. ${esc(err.message || "")} Try again in a moment.`;
       show("error");
       const later = "<li class=\"later\">This part loads with the case files.</li>";
-      ["[data-houses]", "[data-legends]", "[data-milestones]"].forEach((sel) => { $(sel).innerHTML = later; });
+      ["[data-houses]", "[data-legends]", "[data-milestones]", "[data-chapters]"].forEach((sel) => { $(sel).innerHTML = later; });
     }
   }
   init();

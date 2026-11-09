@@ -757,6 +757,36 @@ def face(skin, y=1.78, eyes=rgb("#3a2a1e")):
             part("LidLow" + side, "capsule", (x, y + 0.006, 0.148), (0.01, 0.03, 0.012), shade(skin, 0.93), r=(0, 0, 90)),
             part("Brow" + side, "capsule", (x * 1.05, y + 0.087, 0.15), (0.016, 0.046, 0.018), brow, r=(0, 0, 90 + (-7 if x < 0 else 7))),
         ]
+    out += face_details(skin, y, eyes, brow, lip)
+    return out
+
+
+def face_details(skin, y, eyes, brow, lip):
+    """
+    Round 39's detail pass (realistic-cute): a lighter lower half to each iris, a second little
+    glint, lower lashes, a lid crease, a soft pink blush, a two-tone brow, a shine on the nose tip
+    and the upper lip, and smile corners. Names follow FaceLife: the extra glint is "Glint<side>"
+    (it follows the gaze), the brow tone is "Brow<side>" (it lifts with the brow) and the blush is
+    "Cheek<side>" (it rises with a smile); IrisLow, LowerLash and Crease grow with the eyes in
+    storybook() (EYE_PARTS).
+    """
+    pink = mix(skin, [0.96, 0.56, 0.56], 0.2)
+    out = [
+        part("NoseShine", "sphere", (0, y - 0.02, 0.191), (0.01, 0.008, 0.006), mix(skin, [1, 1, 1], 0.35)),
+        part("LipShine", "capsule", (0.006, y - 0.083, 0.165), (0.005, 0.014, 0.005), mix(lip, [1, 1, 1], 0.4), r=(0, 0, 90)),
+        part("SmileL", "capsule", (-0.046, y - 0.086, 0.14), (0.006, 0.012, 0.006), shade(skin, 0.55), r=(0, 0, -40)),
+        part("SmileR", "capsule", (0.046, y - 0.086, 0.14), (0.006, 0.012, 0.006), shade(skin, 0.55), r=(0, 0, 40)),
+    ]
+    for side, x in (("L", -0.062), ("R", 0.062)):
+        sx = -1 if x < 0 else 1
+        out += [
+            part("IrisLow" + side, "sphere", (x, y + 0.016, 0.1605), (0.019, 0.011, 0.006), shade(eyes, 2.1)),
+            part("Glint" + side, "sphere", (x - 0.009, y + 0.014, 0.1645), (0.0045, 0.0045, 0.003), rgb("#ffffff"), "emissive", e=0.6),
+            part("LowerLash" + side, "capsule", (x + sx * 0.012, y + 0.002, 0.151), (0.004, 0.018, 0.004), rgb("#3a2a2a"), r=(0, 0, 90 - sx * 12)),
+            part("Crease" + side, "capsule", (x, y + 0.071, 0.143), (0.005, 0.034, 0.006), shade(skin, 0.78), r=(0, 0, 90 + sx * 4)),
+            part("Brow" + side, "capsule", (x * 1.02, y + 0.093, 0.153), (0.008, 0.034, 0.01), mix(brow, [1, 1, 1], 0.18), r=(0, 0, 90 + (-7 if x < 0 else 7))),
+            part("Cheek" + side, "sphere", (sx * 0.088, y - 0.044, 0.124), (0.058, 0.034, 0.016), pink),
+        ]
     return out
 
 
@@ -768,6 +798,9 @@ def hand(n, at, skin, side):
            part(n + "Knuckles", "capsule", (x + sx * 0.004, y - 0.045, z + 0.004), (0.05, 0.04, 0.05), shade(skin, 0.96), r=(90, 0, 0))]
     for i, (dz, ln) in enumerate(((0.03, 0.075), (0.01, 0.085), (-0.01, 0.08), (-0.028, 0.065))):
         out.append(limb(n + "Finger" + str(i + 1), "capsule", (x + sx * 0.002, y - 0.05, z + dz), (-sx * 0.12, -1, 0.06), ln, 0.022, skin))
+        k = ln / math.sqrt(0.12 ** 2 + 1 + 0.06 ** 2)  # fingernail near the tip, on the back of the finger
+        out.append(part(n + "Nail" + str(i + 1), "sphere", (x + sx * 0.002 - sx * 0.12 * k * 0.85 + sx * 0.008, y - 0.05 - k * 0.85, z + dz + 0.06 * k * 0.85),
+                        (0.008, 0.014, 0.013), mix(skin, [1.0, 0.82, 0.8], 0.4)))
     out.append(limb(n + "Thumb", "capsule", (x - sx * 0.02, y - 0.015, z + 0.035), (-sx * 0.3, -0.9, 0.35), 0.06, 0.028, skin))
     return out
 
@@ -806,6 +839,7 @@ def person(top, bottom, skin, shoes=rgb("#2a1d14"), dress=False):
             limb("Forearm" + side, "capsule", elbow, tuple(w - e for w, e in zip(wrist, elbow)), 0.24, 0.115, top),
             part("Cuff" + side, "cyl", (wrist[0], wrist[1] + 0.02, wrist[2]), (0.115, 0.02, 0.115), collar),
             part("Wrist" + side, "cyl", (wrist[0], wrist[1] - 0.015, wrist[2]), (0.07, 0.02, 0.07), shade(skin, 0.95)),
+            part("ElbowFold" + side, "capsule", (elbow[0] + sx * 0.012, elbow[1] + 0.03, elbow[2] + 0.05), (0.012, 0.045, 0.012), shade(top, 0.82), r=(0, 0, 90 - sx * 20)),
         ] + hand("Hand" + side, (sx * 0.45, 0.93, 0.03), skin, side)
     if dress:
         base += [part("Skirt", "cyl", (0, 0.62, 0), (0.6, 0.32, 0.58), bottom),
@@ -818,12 +852,22 @@ def person(top, bottom, skin, shoes=rgb("#2a1d14"), dress=False):
             base += [limb("Ankle" + side, "capsule", (sx * 0.1, 0.3, 0), (0, -1, 0), 0.22, 0.09, skin),
                      part("Shoe" + side, "box", (sx * 0.1, 0.045, 0.04), (0.12, 0.08, 0.22), shoes),
                      part("ShoeToe" + side, "sphere", (sx * 0.1, 0.045, 0.14), (0.12, 0.08, 0.09), shoes),
-                     part("ShoeHeel" + side, "box", (sx * 0.1, 0.03, -0.06), (0.06, 0.06, 0.05), shade(shoes, 0.6))]
+                     part("ShoeHeel" + side, "box", (sx * 0.1, 0.03, -0.06), (0.06, 0.06, 0.05), shade(shoes, 0.6)),
+                     part("ShoeStrap" + side, "box", (sx * 0.1, 0.09, 0.07), (0.125, 0.012, 0.03), shade(shoes, 0.7)),
+                     part("ShoeButton" + side, "sphere", (sx * 0.1 + sx * 0.05, 0.09, 0.07), (0.016, 0.016, 0.016), rgb("#d8c48a"))]
     else:
         base += [part("Belt", "cyl", (0, 0.98, 0), (0.47, 0.03, 0.33), shade(bottom, 0.5)),
                  part("BeltBuckle", "box", (0, 0.98, 0.165), (0.06, 0.045, 0.02), rgb("#b8a060")),
                  part("Fly", "box", (0, 0.88, 0.16), (0.02, 0.12, 0.01), shade(bottom, 0.75))]
         base += legs(bottom, shoes, 0.12, 0.88)
+        lace, sock = mix(shoes, [1, 1, 1], 0.75), rgb("#e8e2d6")
+        for side, x in (("L", -0.12), ("R", 0.12)):  # laces over a tongue, a pale stripe round the sole, sock cuffs, a fold behind the knee
+            base += [part("Tongue" + side, "box", (x, 0.185, 0.07), (0.1, 0.02, 0.1), shade(shoes, 1.15), r=(-12, 0, 0)),
+                     part("LaceA" + side, "box", (x, 0.19, 0.08), (0.11, 0.012, 0.014), lace, r=(-12, 28, 0)),
+                     part("LaceB" + side, "box", (x, 0.19, 0.08), (0.11, 0.012, 0.014), lace, r=(-12, -28, 0)),
+                     part("SoleStripe" + side, "box", (x, 0.034, 0.06), (0.215, 0.012, 0.37), mix(shoes, [1, 1, 1], 0.6)),
+                     part("Sock" + side, "cyl", (x * 1.03, 0.2, 0.01), (0.15, 0.025, 0.15), sock),
+                     part("KneeFold" + side, "capsule", (x * 1.03, 0.47, 0.105), (0.01, 0.05, 0.01), shade(bottom, 0.8), r=(0, 0, 90))]
         for side, x in (("L", -0.12), ("R", 0.12)):  # pressed creases down the front of each leg
             base += [limb("Crease" + side, "box", (x, 0.86, 0.105), (x * 0.08, -1, 0.0), 0.4, 0.01, shade(bottom, 0.78)),
                      limb("ShinCrease" + side, "box", (x * 1.03, 0.46, 0.105), (0, -1, -0.04), 0.3, 0.01, shade(bottom, 0.78))]
@@ -845,9 +889,29 @@ def spectacles(c, y=1.805, z=0.165, round_rims=False):
 
 def hair(style, c, y=1.78):
     """Hair that frames the face instead of a helmet: a crown, the back of the head, and per style
-    sideburns, a fringe, side curtains or a fall down the back."""
+    sideburns, a fringe, side curtains or a fall down the back. Since round 39 every style but bald
+    also gets a shine streak across the crown and a few soft tufts and flyaways."""
     if style == "none":
         return []
+    return hair_shape(style, c, y) + hair_details(style, c, y)
+
+
+def hair_details(style, c, y):
+    if style in ("bald", "none"):
+        return []
+    shine = mix(c, [1, 1, 1], 0.32)
+    out = [part("HairShine", "capsule", (-0.04, y + 0.2, 0.06), (0.025, 0.09, 0.03), shine, r=(-30, 0, 70)),
+           part("HairTuft1", "capsule", (0.02, y + 0.235, 0.0), (0.03, 0.06, 0.03), c, r=(-25, 0, -20)),
+           part("HairTuft2", "capsule", (0.07, y + 0.215, -0.04), (0.025, 0.05, 0.025), shade(c, 0.9), r=(10, 0, -45))]
+    if style in ("short", "parted", "curly"):
+        out.append(part("HairFlyaway", "capsule", (-0.13, y + 0.16, 0.03), (0.015, 0.04, 0.015), c, r=(0, 0, 50)))
+    if style in ("bob", "long", "updo"):
+        out += [part("HairStrandL", "capsule", (-0.115, y + 0.0, 0.11), (0.018, 0.07, 0.018), c, r=(0, 0, -6)),
+                part("HairStrandR", "capsule", (0.115, y + 0.0, 0.11), (0.018, 0.07, 0.018), c, r=(0, 0, 6))]
+    return out
+
+
+def hair_shape(style, c, y=1.78):
     dark = shade(c, 0.8)
     out = []
     if style != "bald":
@@ -900,6 +964,44 @@ def fit(parts, height=1.0, build=1.0):
     return out
 
 
+# Storybook proportions (round 34): a bigger head and eyes and slightly bigger hands, so faces read
+# from across a street and every character looks like it stepped out of a picture book. The head
+# grows about the top of the neck, so collars, scarves and the neck itself stay where they were,
+# and hats, hair and spectacles grow with it (ClubLook.cs fits earned hats to the head's bounds).
+STORY_HEAD = 1.3
+STORY_EYES = 1.18
+STORY_HANDS = 1.14
+STORY_PIVOT = (0.0, 1.6, 0.0)
+NOT_HEAD = ("Antenna",)  # things at head height that aren't on the head (the Techie's backpack aerial)
+EYE_PARTS = ("EyeWhite", "Eye", "Iris", "Pupil", "Glint", "Lid", "Lash", "LidLow", "IrisLow", "LowerLash", "Crease")
+
+
+def _grow(q, about, k):
+    p = [a + (v - a) * k for v, a in zip(q["p"], about)]
+    return dict(q, p=[round(v, 4) for v in p], s=[round(v * k, 4) for v in q["s"]])
+
+
+def storybook(parts):
+    """Applies STORY_HEAD, STORY_EYES and STORY_HANDS to a person's parts (before fit())."""
+    out = []
+    for q in parts:
+        n = q["n"]
+        x, y, z = q["p"]
+        side = n[-1] if n[-1] in "LR" else None
+        if side and n[:-1] in EYE_PARTS and y > 1.7:  # eyes grow about their own centre first
+            q = _grow(q, ((-0.062 if side == "L" else 0.062), 1.806, 0.14), STORY_EYES)
+        elif side and n[:-1] == "Brow" and y > 1.7:  # brows lift to clear the bigger eyes
+            q = dict(q, p=[x, round(y + 0.008, 4), z])
+        if n.startswith("Hand") and side is None:
+            side = "L" if "HandL" in n else "R"
+        if n.startswith("Hand"):
+            q = _grow(q, ((-0.45 if "HandL" in n else 0.45), 0.93, 0.03), STORY_HANDS)
+        if y >= STORY_PIVOT[1] and abs(x) < 0.5 and abs(z) < 0.45 and not n.startswith(NOT_HEAD):
+            q = _grow(q, STORY_PIVOT, STORY_HEAD)
+        out.append(q)
+    return out
+
+
 def finish(cid, parts):
     """Applies CHARACTERS[cid]: hair (replacing a plain "Hair" sphere, keeping buns and braids), height, build."""
     spec = CHARACTERS.get(cid)
@@ -914,7 +1016,7 @@ def finish(cid, parts):
     if style != "keep":
         parts = [q for q in parts if q["n"] not in HAIR_REPLACES]
         parts = parts[:1] + hair(style, colour) + parts[1:]  # under hats and buns, which come later
-    return fit(parts, height, build)
+    return fit(storybook(parts), height, build)
 
 
 # height, build, hair style (short, parted, bald, bob, long, updo, curly, none, keep), hair colour (None = the old Hair's)
@@ -944,10 +1046,11 @@ CHARACTERS = {
     "Folk.Reverend": (1.07, 0.92, "bald", None),
     "Folk.Diner": (0.96, 1.04, "none", None),
     "Folk.Sheriff": (1.03, 1.0, "updo", None),
+    "Folk.Lamplighter": (1.06, 0.9, "bald", "#ecebe6"),
     "Sleuth": (1.0, 1.0, "short", "#6b4426"),
     "Techie": (0.97, 0.94, "none", None),
-    "Brawn": (1.08, 1.14, "short", "#1a1410"),
-    "Snacker": (0.95, 1.03, "parted", None),
+    "Brawn": (1.08, 1.2, "short", "#1a1410"),
+    "Snacker": (0.95, 1.1, "parted", None),
 }
 
 
@@ -1244,12 +1347,75 @@ FOLK = {
     ],
 }
 
+def white_brows(parts):
+    """Big bushy white eyebrows: face()'s own BrowL and BrowR, so FaceLife still moves them."""
+    return [dict(q, c=WHITE_HAIR, s=[q["s"][0] * 1.3, q["s"][1] * 1.7, q["s"][2]]) if q["n"] in ("BrowL", "BrowR") else q for q in parts]
+
+
+def stoop(parts, from_y=1.1, lean=0.26):
+    """An old man's stoop: everything above the waist slides forward the higher it is (a shear,
+    so the shapes keep their own rotations). Applied after finish(), so the eyes grow first."""
+    out = []
+    for q in parts:
+        x, y, z = q["p"]
+        out.append(dict(q, p=[x, y, round(z + max(0.0, y - from_y) * lean, 4)]) if y > from_y else q)
+    return out
+
+
+# Tobias Wick, the old lamplighter (round 38, Town/Lamplighter.cs). Not one of the five errand folk:
+# he waits by the bridge on the Creekside Path with the lamps nobody else remembers to light. Tall,
+# lanky and stooped, in a long plum greatcoat with brass buttons and a mustard muffler, a flat cap
+# with a little brass lamp badge, round spectacles, bushy white brows and big mutton-chop whiskers.
+# His lighting pole is a separate shape (Lamplighter.cs builds it) so he can hand it to you.
+COAT, COAT_DARK, MUFFLER, CAP = rgb("#5a3448"), rgb("#3e2232"), rgb("#d8a03a"), rgb("#3a3a46")
+WHITE_HAIR = rgb("#ecebe6")
+LAMPLIGHTER = {
+    "Folk.Lamplighter": white_brows(person(COAT, rgb("#3a3430"), SKIN[3], rgb("#22180f")) + [
+        part("Greatcoat", "cyl", (0, 0.78, -0.01), (0.58, 0.36, 0.44), COAT),
+        part("CoatHem", "cyl", (0, 0.43, -0.01), (0.64, 0.03, 0.5), COAT_DARK),
+        part("CoatSplit", "box", (0, 0.72, 0.235), (0.04, 0.6, 0.02), COAT_DARK),
+        part("Lapels", "box", (0, 1.4, 0.17), (0.3, 0.2, 0.02), COAT_DARK, r=(-8, 0, 0)),
+        part("CoatButtonA", "sphere", (-0.09, 1.28, 0.18), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("CoatButtonB", "sphere", (-0.09, 1.14, 0.17), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("CoatButtonC", "sphere", (-0.09, 1.0, 0.17), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("CoatButtonD", "sphere", (0.09, 1.28, 0.18), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("CoatButtonE", "sphere", (0.09, 1.14, 0.17), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("CoatButtonF", "sphere", (0.09, 1.0, 0.17), (0.035, 0.035, 0.02), GOLD, "emissive", e=0.5),
+        part("PocketFlapL", "box", (-0.17, 0.86, 0.2), (0.14, 0.04, 0.02), COAT_DARK),
+        part("PocketFlapR", "box", (0.17, 0.86, 0.2), (0.14, 0.04, 0.02), COAT_DARK),
+        part("Muffler", "cyl", (0, 1.555, 0), (0.33, 0.07, 0.3), MUFFLER),
+        part("MufflerTail", "box", (0.09, 1.36, 0.19), (0.09, 0.32, 0.03), MUFFLER, r=(-6, 0, -6)),
+        part("MufflerFringe", "box", (0.11, 1.19, 0.2), (0.09, 0.03, 0.03), shade(MUFFLER, 0.8), r=(-6, 0, -6)),
+        part("MuttonChopL", "sphere", (-0.135, 1.72, 0.08), (0.1, 0.17, 0.12), WHITE_HAIR),
+        part("MuttonChopR", "sphere", (0.135, 1.72, 0.08), (0.1, 0.17, 0.12), WHITE_HAIR),
+        part("Moustache", "capsule", (0, 1.735, 0.165), (0.05, 0.13, 0.045), WHITE_HAIR, r=(0, 0, 90)),
+        part("CapCrown", "sphere", (0, 1.935, -0.01), (0.37, 0.15, 0.38), CAP),
+        part("CapBand", "cyl", (0, 1.9, 0), (0.35, 0.04, 0.36), shade(CAP, 0.8)),
+        part("CapPeak", "box", (0, 1.9, 0.18), (0.26, 0.025, 0.12), shade(CAP, 0.7), r=(10, 0, 0)),
+        part("CapBadge", "box", (0, 1.93, 0.18), (0.05, 0.06, 0.01), GOLD, "emissive", e=0.9),
+        part("Satchel", "box", (-0.3, 0.92, 0.0), (0.08, 0.22, 0.26), rgb("#6a4a2a")),
+        part("SatchelStrap", "box", (-0.04, 1.24, 0.19), (0.05, 0.78, 0.02), rgb("#4a3420"), r=(0, 0, 38)),
+        part("MatchTin", "box", (-0.345, 0.98, 0.04), (0.02, 0.06, 0.1), rgb("#c03a2a")),
+    ] + spectacles(rgb("#c8a85a"), round_rims=True)),
+}
+
+
 SOLVERS = {
     "Sleuth": person(rgb("#3e7a4a"), rgb("#5a4a3a"), SKIN[0]) + [
         part("Deerstalker", "sphere", (0, 1.94, 0), (0.38, 0.22, 0.4), rgb("#a07a4a")),
         part("Brim", "box", (0, 1.9, 0.12), (0.22, 0.03, 0.18), rgb("#a07a4a")),
         part("Magnifier", "cyl", (0.52, 1.0, 0.15), (0.16, 0.01, 0.16), rgb("#9fd8ff"), "emissive", (90, 0, 0), 0.6),
         part("Scarf", "capsule", (0, 1.56, 0.0), (0.12, 0.2, 0.12), P["pumpkin"], r=(0, 0, 90)), part("ScarfWrap", "cyl", (0, 1.55, 0), (0.33, 0.05, 0.3), P["pumpkin"]), part("ScarfTail", "capsule", (0.08, 1.4, 0.17), (0.08, 0.16, 0.04), P["pumpkin"], r=(0, 0, -8)),
+        # Silhouette: a tweed capelet over the shoulders and a coat that flares to the knee,
+        # and the deerstalker's ear flaps, so the Sleuth reads as a detective from across a street.
+        part("Capelet", "sphere", (0, 1.36, -0.01), (0.78, 0.36, 0.52), rgb("#8a6a3e")),
+        part("CapeletHem", "cyl", (0, 1.24, -0.01), (0.74, 0.02, 0.5), rgb("#6a4e2a")),
+        part("CoatSkirt", "cyl", (0, 0.68, -0.02), (0.6, 0.26, 0.46), rgb("#8a6a3e")),
+        part("CoatFlare", "cyl", (0, 0.45, -0.02), (0.66, 0.04, 0.5), rgb("#6a4e2a")),
+        part("CoatSplit", "box", (0, 0.62, 0.225), (0.05, 0.4, 0.02), rgb("#3e2a16")),
+        part("EarFlapL", "box", (-0.19, 1.86, 0.0), (0.03, 0.12, 0.12), rgb("#a07a4a"), r=(0, 0, 12)),
+        part("EarFlapR", "box", (0.19, 1.86, 0.0), (0.03, 0.12, 0.12), rgb("#a07a4a"), r=(0, 0, -12)),
+        part("DeerstalkerBack", "box", (0, 1.9, -0.13), (0.22, 0.03, 0.16), rgb("#a07a4a")),
     ],
     "Techie": person(rgb("#2f5a9a"), rgb("#2a2a3a"), SKIN[1]) + [
         part("Hood", "sphere", (0, 1.84, -0.06), (0.4, 0.36, 0.38), rgb("#2f5a9a")),
@@ -1261,6 +1427,17 @@ SOLVERS = {
         part("Backpack", "box", (0, 1.2, -0.27), (0.4, 0.5, 0.18), rgb("#5a5a6a")),
         part("Antenna", "cyl", (0.14, 1.6, -0.3), (0.02, 0.2, 0.02), rgb("#d0d0d0")),
         part("AntennaTip", "sphere", (0.14, 1.82, -0.3), (0.06, 0.06, 0.06), rgb("#ff3a3a"), "emissive", e=2.0),
+        # Silhouette: big over-ear headphones on the hood, a second aerial with a dish and pouches,
+        # so the Techie is the one with things sticking out.
+        part("PhoneL", "cyl", (-0.2, 1.79, 0.0), (0.14, 0.05, 0.14), rgb("#e8e8f0"), r=(0, 0, 90)),
+        part("PhoneR", "cyl", (0.2, 1.79, 0.0), (0.14, 0.05, 0.14), rgb("#e8e8f0"), r=(0, 0, 90)),
+        part("PhoneLightL", "cyl", (-0.228, 1.79, 0.0), (0.06, 0.01, 0.06), rgb("#8affff"), "emissive", r=(0, 0, 90), e=1.2),
+        part("PhoneLightR", "cyl", (0.228, 1.79, 0.0), (0.06, 0.01, 0.06), rgb("#8affff"), "emissive", r=(0, 0, 90), e=1.2),
+        part("PhoneBand", "capsule", (0, 2.0, -0.02), (0.045, 0.21, 0.06), rgb("#e8e8f0"), r=(0, 0, 90)),
+        part("Antenna2", "cyl", (-0.14, 1.55, -0.3), (0.02, 0.15, 0.02), rgb("#d0d0d0")),
+        part("AntennaDish", "cyl", (-0.14, 1.72, -0.3), (0.14, 0.015, 0.14), rgb("#d0d0d0"), r=(30, 0, 20)),
+        part("PouchL", "box", (-0.26, 0.92, 0.12), (0.12, 0.14, 0.08), rgb("#5a5a6a")),
+        part("PouchR", "box", (0.26, 0.92, 0.12), (0.12, 0.14, 0.08), rgb("#5a5a6a")),
     ],
     "Brawn": person(rgb("#a83232"), rgb("#2a3a5a"), SKIN[2]) + [
         part("Shoulders", "capsule", (0, 1.45, 0), (0.24, 0.36, 0.38), rgb("#a83232"), r=(0, 0, 90)),
@@ -1269,12 +1446,26 @@ SOLVERS = {
         part("CapBill", "box", (0, 1.9, 0.2), (0.26, 0.03, 0.16), rgb("#2a2a2a")),
         part("Toolbelt", "box", (0, 0.92, 0), (0.56, 0.08, 0.44), rgb("#6b4426")),
         part("Wrench", "box", (0.25, 0.86, 0.2), (0.05, 0.22, 0.04), rgb("#9a9aa6")),
+        # Silhouette: big leather work gloves and heavy boots: an upside-down triangle.
+        part("GloveL", "sphere", (-0.46, 0.92, 0.03), (0.2, 0.2, 0.2), rgb("#b8864a")),
+        part("GloveR", "sphere", (0.46, 0.92, 0.03), (0.2, 0.2, 0.2), rgb("#b8864a")),
+        part("GloveCuffL", "cyl", (-0.45, 1.02, 0.03), (0.17, 0.06, 0.17), rgb("#8a6232")),
+        part("GloveCuffR", "cyl", (0.45, 1.02, 0.03), (0.17, 0.06, 0.17), rgb("#8a6232")),
+        part("BootL", "box", (-0.12, 0.08, 0.04), (0.2, 0.16, 0.32), rgb("#3a2414")),
+        part("BootR", "box", (0.12, 0.08, 0.04), (0.2, 0.16, 0.32), rgb("#3a2414")),
     ],
     "Snacker": person(rgb("#d8b23a"), rgb("#5a3a2a"), SKIN[3]) + [
         part("Hair", "sphere", (0, 1.88, -0.03), (0.38, 0.28, 0.38), rgb("#6b4426")),
         part("SnackBag", "box", (-0.45, 0.95, 0.2), (0.26, 0.32, 0.12), rgb("#e05a3a")),
         part("Sandwich", "box", (0.47, 1.0, 0.2), (0.24, 0.12, 0.2), rgb("#e8c87a")),
         part("Lettuce", "box", (0.47, 1.0, 0.2), (0.26, 0.03, 0.22), rgb("#6ac24a")),
+        # Silhouette: round as a pumpkin, a bobble hat and a satchel strap across the front.
+        part("Belly", "sphere", (0, 1.08, 0.06), (0.62, 0.5, 0.46), rgb("#d8b23a")),
+        part("BellyStripe", "cyl", (0, 1.1, 0.06), (0.63, 0.04, 0.47), rgb("#b8922a")),
+        part("Beanie", "sphere", (0, 1.9, -0.02), (0.37, 0.24, 0.37), rgb("#c84a3a")),
+        part("BeanieCuff", "cyl", (0, 1.86, -0.02), (0.36, 0.05, 0.36), rgb("#a83a2a")),
+        part("Bobble", "sphere", (0, 2.04, -0.02), (0.12, 0.12, 0.12), rgb("#f3eadb")),
+        part("SatchelStrap", "box", (-0.05, 1.22, 0.3), (0.06, 0.8, 0.02), rgb("#6b4426"), r=(0, 0, -38)),
     ],
 }
 
@@ -1282,10 +1473,11 @@ data = {
     "palette": PAL,
     "villains": VILLAINS,
     "props": [dict(id=k, **v) for k, v in PROPS.items()],
-    "suspects": [{"id": k, "parts": finish(k, v)} for k, v in {**SUSPECTS, **HOUSE_SUSPECTS, **FOLK}.items()],
+    "suspects": [{"id": k, "parts": finish(k, v)} for k, v in {**SUSPECTS, **HOUSE_SUSPECTS, **FOLK}.items()]
+                + [{"id": k, "parts": stoop(finish(k, v))} for k, v in LAMPLIGHTER.items()],
     "solvers": [{"id": k, "parts": finish(k, v)} for k, v in SOLVERS.items()],
     # The Lantern Watch pieces for each Solver, at that Solver's height and build: "<Role>.<Piece>"
-    "watch": [{"id": f"{role}.{piece}", "parts": fit(parts, *CHARACTERS[role][:2])} for role in SOLVERS for piece, parts in WATCH.items()],
+    "watch": [{"id": f"{role}.{piece}", "parts": fit(storybook(parts), *CHARACTERS[role][:2])} for role in SOLVERS for piece, parts in WATCH.items()],
 }
 
 if __name__ == "__main__":

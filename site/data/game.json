@@ -1189,6 +1189,739 @@
    "powerBlurb": "curse the nearest Solver: fear spikes and their flashlight drains"
   }
  ],
+ "club": {
+  "chapters": [
+   {
+    "name": "New member",
+    "blurb": "Your first nights with the Mystery Club.",
+    "items": [
+     {
+      "id": "first-night",
+      "title": "Clock in",
+      "text": "Play a night, on either side.",
+      "reward": 20,
+      "house": null
+     },
+     {
+      "id": "first-clue",
+      "title": "Something glints",
+      "text": "Find a clue with your flashlight.",
+      "reward": 20,
+      "house": null
+     },
+     {
+      "id": "first-alibi",
+      "title": "Where were you?",
+      "text": "Check a suspect's alibi during a case.",
+      "reward": 25,
+      "house": null
+     },
+     {
+      "id": "first-solve",
+      "title": "Case closed",
+      "text": "Solve a case as a Solver.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "first-lantern",
+      "title": "A light in the grass",
+      "text": "Find one of the lost lanterns around town.",
+      "reward": 25,
+      "house": null
+     },
+     {
+      "id": "first-errand",
+      "title": "Good neighbour",
+      "text": "Finish an errand for one of the townsfolk.",
+      "reward": 25,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "House calls",
+    "blurb": "One case at every house in town. Press Play to make it tonight's call.",
+    "items": [
+     {
+      "id": "solve-cottage",
+      "title": "Pemberton Cottage",
+      "text": "Solve the case at 14 Elm Street.",
+      "reward": 40,
+      "house": "PembertonCottage"
+     },
+     {
+      "id": "solve-farm",
+      "title": "Hollow Creek Farm",
+      "text": "Solve the case out on Old Mill Road.",
+      "reward": 50,
+      "house": "HollowCreekFarm"
+     },
+     {
+      "id": "solve-victorian",
+      "title": "Willow Lane Victorian",
+      "text": "Solve the case at 3 Willow Lane.",
+      "reward": 60,
+      "house": "WillowLaneVictorian"
+     },
+     {
+      "id": "solve-manor",
+      "title": "Blackwood Manor",
+      "text": "Solve the case past the creek: the longest night.",
+      "reward": 80,
+      "house": "BlackwoodManor"
+     },
+     {
+      "id": "solve-society",
+      "title": "The Historical Society",
+      "text": "Solve the last case, once the other four are done.",
+      "reward": 120,
+      "house": "HistoricalSociety"
+     }
+    ]
+   },
+   {
+    "name": "Around town",
+    "blurb": "Hollow Creek is bigger than it looks. Walk it.",
+    "items": [
+     {
+      "id": "streets",
+      "title": "Know the streets",
+      "text": "Walk down eight different streets.",
+      "reward": 30,
+      "house": null
+     },
+     {
+      "id": "districts",
+      "title": "Every corner",
+      "text": "Set foot in every part of town, North Bank too.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "places",
+      "title": "Sights of Hollow Creek",
+      "text": "Visit all eight landmarks: the maze, the cemetery, the pond and the rest.",
+      "reward": 60,
+      "house": null
+     },
+     {
+      "id": "snap-1",
+      "title": "Say cheese",
+      "text": "Take a snapshot of one of the album's sights with the club camera (P).",
+      "reward": 15,
+      "house": null
+     },
+     {
+      "id": "snap-all",
+      "title": "The whole album",
+      "text": "Fill every frame in the Snapshots album.",
+      "reward": 80,
+      "house": null
+     },
+     {
+      "id": "maze",
+      "title": "The heart of the maze",
+      "text": "Reach the scarecrow in the middle of Hatcher's Corn Maze.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "lanterns-6",
+      "title": "Lamplighter",
+      "text": "Find six lost lanterns.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "creek-lamps",
+      "title": "Lamplighter's apprentice",
+      "text": "Light all twelve gas lamps on the Creekside Path with Tobias Wick's pole.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "wisp-1",
+      "title": "Follow the light",
+      "text": "Follow a will-o'-the-wisp from the creek to where it goes out.",
+      "reward": 30,
+      "house": null
+     },
+     {
+      "id": "hook-1",
+      "title": "Back on its hook",
+      "text": "Hang a lost lantern on its family's hook at the Historical Society.",
+      "reward": 25,
+      "house": null
+     },
+     {
+      "id": "errands-5",
+      "title": "Pillar of the community",
+      "text": "Finish every errand the townsfolk give you.",
+      "reward": 60,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "Past the edge of town",
+    "blurb": "Six haunted places round Hollow Creek, and curiosities hidden all over. Drive out and look closely.",
+    "items": [
+     {
+      "id": "region-1",
+      "title": "Off the map",
+      "text": "Drive out of town to one of the haunted places: the castle, the circus, the tower, the harbor, the beach or the swamp.",
+      "reward": 20,
+      "house": null
+     },
+     {
+      "id": "regions-all",
+      "title": "The grand tour",
+      "text": "Visit all six haunted places past the edge of town.",
+      "reward": 80,
+      "house": null
+     },
+     {
+      "id": "curio-1",
+      "title": "Now what's this?",
+      "text": "Find one of the curiosities hidden round the world and read its story.",
+      "reward": 15,
+      "house": null
+     },
+     {
+      "id": "curio-10",
+      "title": "Cabinet of curiosities",
+      "text": "Find ten curiosities.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "curio-all",
+      "title": "Explorer of Hollow Creek",
+      "text": "Find every curiosity, from the castle's helmet to the gnome in town.",
+      "reward": 150,
+      "house": null
+     },
+     {
+      "id": "lighthouse",
+      "title": "Keeper of the light",
+      "text": "Climb Saltmarsh Lighthouse and step out on the gallery.",
+      "reward": 30,
+      "house": null
+     },
+     {
+      "id": "tower-roof",
+      "title": "Top floor",
+      "text": "Climb the fire escape all the way to the roof of Gloamwood Tower.",
+      "reward": 30,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "Casework",
+    "blurb": "Solving it is one thing. Solving it well is another.",
+    "items": [
+     {
+      "id": "clues-25",
+      "title": "Magnifying glass",
+      "text": "Find 25 clues across your nights.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "clean",
+      "title": "First try",
+      "text": "Solve a case without a wrong accusation.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "fast",
+      "title": "Home before midnight",
+      "text": "Solve a case with three minutes or more left on the clock.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "roles",
+      "title": "Every hat in the club",
+      "text": "Win a case as each role: Sleuth, Techie, Brawn and Snacker.",
+      "reward": 80,
+      "house": null
+     },
+     {
+      "id": "event",
+      "title": "Whatever the weather",
+      "text": "Solve a case on a night with a special event.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "brave",
+      "title": "Steady nerves",
+      "text": "Finish five nights as a Solver without getting scared out.",
+      "reward": 50,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "The other side",
+    "blurb": "Somebody has to wear the mask.",
+    "items": [
+     {
+      "id": "haunt-1",
+      "title": "Boo",
+      "text": "Play a night as the Haunter.",
+      "reward": 25,
+      "house": null
+     },
+     {
+      "id": "haunt-win",
+      "title": "Nobody saw a thing",
+      "text": "Win a night as the Haunter.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "haunt-scare",
+      "title": "Full house",
+      "text": "As the Haunter, scare out two Solvers in one night and win.",
+      "reward": 60,
+      "house": null
+     },
+     {
+      "id": "haunt-legends",
+      "title": "Every legend",
+      "text": "Wear all four legends: Horseman, Banshee, Stingy Jack and Baba Yaga.",
+      "reward": 80,
+      "house": null
+     },
+     {
+      "id": "haunt-escape",
+      "title": "Not today",
+      "text": "Escape the Solvers' trap and get away.",
+      "reward": 60,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "Trick or treat",
+    "blurb": "Knock where the porch light is on. Each door gives one treat a night, and some families have a story.",
+    "items": [
+     {
+      "id": "knock-1",
+      "title": "Knock knock",
+      "text": "Trick-or-treat at a door with its porch light on.",
+      "reward": 15,
+      "house": null
+     },
+     {
+      "id": "bag-10",
+      "title": "A full bag",
+      "text": "Get treats from ten different doors in one night.",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "street-all",
+      "title": "The whole street",
+      "text": "Get a treat at every door on one of the longer streets, like Chapel Lane or Pine Street (any number of nights).",
+      "reward": 40,
+      "house": null
+     },
+     {
+      "id": "doors-all",
+      "title": "Every door in town",
+      "text": "Get a treat at all 35 doors on the new streets.",
+      "reward": 100,
+      "house": null
+     },
+     {
+      "id": "carve-1",
+      "title": "Jack of all trades",
+      "text": "Carve a jack-o'-lantern at the bench outside HQ.",
+      "reward": 20,
+      "house": null
+     },
+     {
+      "id": "carve-6",
+      "title": "A porch full of faces",
+      "text": "Carve six jack-o'-lanterns, one a night, and fill the HQ porch.",
+      "reward": 50,
+      "house": null
+     },
+     {
+      "id": "tales-3",
+      "title": "Story time",
+      "text": "Hear three of the Stories of Hollow Creek.",
+      "reward": 30,
+      "house": null
+     },
+     {
+      "id": "tales-all",
+      "title": "The whole story",
+      "text": "Hear all twelve Stories of Hollow Creek.",
+      "reward": 120,
+      "house": null
+     }
+    ]
+   },
+   {
+    "name": "Legend of Hollow Creek",
+    "blurb": "The long haul. Take your time: none of this expires.",
+    "items": [
+     {
+      "id": "all-cases",
+      "title": "The whole case book",
+      "text": "Solve every case, return visits included.",
+      "reward": 150,
+      "house": null
+     },
+     {
+      "id": "all-lanterns",
+      "title": "Every light in town",
+      "text": "Find all of the lost lanterns.",
+      "reward": 150,
+      "house": null
+     },
+     {
+      "id": "hooks-all",
+      "title": "The new Lantern Watch",
+      "text": "Hang all twenty-four lanterns on the Hook Board, and the mist stays down on the creek.",
+      "reward": 150,
+      "house": null
+     },
+     {
+      "id": "unmask-all",
+      "title": "Unmasked",
+      "text": "Catch each of the four legends as a Solver.",
+      "reward": 100,
+      "house": null
+     },
+     {
+      "id": "watch",
+      "title": "On the Watch",
+      "text": "Solve a case wearing the Lantern Watch costume.",
+      "reward": 60,
+      "house": null
+     },
+     {
+      "id": "nights-25",
+      "title": "Regular",
+      "text": "Play 25 nights.",
+      "reward": 100,
+      "house": null
+     },
+     {
+      "id": "events-all",
+      "title": "Seen it all",
+      "text": "Play a night under each of the five special events.",
+      "reward": 80,
+      "house": null
+     }
+    ]
+   }
+  ],
+  "wardrobe": [
+   {
+    "id": "cat-ears",
+    "name": "Cat ears",
+    "slot": "hat",
+    "price": 60,
+    "a": "#222026",
+    "b": "#f0a0b0",
+    "blurb": "Two felt ears on a band. Midnight approves."
+   },
+   {
+    "id": "leaf-crown",
+    "name": "Crown of leaves",
+    "slot": "hat",
+    "price": 80,
+    "a": "#c04a2a",
+    "b": "#d8a03a",
+    "blurb": "Maple and oak from Applegate Orchard."
+   },
+   {
+    "id": "top-hat",
+    "name": "Top hat",
+    "slot": "hat",
+    "price": 100,
+    "a": "#1a1820",
+    "b": "#e8731c",
+    "blurb": "Tall, black, an orange band. Very Mortimer Vane."
+   },
+   {
+    "id": "tricorn",
+    "name": "Tricorn",
+    "slot": "hat",
+    "price": 110,
+    "a": "#3a2a22",
+    "b": "#e8d8a8",
+    "blurb": "A pirate's hat from the Harvest Festival's lost and found."
+   },
+   {
+    "id": "witch-hat",
+    "name": "Witch hat",
+    "slot": "hat",
+    "price": 120,
+    "a": "#2a1d3a",
+    "b": "#9fe870",
+    "blurb": "Pointed, with a green band and a crumpled tip."
+   },
+   {
+    "id": "antlers",
+    "name": "Antlers",
+    "slot": "hat",
+    "price": 120,
+    "a": "#8a6a4a",
+    "b": "#e8dcc8",
+    "blurb": "From the costume trunk at the back of the Fire Station."
+   },
+   {
+    "id": "halo",
+    "name": "Ghostly halo",
+    "slot": "hat",
+    "price": 140,
+    "a": "#fff0c8",
+    "b": "#fff0c8",
+    "blurb": "A ring of soft light. Nobody knows who left it."
+   },
+   {
+    "id": "wizard-hat",
+    "name": "Wizard hat",
+    "slot": "hat",
+    "price": 160,
+    "a": "#2a3a8a",
+    "b": "#ffe08a",
+    "blurb": "Deep blue with stars that catch the lamplight."
+   },
+   {
+    "id": "pumpkin-head",
+    "name": "Pumpkin head",
+    "slot": "hat",
+    "price": 220,
+    "a": "#e8731c",
+    "b": "#ffcf5a",
+    "blurb": "A whole carved pumpkin, candle and all."
+   },
+   {
+    "id": "cape",
+    "name": "Vampire cape",
+    "slot": "back",
+    "price": 150,
+    "a": "#1a1218",
+    "b": "#a01c24",
+    "blurb": "Black outside, red inside, and a collar that stands up."
+   },
+   {
+    "id": "bat-wings",
+    "name": "Bat wings",
+    "slot": "back",
+    "price": 180,
+    "a": "#1c1a22",
+    "b": "#6a2a8a",
+    "blurb": "They don't flap. They do look great."
+   },
+   {
+    "id": "lantern-pack",
+    "name": "Lantern pack",
+    "slot": "back",
+    "price": 90,
+    "a": "#6a4a2a",
+    "b": "#ffcf7a",
+    "blurb": "A satchel with a lantern clipped on, for the long walks."
+   },
+   {
+    "id": "pocket-ghost",
+    "name": "Pocket ghost",
+    "slot": "back",
+    "price": 240,
+    "a": "#f2efe8",
+    "b": "#1a1420",
+    "blurb": "A little ghost that follows you everywhere. It's shy."
+   },
+   {
+    "id": "beam-candle",
+    "name": "Candlelight beam",
+    "slot": "beam",
+    "price": 50,
+    "a": "#ffbf73",
+    "b": "#ffbf73",
+    "blurb": "Your flashlight burns warm orange."
+   },
+   {
+    "id": "beam-moon",
+    "name": "Moonlight beam",
+    "slot": "beam",
+    "price": 70,
+    "a": "#b3d9ff",
+    "b": "#b3d9ff",
+    "blurb": "A cold blue beam, like the moon on the creek."
+   },
+   {
+    "id": "beam-wisp",
+    "name": "Wisp beam",
+    "slot": "beam",
+    "price": 70,
+    "a": "#9fff9f",
+    "b": "#9fff9f",
+    "blurb": "Green as the lights in the churchyard."
+   },
+   {
+    "id": "beam-rose",
+    "name": "Rose beam",
+    "slot": "beam",
+    "price": 90,
+    "a": "#ffb3c8",
+    "b": "#ffb3c8",
+    "blurb": "Pink. Clues look the same; you look better."
+   },
+   {
+    "id": "candy-pail",
+    "name": "Pumpkin pail",
+    "slot": "back",
+    "price": 100,
+    "a": "#e8731c",
+    "b": "#1a1218",
+    "blurb": "The plastic jack-o'-lantern pail every trick-or-treater carries."
+   },
+   {
+    "id": "scarecrow-hat",
+    "name": "Scarecrow hat",
+    "slot": "hat",
+    "price": 130,
+    "a": "#c8a050",
+    "b": "#8a3a2a",
+    "blurb": "Straw, a patch, and a crow feather. Like the one in the middle of the maze."
+   },
+   {
+    "id": "lamplighter-cap",
+    "name": "Lamplighter's cap",
+    "slot": "hat",
+    "price": 0,
+    "a": "#3a3a46",
+    "b": "#e8c96a",
+    "blurb": "Tobias Wick's spare flat cap, with the little brass lamp badge.",
+    "gift": "Light every gas lamp on the Creekside Path for Tobias Wick, then take him back his pole."
+   },
+   {
+    "id": "explorer-hat",
+    "name": "Explorer's hat",
+    "slot": "hat",
+    "price": 0,
+    "a": "#8a6a44",
+    "b": "#3a2a1e",
+    "blurb": "A wide-brimmed field hat with a leather band and a little brass compass pinned to it.",
+    "gift": "Find every curiosity hidden round the world past the edge of town."
+   }
+  ],
+  "tales": [
+   {
+    "title": "The first Halloween",
+    "text": "In 1823 the first families built their houses by the creek. On the last night of October a mist rolled up off the water, thick as wool. Abel Hatcher hung a lantern on his mill door, and the mist stopped right at the edge of the light."
+   },
+   {
+    "title": "Twenty-four lanterns",
+    "text": "Hester Quill, the tinsmith, made a lantern for every family that first winter: twenty-four of them, with stars punched in the tin. Every Halloween after that, each family carried its lantern down to the creek and kept it lit until morning."
+   },
+   {
+    "title": "The Lantern Watch",
+    "text": "The ones who carried the lanterns were the Lantern Watch. They wore masks, so the mist wouldn't learn their faces. That's where all the old folklore masks come from, you know. The Watch made them."
+   },
+   {
+    "title": "Stingy Jack's coal",
+    "text": "They say Hester lit the very first candle from a coal Stingy Jack carried, and paid him for it with a bowl of her apple pie. He thinks he was cheated. Every so often he comes back to town, asking for it back."
+   },
+   {
+    "title": "The Hollow Creek Mask",
+    "text": "The oldest mask was carved from an oak beam out of Hatcher's mill, and only the captain of the Watch wore it. The Historical Society keeps it now, behind glass. Mostly behind glass."
+   },
+   {
+    "title": "The flood of 1891",
+    "text": "One Halloween the creek came up over the banks in an hour. The Watch held on as long as they could, but the water took the lanterns and scattered them all over the valley. People were finding them in hedges and orchards for years."
+   },
+   {
+    "title": "Why the porch lights",
+    "text": "With the lanterns gone, every family left a light burning by the door instead, all Halloween night. The children went door to door to make sure every light was lit, and got a treat for checking. That's trick-or-treat, that is."
+   },
+   {
+    "title": "The ledger",
+    "text": "The 1823 ledger lists all twenty-four lantern families. Some people will tell you that whoever finds every lantern owns a share of the town. Nonsense, of course. But you'd be surprised who goes looking."
+   },
+   {
+    "title": "Why there's a Haunter",
+    "text": "Every few years somebody gets hold of one of the old masks and decides the night belongs to them. They frighten everyone off the streets so they can do as they please. That's what the Mystery Club is for."
+   },
+   {
+    "title": "The scarecrow's coat",
+    "text": "Hatcher's Corn Maze is planted on Abel Hatcher's old field. The scarecrow in the middle is wearing the last Watch captain's coat. Nobody remembers putting it there."
+   },
+   {
+    "title": "Twenty-four hooks",
+    "text": "In the back room of the Historical Society there's a board with twenty-four brass hooks, one for each lantern, and a name over every hook. Most of the hooks are empty. A few of them aren't any more."
+   },
+   {
+    "title": "The last lantern",
+    "text": "The old folks say that when all twenty-four lanterns are found and lit again, the mist will stay down on the creek for good. And whoever found them would be the new Lantern Watch. I think that might be you lot."
+   }
+  ],
+  "doors": 35,
+  "families": [
+   "the Ashcrofts",
+   "the Sutcliffes",
+   "the Kemps"
+  ],
+  "landmarks": [
+   {
+    "name": "Hatcher's Corn Maze",
+    "district": "North Bank"
+   },
+   {
+    "name": "Old Hollow Cemetery",
+    "district": "North Bank"
+   },
+   {
+    "name": "Mill Pond",
+    "district": "North Bank"
+   },
+   {
+    "name": "Applegate Orchard",
+    "district": "North Bank"
+   },
+   {
+    "name": "Pumpkin Hollow Farm",
+    "district": "North Bank"
+   },
+   {
+    "name": "Camp Owl's Rest",
+    "district": "North Bank"
+   },
+   {
+    "name": "Hayride Field",
+    "district": "Farm Country"
+   },
+   {
+    "name": "Founders Park",
+    "district": "Willow Heights"
+   }
+  ],
+  "lanterns": 24,
+  "streets": 11,
+  "districts": [
+   "Downtown",
+   "Mill Fields",
+   "Founders Row",
+   "Farm Country",
+   "Church Hill",
+   "Pine Hill",
+   "Orchard Hill",
+   "Willow Heights",
+   "North Bank"
+  ]
+ },
  "rounds": [
   {
    "title": "The match",
@@ -1289,6 +2022,62 @@
   {
    "title": "The Case Book",
    "line": "A corkboard look for the game, and a website with a playable Suspect Board"
+  },
+  {
+   "title": "The smoke test",
+   "line": "The game plays a whole night by itself in Unity and says which step broke"
+  },
+  {
+   "title": "Moving pictures",
+   "line": "The website's night plays as you scroll, and solving a case knocks the mask off"
+  },
+  {
+   "title": "Moments in the game",
+   "line": "An hour card for each part of the night, and a mask that flies off at the unmasking"
+  },
+  {
+   "title": "A Haunter for one",
+   "line": "With nobody playing it, the culprit puts on the costume and dodges your trap"
+  },
+  {
+   "title": "Games on your Wi-Fi",
+   "line": "Friends in the same house see the host's game and click Join, no address needed"
+  },
+  {
+   "title": "A town to walk",
+   "line": "Side streets, 35 houses with yards, eight landmarks, lost lanterns and the Club Book"
+  },
+  {
+   "title": "Trick or treat",
+   "line": "35 doors to knock on, the Stories of Hollow Creek and a new Club Book chapter"
+  },
+  {
+   "title": "Storybook light",
+   "line": "A teal night with amber windows; violet only when something's haunting you"
+  },
+  {
+   "title": "A storybook cast",
+   "line": "Bigger heads and eyes, a shape for every role, and the Hook Board for found lanterns"
+  },
+  {
+   "title": "Wisps and moods",
+   "line": "Green lights off the creek that lead to lost lanterns, and faces that feel something"
+  },
+  {
+   "title": "Carve a pumpkin",
+   "line": "A carving bench at HQ, a porch of your jack-o'-lanterns, and storybook trick-or-treaters"
+  },
+  {
+   "title": "The club camera",
+   "line": "Press P for an instant photo; fill a twelve-frame album; neighbours smile for it"
+  },
+  {
+   "title": "The lamplighter",
+   "line": "Old Tobias Wick lends you his pole to light twelve gas lamps along the creek"
+  },
+  {
+   "title": "Past the edge of town",
+   "line": "A castle, a circus, a high rise, a lighthouse, a cave and a swamp, with 32 curiosities to find"
   }
  ],
  "milestones": [
@@ -1309,8 +2098,8 @@
   },
   {
    "name": "Milestone 4: Play without a full lobby",
-   "done": 3,
-   "total": 4
+   "done": 5,
+   "total": 6
   },
   {
    "name": "Milestone 5: The 3D world",
@@ -1339,7 +2128,7 @@
   },
   {
    "name": "Milestone 10: Storybook direction",
-   "done": 17,
+   "done": 18,
    "total": 20
   },
   {
@@ -1391,6 +2180,76 @@
    "name": "Milestone 20: The Case Book",
    "done": 8,
    "total": 9
+  },
+  {
+   "name": "Milestone 21: Ready for the first Unity session",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 22: The website's moving pictures",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 23: Moments in the game",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 24: Playing together in one house",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 25: A town worth walking",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 26: The Club Book",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 27: Trick or treat",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 28: The storybook lighting pass",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 29: Storybook cast and the Hook Board",
+   "done": 5,
+   "total": 6
+  },
+  {
+   "name": "Milestone 30: Wisps and moods",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 31: The carving bench and the trick-or-treaters",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 32: The club camera",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 33: The lamplighter",
+   "done": 6,
+   "total": 7
+  },
+  {
+   "name": "Milestone 34: Past the edge of town",
+   "done": 6,
+   "total": 7
   },
   {
    "name": "Release pipeline",

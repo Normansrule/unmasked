@@ -14,10 +14,12 @@ Run make_manor.py and make_houses.py first: the lots read the houses' JSON for t
 """
 import json
 import math
+import zlib
 import random
 import os
 
 import dressing as hw
+import worldgen as wg
 from layoutlib import Layout, rgb, RESOURCES
 
 T = Layout("Hollow Creek", "HollowCreek", "Town",
@@ -150,7 +152,14 @@ T.room("Hollow Creek Bridge", 9, -12, 12, CREEK_Z - 9, CREEK_Z + 9, -2, 12)
 # ---------------------------------------------------------------------------
 
 
-def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows=True, sign=None, level=9):
+# Lamplight through the windows: mostly warm amber, a few deeper orange or candle-pale, and now and
+# then the blue-green flicker of a television (the night's teal, never violet).
+WINDOW_LIGHTS = [rgb("ffcf7a"), rgb("ffcf7a"), rgb("ffb45e"), rgb("ffdf9e"), rgb("ffcf7a"), rgb("f9a65a"), rgb("ffcf7a"),
+                 rgb("ffd88a"), rgb("8fd0d4")]
+CURTAINS = [rgb("7a2a2a"), rgb("2f5a3a"), rgb("6a4a2a"), rgb("8a6a3a"), rgb("2a4a6a")]
+
+
+def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows=True, sign=None, level=9, win_sides="SNWE"):
     """A closed town building (not explorable) with glowing windows and a door facing the street."""
     T.box(f"{name}Body", ((x0 + x1) / 2, h / 2, (z0 + z1) / 2), (x1 - x0, h, z1 - z0), wall, level, "solid", "building")
     if gable:
@@ -159,7 +168,7 @@ def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows
         T.box(f"{name}Roof", ((x0 + x1) / 2, h + 0.3, (z0 + z1) / 2), (x1 - x0 + 0.4, 0.6, z1 - z0 + 0.4), roof, level, "solid", "roof")
     floors = max(1, int(h // 3))
     if windows:
-        for side in ("S", "N", "W", "E"):
+        for side in win_sides:
             along_x = side in ("S", "N")
             a0, a1 = (x0, x1) if along_x else (z0, z1)
             n = max(1, int((a1 - a0) / 3.5))
@@ -169,15 +178,26 @@ def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows
                     y = 1.7 + f * 3.0
                     if side == door_side and f == 0 and abs(a - (a0 + a1) / 2) < 1.5:
                         continue
-                    lit = (hash((name, side, f, i)) % 3) != 0
-                    col = C["glass"] if lit else rgb("3a4660")
+                    # A stable hash (Python's own hash() changes every run), so every build lights the same windows.
+                    roll = zlib.crc32(f"{name}|{side}|{f}|{i}".encode()) % 1000
+                    lit = roll % 3 != 0
+                    col = WINDOW_LIGHTS[roll // 7 % len(WINDOW_LIGHTS)] if lit else rgb("2e3c4c")
+                    out = -1 if side in ("S", "W") else 1
                     if along_x:
-                        p = (a, y, (z0 if side == "S" else z1) + (-0.05 if side == "S" else 0.05))
+                        p = (a, y, (z0 if side == "S" else z1) + out * 0.05)
                         s = (1.1, 1.3, 0.06)
                     else:
-                        p = ((x0 if side == "W" else x1) + (-0.05 if side == "W" else 0.05), y, a)
+                        p = ((x0 if side == "W" else x1) + out * 0.05, y, a)
                         s = (0.06, 1.3, 1.1)
-                    T.box(f"{name}Win{side}{f}{i}", p, s, col, level, "glass" if lit else "solid", "window")
+                    # Lit windows glow as solid panes (storybook windows, not see-through glass onto a blank wall).
+                    T.box(f"{name}Win{side}{f}{i}", p, s, col, level, "emissive" if lit else "solid", "window")
+                    if lit and roll % 5 < 2:  # curtains drawn back, in one of a few fabrics
+                        fabric = CURTAINS[roll // 11 % len(CURTAINS)]
+                        for k in (-1, 1):
+                            if along_x:
+                                T.box(f"{name}Cur{side}{f}{i}{k}", (a + k * 0.43, y + 0.02, p[2] + out * 0.02), (0.24, 1.22, 0.03), fabric, level, "nocollide", "decor")
+                            else:
+                                T.box(f"{name}Cur{side}{f}{i}{k}", (p[0] + out * 0.02, y + 0.02, a + k * 0.43), (0.03, 1.22, 0.24), fabric, level, "nocollide", "decor")
     mid = ((x0 + x1) / 2, (z0 + z1) / 2)
     door = {"S": ((mid[0], 1.15, z0 - 0.06), (1.4, 2.3, 0.08)), "N": ((mid[0], 1.15, z1 + 0.06), (1.4, 2.3, 0.08)),
             "W": ((x0 - 0.06, 1.15, mid[1]), (0.08, 2.3, 1.4)), "E": ((x1 + 0.06, 1.15, mid[1]), (0.08, 2.3, 1.4))}[door_side]
@@ -422,7 +442,7 @@ T.L["events"] = [
 # ---------------------------------------------------------------------------
 # Beyond the edge of town (Horizon.cs in Unity, horizon_mesh in render3d): Hollow Creek sits in a
 # valley. Rings of hills follow the camera like a sky, so they never get closer; on them sit far-off
-# farm lights and landmarks (Ravensford's steeple, the old lighthouse on Gull Point, a windmill, a
+# farm lights and landmarks (Ravensford's steeple, a windmill, a
 # water tower). The roads carry on out of town past the edge of the map, lit by street lamps until
 # the fog takes them, and a band of forest closes in around the fields.
 # Each ring's height at angle a (degrees, 0 = north, clockwise) is base + sum(amp * sin(freq*a + phase)),
@@ -437,7 +457,6 @@ T.L["horizon"] = {
     # Landmarks: kind, angle, which ring they stand on (0 = farthest), size
     "landmarks": [
         {"kind": "steeple", "angle": 20, "ring": 1, "size": 1.7, "name": "Ravensford church"},
-        {"kind": "lighthouse", "angle": 115, "ring": 0, "size": 1.9, "name": "Gull Point lighthouse"},
         {"kind": "windmill", "angle": 200, "ring": 2, "size": 1.7, "name": "Hatcher's old windmill"},
         {"kind": "watertower", "angle": 285, "ring": 1, "size": 1.6, "name": "Ravensford water tower"},
         {"kind": "castle", "angle": 330, "ring": 0, "size": 2.1, "name": "Thornbury ruins"},
@@ -446,10 +465,10 @@ T.L["horizon"] = {
     "lights": {"count": 140, "seed": 7, "colors": rgb("ffcf7a") + rgb("ffb347") + rgb("fff0c8") + rgb("ff8a3a")},
     # The roads keep going past the edge of the map
     "roads": [
-        {"name": "Main Street south", "from": [0, -96], "to": [0, -620], "sign": "Ravensford 12 mi"},
-        {"name": "Main Street north", "from": [0, 207], "to": [0, 760], "sign": "Gull Point 9 mi"},
-        {"name": "Elm Street west", "from": [-125, 0], "to": [-700, 0], "sign": "Old Mill Road"},
-        {"name": "Elm Street east", "from": [100, 0], "to": [700, 0], "sign": "Thornbury 6 mi"},
+        # Round 39: the near stretches are real roads now (regions.py), so these start past the haunted places
+        {"name": "Main Street south", "from": [0, -282], "to": [0, -620], "sign": "Ravensford 12 mi"},
+        {"name": "Main Street north", "from": [0, 512], "to": [0, 760], "sign": "Thornbury 6 mi"},
+        {"name": "Elm Street west", "from": [-362, 0], "to": [-700, 0], "sign": "Old Mill Road"},
     ],
     "roadWidth": ROAD_W,
     "lampEvery": 28,
@@ -479,6 +498,8 @@ T.L["life"] = {
         {"kind": "cat", "body": rgb("222026"), "accent": rgb("f0c040")},
         {"kind": "vampire", "body": rgb("161218"), "accent": rgb("a01c24")},
         {"kind": "pirate", "body": rgb("6a2a22"), "accent": rgb("e8d8a8")},
+        {"kind": "mummy", "body": rgb("6a5a48"), "accent": rgb("e8e0cc")},
+        {"kind": "bat", "body": rgb("1e1c22"), "accent": rgb("2e2c32")},
     ],
     # What the townsfolk say when you walk past (a call's own rumours come from Cases.cs)
     "rumours": [
@@ -488,7 +509,8 @@ T.L["life"] = {
         "My big brother saw a light up at the old windmill. Nobody's lived there for years.",
         "Somebody borrowed the old festival masks from the museum. Grown-ups keep whispering about it.",
         "If you go past the church, the bells ring by themselves at midnight. Probably.",
-        "The lighthouse on Gull Point is still lit. Nobody knows who keeps it going.",
+        "Saltmarsh Lighthouse out past Gull Harbor is still lit. Nobody has kept it since 1958.",
+        "Grandpa says the little green lights over the creek lead you to lost things. You just have to keep up.",
     ],
     # Cars on the roads out of town (headlights coming, tail lights going)
     "cars": 10, "carSeed": 9, "carSpeed": [11, 17],
@@ -538,8 +560,103 @@ T.L["folk"] = [
                "Plenty of folks heading out to Ravensford tonight. The train's running late again."]},
 ]
 
+# ---------------------------------------------------------------------------
+# The rest of town (worldgen.py): side streets, a house on every plot, yards dressed by a little
+# Wave Function Collapse solver, landmarks in the open spaces, named districts and the lost lanterns.
+# ---------------------------------------------------------------------------
+DISTRICTS = [  # name, x0, x1, z0, z1 (the smallest place containing a point names it, so these are the fallback)
+    ("Downtown", -45, 30, -104, -4), ("Mill Fields", -165, -45, -104, -4), ("Founders Row", 30, 125, -104, -4),
+    ("Farm Country", -165, -45, -4, 100), ("Church Hill", -45, -4, -4, 100), ("Pine Hill", 4, 125, -4, 100),
+    ("Orchard Hill", -165, -4, 100, 182), ("Willow Heights", 4, 125, 100, 182), ("North Bank", -165, 125, 190, 295),
+]
+
+
+def district_of(x, z):
+    best = None
+    for name, x0, x1, z0, z1 in DISTRICTS:
+        if x0 <= x <= x1 and z0 <= z <= z1:
+            best = name
+    return best or "Hollow Creek"
+
+
+def grow_town():
+    W = wg.TownGen(T, building, street_lamps, road, LOTS, C, (TX0, TX1, TZ0, TZ1))
+    W.stamp(keep_rooms={"Town Square", "Churchyard", "Church", "HQ Parking", "Mystery Club HQ", "Hollow Creek Bridge"},
+            road_rooms={"Main Street", "Elm Street", "Willow Lane", "Founders Way"})
+    W.snapshots["stamped"] = W.grid.a.copy()
+    for f in T.L["folk"]:  # the townsfolk and the things they lost stay where make_town put them
+        W.keep_spot(f["p"][0], f["p"][2])
+        W.keep_spot(f["itemP"][0], f["itemP"][2])
+    # New streets, each checked against what is already built
+    if W.add_street("Mill Road", -86, -98, -86, -4):
+        W.end_cap("MillRoad", -86, -98)
+        W.line_street("Mill Road", "z", -86, -98, -4)
+    if W.add_street("Hollow Lane", -150, -52, -40, -52):
+        W.end_cap("HollowLaneW", -150, -52)
+        W.end_cap("HollowLaneE", -40, -52)
+        W.line_street("Hollow Lane", "x", -52, -150, -40)
+    if W.add_street("Orchard Road", -150, 160, -4, 160):
+        W.end_cap("OrchardRoad", -150, 160)
+        W.line_street("Orchard Road", "x", 160, -150, -4)
+    if W.add_street("Chapel Lane", -150, 110, -4, 110):
+        W.end_cap("ChapelLane", -150, 110)
+        W.line_street("Chapel Lane", "x", 110, -150, -4)
+    if W.add_street("Birch Lane", 100, -80, 100, -4):
+        W.line_street("Birch Lane", "z", 100, -80, -4)
+    if W.add_street("Pine Street", 4, 50, 112, 50):
+        W.end_cap("PineStreet", 112, 50)
+        W.line_street("Pine Street", "x", 50, 4, 112)
+        if W.add_street("Ash Street", 40, 54, 40, 102):
+            W.line_street("Ash Street", "z", 40, 54, 102)
+    W.line_street("Main Street", "z", 0, -94, 176)
+    W.line_street("Elm Street", "x", 0, -121, 96)
+    W.line_street("Willow Lane", "x", 106, 4, 96)
+    W.line_street("Founders Way", "x", -84, 4, 104)
+    W.cut_parcels()
+    W.snapshots["parcels"] = W.grid.a.copy()
+    W.build_parcels()
+    # A footpath along the north bank, from the bridge out to the fields either side
+    for name, x0, x1 in (("CreeksidePathW", -150, -6), ("CreeksidePathE", 6, 112)):
+        T.box(name, ((x0 + x1) / 2, -0.02, CREEK_Z + 11.5), (x1 - x0, 0.08, 2.6), rgb("6a5a44"), 9, "solid", "road")
+        W.grid.mark(x0, x1, CREEK_Z + 9.5, CREEK_Z + 13.5, wg.ROAD)
+    T.room("Creekside Path", 9, -150, 112, CREEK_Z + 9.5, CREEK_Z + 13.5, -2, 12)
+    # Landmarks in the biggest open spaces left, biggest first
+    W.place_landmarks([("maze", "Hatcher's Corn Maze"), ("cemetery", "Old Hollow Cemetery"), ("pond", "Mill Pond"),
+                       ("orchard", "Applegate Orchard"), ("farm", "Pumpkin Hollow Farm"), ("camp", "Camp Owl's Rest"),
+                       ("hayfield", "Hayride Field"), ("park", "Founders Park")], district_of)
+    for name, x0, x1, z0, z1 in DISTRICTS:
+        T.room(name, 9, x0, x1, z0, z1, -5, 60)
+    # Lost lanterns (Town/LostLantern.cs): one in every landmark, a few in places everyone knows,
+    # the rest in back yards
+    fixed = [("the churchyard", (-29.0, 0.0, 95.0)), ("down by the bridge", (6.8, 0.0, CREEK_Z - 5.6)),
+             ("the bandstand", (BX + 1.6, 0.6, BZ + 1.6)), ("behind the Fire Station", (-27.6, 0.0, 39.6)),
+             ("behind the Library", (27.6, 0.0, 37.6))]
+    T.L["collectibles"] = W.hide_lanterns(fixed, total=24)
+    T.L["homes"] = W.finish_homes()
+    T.L["districts"] = [{"n": n, "min": [x0, z0], "max": [x1, z1]} for n, x0, x1, z0, z1 in DISTRICTS]
+    T.L["landmarks"] = [{"n": f["name"], "kind": f["kind"], "district": f["district"],
+                         "min": [f["rect"][0], f["rect"][2]], "max": [f["rect"][1], f["rect"][3]]} for f in W.features]
+    lantern_clear = sum(1 for c in T.L["collectibles"] if tuple(W.clear_spot(tuple(c["p"]), pad=0.55)) == tuple(c["p"]))
+    print(f"  worldgen: {len(T.L.get('newRoads', []))} new streets, {W.stats['houses']} houses, {W.stats['yards']} yards, "
+          f"{len(W.features)} landmarks, {len(T.L['collectibles'])} lost lanterns ({lantern_clear} clear of walls), "
+          f"{len(T.L['homes'])} doors to knock on, {sum(h['tale'] >= 0 for h in T.L['homes'])} with a story")
+    return W
+
+
+WORLD = grow_town()
+
+# Round 39: the wider world. Six haunted places around Hollow Creek, joined by real roads,
+# with curiosities hidden all over (regions.py).
+import regions
+_R = regions.build(T, C, rgb, building, (TX0, TX1, TZ0, TZ1))
+T.L["regions"] = _R["regions"]
+T.L["curios"] = _R["curios"]
+T.L["world"] = [regions.WORLD[0], regions.WORLD[2], 415.0, regions.WORLD[3]]  # x0, z0, x1, z1 (the harbor runs out to sea)
+# flat x0, z0, x1, z1 quads: Unity's JsonUtility can't read nested lists
+T.L["horizon"]["forest"]["clear"] = [round(v, 1) for c in _R["clear"] for v in c]
+
 T.L["lots"] = LOTS
-T.L["roads"] = [r for r in ("Main Street", "Elm Street", "Willow Lane", "Founders Way")]
+T.L["roads"] = ["Main Street", "Elm Street", "Willow Lane", "Founders Way"] + T.L.get("newRoads", [])
 T.L["creekZ"] = CREEK_Z
 
 if __name__ == "__main__":

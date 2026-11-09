@@ -65,7 +65,9 @@ namespace Unmasked.EditorTools
             {
                 var go = TestRoomBuilder.Shape(Primitive(b.t), b.n, Level(b.l), ManorLayout.V(b.p), ManorLayout.V(b.s), GetMaterial(b.c, b.m, b.sf), b.m != "nocollide");
                 go.transform.localRotation = Quaternion.Euler(ManorLayout.V(b.r));
-                GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccluderStatic | StaticEditorFlags.OccludeeStatic);
+                // Pieces that move at runtime (WorldLife.cs: Spin_, Blink_, Bob_) can't be static-batched.
+                if (!WorldLife.Moves(b.n))
+                    GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccluderStatic | StaticEditorFlags.OccludeeStatic);
                 if (b.m == "glass") go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
 

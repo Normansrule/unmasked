@@ -10,7 +10,8 @@ namespace Unmasked
     /// budget and uses the same house tools a player would: possessed furniture, slammed doors,
     /// trapdoors, fog and phantoms. Every scare can leak a true clue, exactly like a player Haunter.
     /// Difficulty scales how often it acts and how much it can spend.
-    /// TODO: let the AI wear the costume and dodge the trap in the Trap phase.
+    /// Once the culprit is named, <see cref="StandInHaunter"/> takes over: the suspect puts on the
+    /// costume and dodges the trap, with <see cref="Difficulty"/> setting how often it smells one.
     /// </summary>
     public class AIDirector : MonoBehaviour
     {
