@@ -106,6 +106,13 @@ ROUNDS = [
     ("The club camera", "Press P for an instant photo; fill a twelve-frame album; neighbours smile for it", "snapshots.png"),
     ("The lamplighter", "Old Tobias Wick lends you his pole to light twelve gas lamps along the creek", "creekside.png"),
     ("Past the edge of town", "A castle, a circus, a high rise, a lighthouse, a cave and a swamp, with 32 curiosities to find", "world-map.png"),
+    ("A painted menu", "A storybook night behind the menu, and free CC0 sounds and models that drop straight in", "menu-backdrop.png"),
+    ("First Unity compile", "Unity opened the project for the first time: two errors, fixed, and printed-look photos", "print-look.png"),
+    ("A town of haunts", "Twelve one-of-a-kind buildings, each with a ghost to bust, and softer edges on the whole cast", "haunts.png"),
+    ("Step inside", "Every haunt has a walk-in ground floor, and the last catch happens indoors", "haunts-inside.png"),
+    ("Nicer people, livelier streets", "Storybook hands, skirts that flare like cloth, and trees, hydrants and signs on every street", "street-life.png"),
+    ("Real bodies, full rooms", "One smooth skin per person instead of toy pieces, and furniture, paintings and rugs in every room", "smooth-cast.png"),
+    ("Faces and lived-in rooms", "Noses grown out of faces, softer jaws and hair, curtains at every window and things left out on the tables", "rooms-inside.png"),
 ]
 
 

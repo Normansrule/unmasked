@@ -791,17 +791,20 @@ def face_details(skin, y, eyes, brow, lip):
 
 
 def hand(n, at, skin, side):
-    """A palm, four separate fingers that curl a little, knuckles and a thumb."""
+    """Round 44: a chunky storybook hand. A round palm, four plump fingers held together and curled
+    in toward the leg, a thumb resting forward, little nails. (Thin, spread fingers read as claws.)"""
     x, y, z = at
     sx = -1 if side == "L" else 1
-    out = [part(n, "sphere", (x, y, z), (0.07, 0.1, 0.088), skin),
-           part(n + "Knuckles", "capsule", (x + sx * 0.004, y - 0.045, z + 0.004), (0.05, 0.04, 0.05), shade(skin, 0.96), r=(90, 0, 0))]
-    for i, (dz, ln) in enumerate(((0.03, 0.075), (0.01, 0.085), (-0.01, 0.08), (-0.028, 0.065))):
-        out.append(limb(n + "Finger" + str(i + 1), "capsule", (x + sx * 0.002, y - 0.05, z + dz), (-sx * 0.12, -1, 0.06), ln, 0.022, skin))
-        k = ln / math.sqrt(0.12 ** 2 + 1 + 0.06 ** 2)  # fingernail near the tip, on the back of the finger
-        out.append(part(n + "Nail" + str(i + 1), "sphere", (x + sx * 0.002 - sx * 0.12 * k * 0.85 + sx * 0.008, y - 0.05 - k * 0.85, z + dz + 0.06 * k * 0.85),
-                        (0.008, 0.014, 0.013), mix(skin, [1.0, 0.82, 0.8], 0.4)))
-    out.append(limb(n + "Thumb", "capsule", (x - sx * 0.02, y - 0.015, z + 0.035), (-sx * 0.3, -0.9, 0.35), 0.06, 0.028, skin))
+    out = [part(n, "sphere", (x, y, z), (0.08, 0.1, 0.094), skin),
+           part(n + "Knuckles", "capsule", (x - sx * 0.004, y - 0.045, z + 0.002), (0.058, 0.046, 0.058), shade(skin, 0.97), r=(90, 0, 0))]
+    d = (-sx * 0.26, -1.0, 0.1)
+    dl = math.sqrt(sum(v * v for v in d))
+    for i, (dz, ln) in enumerate(((0.027, 0.058), (0.009, 0.066), (-0.009, 0.063), (-0.026, 0.052))):
+        st = (x - sx * 0.006, y - 0.052, z + dz)
+        out.append(limb(n + "Finger" + str(i + 1), "capsule", st, d, ln, 0.033, skin))
+        tip = [st[k] + d[k] / dl * ln * 0.82 for k in range(3)]
+        out.append(part(n + "Nail" + str(i + 1), "sphere", (tip[0] + sx * 0.013, tip[1], tip[2]), (0.008, 0.016, 0.016), mix(skin, [1.0, 0.82, 0.8], 0.45)))
+    out.append(limb(n + "Thumb", "capsule", (x - sx * 0.018, y - 0.01, z + 0.045), (-sx * 0.3, -0.75, 0.55), 0.052, 0.035, skin))
     return out
 
 
@@ -842,12 +845,7 @@ def person(top, bottom, skin, shoes=rgb("#2a1d14"), dress=False):
             part("ElbowFold" + side, "capsule", (elbow[0] + sx * 0.012, elbow[1] + 0.03, elbow[2] + 0.05), (0.012, 0.045, 0.012), shade(top, 0.82), r=(0, 0, 90 - sx * 20)),
         ] + hand("Hand" + side, (sx * 0.45, 0.93, 0.03), skin, side)
     if dress:
-        base += [part("Skirt", "cyl", (0, 0.62, 0), (0.6, 0.32, 0.58), bottom),
-                 part("SkirtFlare", "cyl", (0, 0.36, 0), (0.7, 0.07, 0.66), shade(bottom, 0.92)),
-                 part("Hem", "cyl", (0, 0.29, 0), (0.71, 0.015, 0.67), shade(bottom, 0.7))]
-        for i in range(6):  # pleats: darker folds down the skirt
-            a = math.radians(i * 60 + 30)
-            base.append(part("Pleat" + str(i + 1), "box", (math.sin(a) * 0.3, 0.6, math.cos(a) * 0.29), (0.02, 0.58, 0.02), shade(bottom, 0.78), r=(0, i * 60 + 30, 0)))
+        base += [part("Skirt", "cyl", (0, 0.62, 0), (0.6, 0.32, 0.58), bottom)]  # bell() turns it into soft flaring tiers
         for side, sx in (("L", -1), ("R", 1)):
             base += [limb("Ankle" + side, "capsule", (sx * 0.1, 0.3, 0), (0, -1, 0), 0.22, 0.09, skin),
                      part("Shoe" + side, "box", (sx * 0.1, 0.045, 0.04), (0.12, 0.08, 0.22), shoes),
@@ -1409,7 +1407,6 @@ SOLVERS = {
         # Silhouette: a tweed capelet over the shoulders and a coat that flares to the knee,
         # and the deerstalker's ear flaps, so the Sleuth reads as a detective from across a street.
         part("Capelet", "sphere", (0, 1.36, -0.01), (0.78, 0.36, 0.52), rgb("#8a6a3e")),
-        part("CapeletHem", "cyl", (0, 1.24, -0.01), (0.74, 0.02, 0.5), rgb("#6a4e2a")),
         part("CoatSkirt", "cyl", (0, 0.68, -0.02), (0.6, 0.26, 0.46), rgb("#8a6a3e")),
         part("CoatFlare", "cyl", (0, 0.45, -0.02), (0.66, 0.04, 0.5), rgb("#6a4e2a")),
         part("CoatSplit", "box", (0, 0.62, 0.225), (0.05, 0.4, 0.02), rgb("#3e2a16")),
@@ -1469,15 +1466,48 @@ SOLVERS = {
     ],
 }
 
+BELLS = ("Skirt", "CoatSkirt", "CoatTails", "CoatLong")
+BELL_EXTRAS = ("SkirtFlare", "Hem", "CoatFlare")
+
+
+def bell(parts):
+    """Round 44: a skirt or coat skirt that was one straight tube becomes seven soft tiers that flare
+    out toward the hem, like a bell, with a darker hem trim. Reads as cloth, not a can."""
+    out = []
+    for q in parts:
+        if q["n"] in BELL_EXTRAS or q["n"].startswith("Pleat"):
+            continue
+        if q["n"] not in BELLS or q["t"] != "cyl":
+            out.append(q)
+            continue
+        (x, y, z), (sx, sy, sz) = q["p"], q["s"]
+        top, bottom, n = y + sy, y - sy, 7
+        h = (top - bottom) / n
+        for i in range(n):
+            f = 0.9 + 0.2 * (i / (n - 1)) ** 1.4  # flares faster toward the hem
+            c = q["c"] if i < n - 1 else shade(q["c"], 0.94)
+            out.append(dict(q, n=f"{q['n']}Tier{i + 1}", p=[x, round(top - h * (i + 0.5), 4), z],
+                            s=[round(sx * f, 4), round(h * 0.75, 4), round(sz * f, 4)], c=c))
+        out.append(dict(q, n=q["n"] + "HemTrim", p=[x, round(bottom + 0.012, 4), z], s=[round(sx * 1.15, 4), 0.014, round(sz * 1.15, 4)], c=shade(q["c"], 0.7)))
+    return out
+
+
+def soften(parts):
+    """Round 42: every hard box or cylinder on a person gets soft rounded edges (Spooky/SoftBox.cs): boots,
+    soles, aprons, belts, collars. Glowing bits keep their crisp edges."""
+    soft = {"box": "rbox", "cyl": "rcyl"}
+    return [dict(q, t=soft[q["t"]]) if q["t"] in soft and q["m"] != "emissive" else q for q in parts]
+
+
 data = {
     "palette": PAL,
     "villains": VILLAINS,
     "props": [dict(id=k, **v) for k, v in PROPS.items()],
-    "suspects": [{"id": k, "parts": finish(k, v)} for k, v in {**SUSPECTS, **HOUSE_SUSPECTS, **FOLK}.items()]
-                + [{"id": k, "parts": stoop(finish(k, v))} for k, v in LAMPLIGHTER.items()],
-    "solvers": [{"id": k, "parts": finish(k, v)} for k, v in SOLVERS.items()],
+    "suspects": [{"id": k, "parts": soften(bell(finish(k, v)))} for k, v in {**SUSPECTS, **HOUSE_SUSPECTS, **FOLK}.items()]
+                + [{"id": k, "parts": soften(bell(stoop(finish(k, v))))} for k, v in LAMPLIGHTER.items()],
+    "solvers": [{"id": k, "parts": soften(bell(finish(k, v)))} for k, v in SOLVERS.items()],
     # The Lantern Watch pieces for each Solver, at that Solver's height and build: "<Role>.<Piece>"
-    "watch": [{"id": f"{role}.{piece}", "parts": fit(storybook(parts), *CHARACTERS[role][:2])} for role in SOLVERS for piece, parts in WATCH.items()],
+    "watch": [{"id": f"{role}.{piece}", "parts": soften(fit(storybook(parts), *CHARACTERS[role][:2]))} for role in SOLVERS for piece, parts in WATCH.items()],
 }
 
 if __name__ == "__main__":

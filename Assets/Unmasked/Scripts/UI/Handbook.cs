@@ -51,6 +51,8 @@ namespace Unmasked
                 When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 3 && ClubBook.CreekLampsLit == 0 },
             new() { Title = "Past the edge of town", Text = "The roads out of town lead somewhere now: a castle, a circus, a high rise, a harbor, a beach and a swamp. Open the map (M), and look for things that twinkle.",
                 When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 2 && ClubBook.RegionsVisited == 0 },
+            new() { Title = "Haunts in town", Text = "Twelve buildings in Hollow Creek have a ghost of their own, from the Bijou to the laundromat. Read the three violet signs outside, then catch the ghost (E) three times.",
+                When = (g, a) => g.InTown && g.Phase.Value == MatchPhase.Setup && ClubBook.Get("nights") >= 1 && ClubBook.HauntsBusted == 0 },
         };
 
         readonly Queue<int> queue = new();

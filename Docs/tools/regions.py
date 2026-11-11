@@ -775,12 +775,12 @@ def build(T, C, rgb, building, town_rect):
 
     # The Wishing Well and a crooked oak, in the fields north-west of town
     clearing(-225, 205, 16)
-    box("WellWall", (-225, 0.55, 205), (2.6, 1.1, 2.6), rgb("6a6a70"), shape="cyl", tag="stone")
-    box("WellWater", (-225, 0.9, 205), (2.1, 0.05, 2.1), rgb("1f3f58"), "emissive", "water", shape="cyl")
+    box("WishingWellWall", (-225, 0.55, 205), (2.6, 1.1, 2.6), rgb("6a6a70"), shape="cyl", tag="stone")
+    box("WishingWellWater", (-225, 0.9, 205), (2.1, 0.05, 2.1), rgb("1f3f58"), "emissive", "water", shape="cyl")
     for side in (-1, 1):
-        box(f"WellPost{side}", (-225 + side * 1.1, 1.9, 205), (0.18, 1.8, 0.18), C["wood"], tag="fence")
-    box("WellRoof", (-225, 3.0, 205), (2.8, 0.15, 1.6), rgb("5a3a22"), tag="roof", r=(0, 0, 0))
-    box("WellBucket", (-225, 1.6, 205), (0.4, 0.35, 0.4), rgb("6a4a2a"), shape="cyl", tag="furniture")
+        box(f"WishingWellPost{side}", (-225 + side * 1.1, 1.9, 205), (0.18, 1.8, 0.18), C["wood"], tag="fence")
+    box("WishingWellRoof", (-225, 3.0, 205), (2.8, 0.15, 1.6), rgb("5a3a22"), tag="roof", r=(0, 0, 0))
+    box("WishingWellBucket", (-225, 1.6, 205), (0.4, 0.35, 0.4), rgb("6a4a2a"), shape="cyl", tag="furniture")
     T.tree("WishingOak", -232, 212, 9, rgb("a0402a"))
     T.glow((-225, 1.2, 205), rgb("9fdcff"), 6, 0.7)
     curio("wayside-well", "A wish, fished out of the well", "coin", "the wishing well north-west of town",

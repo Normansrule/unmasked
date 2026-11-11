@@ -179,6 +179,15 @@ namespace Unmasked
                     P(root, PrimitiveType.Cube, top + new Vector3(0, -0.04f, 0.17f) * s, new Vector3(0.25f, 0.02f, 0.12f) * s, a * 0.7f, false, new Vector3(10, 0, 0));
                     P(root, PrimitiveType.Cube, top + new Vector3(0, -0.005f, 0.178f) * s, new Vector3(0.05f, 0.06f, 0.01f) * s, b, true);
                     break;
+                case "buster-cap":
+                    // a peaked cap: a soft crown, a stiff peak, a button on top and a little sheet-ghost badge
+                    P(root, PrimitiveType.Sphere, top + new Vector3(0, 0.05f, 0) * s, new Vector3(0.36f, 0.2f, 0.37f) * s, a);
+                    P(root, PrimitiveType.Cylinder, top + new Vector3(0, -0.005f, 0.2f) * s, new Vector3(0.3f, 0.01f, 0.2f) * s, a * 0.8f, false, new Vector3(-8, 0, 0));
+                    P(root, PrimitiveType.Sphere, top + new Vector3(0, 0.15f, 0) * s, Vector3.one * 0.04f * s, a * 0.8f);
+                    P(root, PrimitiveType.Sphere, top + new Vector3(0, 0.07f, 0.175f) * s, new Vector3(0.07f, 0.08f, 0.02f) * s, b, true);
+                    P(root, PrimitiveType.Sphere, top + new Vector3(-0.012f, 0.08f, 0.186f) * s, Vector3.one * 0.012f * s, new Color(0.1f, 0.08f, 0.12f));
+                    P(root, PrimitiveType.Sphere, top + new Vector3(0.012f, 0.08f, 0.186f) * s, Vector3.one * 0.012f * s, new Color(0.1f, 0.08f, 0.12f));
+                    break;
                 case "explorer-hat":
                     // a wide-brimmed field hat: brim, crown with a dent, leather band and a brass compass pin
                     P(root, PrimitiveType.Cylinder, top + new Vector3(0, -0.01f, 0) * s, new Vector3(0.62f, 0.012f, 0.62f) * s, a, false, new Vector3(-4, 0, 0));

@@ -1,0 +1,1 @@
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage();await p.goto('http://localhost:8765/pnp.html');await p.waitForFunction('window.READY===true',null,{timeout:300000});await p.pdf({path:'out/Unmasked-print-and-play.pdf',width:'8.5in',height:'11in',printBackground:true,timeout:0});await b.close()})()

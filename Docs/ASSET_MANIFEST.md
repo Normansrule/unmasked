@@ -1,7 +1,9 @@
 # Asset manifest
 
 Everything that ships in the game is made by code in this repository. No third-party art, models,
-music or fonts are in `Assets/`.
+music or fonts are in `Assets/`, except free sounds and models you add yourself with
+`unmasked import` (round 40): those land in `Resources/Sounds/CC0` and `Resources/Models/CC0`, and
+each one is listed with its source and licence in `Resources/CC0/CREDITS.md`.
 
 | Asset | Where it lives | Made by | Source |
 |---|---|---|---|
@@ -9,6 +11,13 @@ music or fonts are in `Assets/`.
 | Town, houses, Blackwood Manor | `Resources/HollowCreek.json`, `Resources/Houses/*.json`, `Resources/BlackwoodManor.json` | `make_town.py`, `make_houses.py`, `make_manor.py`, `dressing.py` | Original layouts |
 | Surface patterns (siding, shingles, brick...) | `Assets/Unmasked/Textures/Surfaces` | `make_textures.py` | Procedural |
 | Sounds (29 .wav) | `Assets/Unmasked/Resources/Sounds` | `make_sounds.py` | Synthesized |
+| Menu backdrop (sky, moon, hills, manor, fog, fireflies, grain) | Generated at runtime | `Assets/Unmasked/Scripts/UI/MenuBackdrop.cs` | Procedural |
+| Street trees, hydrants, post boxes, bins, newspaper boxes and street signs | Generated from code (layout) | `Docs/tools/streetlife.py` | Procedural |
+| Smooth body skins (one per outfit) | Generated at runtime | `Assets/Unmasked/Scripts/Spooky/SmoothBody.cs` | Procedural |
+| Room furniture, paintings, rugs, curtains and table-top still lifes | Generated from code (layout) | `Docs/tools/roomdetail.py` | Procedural |
+| Rounded box and cylinder meshes for soft boots, belts, collars and cuffs | Generated at runtime | `Assets/Unmasked/Scripts/Spooky/SoftBox.cs` | Procedural |
+| Twelve haunt buildings, their signs and sheet ghosts | Generated from code (layout) and primitives (ghosts) | `Docs/tools/haunts.py`, `Assets/Unmasked/Scripts/Town/HauntBust.cs` | Procedural |
+| Dropped-in sounds and models (optional) | `Resources/Sounds/CC0`, `Resources/Models/CC0` | `tools/import_incoming.py` | CC0 packs, or known CC BY packs credited in `Resources/CC0/CREDITS.md` |
 | Toon shader | `Assets/Unmasked/Shaders/ToonSpooky.shader` | Hand-written | Original |
 | In-game text | `Assets/Unmasked/Resources/Fonts` (Fraunces, Atkinson Hyperlegible), falls back to Unity's LegacyRuntime font | Fraunces by Undercase Type; Atkinson Hyperlegible by the Braille Institute | SIL Open Font License 1.1, licence texts next to the fonts |
 | Website fonts | `site/fonts/*.woff2` | Subset from the same fonts | SIL Open Font License 1.1, licence texts in `site/fonts` |

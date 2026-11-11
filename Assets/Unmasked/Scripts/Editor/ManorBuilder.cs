@@ -65,6 +65,8 @@ namespace Unmasked.EditorTools
             {
                 var go = TestRoomBuilder.Shape(Primitive(b.t), b.n, Level(b.l), ManorLayout.V(b.p), ManorLayout.V(b.s), GetMaterial(b.c, b.m, b.sf), b.m != "nocollide");
                 go.transform.localRotation = Quaternion.Euler(ManorLayout.V(b.r));
+                if (b.t == "rbox") go.AddComponent<SoftBox>();  // round 44: soft street furniture
+                else if (b.t == "rcyl") go.AddComponent<SoftBox>().Cylinder = true;
                 // Pieces that move at runtime (WorldLife.cs: Spin_, Blink_, Bob_) can't be static-batched.
                 if (!WorldLife.Moves(b.n))
                     GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccluderStatic | StaticEditorFlags.OccludeeStatic);
@@ -197,6 +199,40 @@ namespace Unmasked.EditorTools
             return root;
         }
 
+        static readonly Dictionary<string, GameObject> cc0Models = new();
+
+        /// <summary>
+        /// Resources/Models/CC0/&lt;prop&gt; (an .fbx or .obj from a CC0 pack, see tools/import_incoming.py),
+        /// placed with its feet on the ground and scaled to the shape-built prop's height. Null when
+        /// there's no such model.
+        /// </summary>
+        static Transform CC0Model(Transform parent, string name, string prop, Costumes.Part[] parts)
+        {
+            if (!cc0Models.TryGetValue(prop, out var model))
+                cc0Models[prop] = model = Resources.Load<GameObject>("Models/CC0/" + prop);
+            if (model == null) return null;
+            float targetH = 0f;
+            foreach (var p in parts)
+                if (p.p != null && p.s != null && p.p.Length > 1 && p.s.Length > 1) targetH = Mathf.Max(targetH, p.p[1] + p.s[1] * 0.5f);
+            var holder = new GameObject(name).transform;
+            holder.SetParent(parent, false);
+            var inst = (GameObject)PrefabUtility.InstantiatePrefab(model, holder);
+            inst.transform.localPosition = Vector3.zero;
+            var rends = inst.GetComponentsInChildren<Renderer>();
+            if (rends.Length > 0 && targetH > 0.01f)
+            {
+                var b = rends[0].bounds;
+                foreach (var r in rends) b.Encapsulate(r.bounds);
+                if (b.size.y > 0.001f)
+                {
+                    float k = targetH / b.size.y;
+                    inst.transform.localScale *= k;
+                    inst.transform.localPosition = new Vector3(0f, -(b.min.y - holder.position.y) * k, 0f);
+                }
+            }
+            return holder;
+        }
+
         /// <summary>Jack-o'-lanterns, pumpkins, candles, cobwebs and their flickering glows, under parent.</summary>
         internal static void BuildHalloween(ManorLayout L, Transform parent)
         {
@@ -212,7 +248,9 @@ namespace Unmasked.EditorTools
                     var prop = props.FindProp(d.k);
                     if (prop == null) continue;
                     made[d.k] = made.TryGetValue(d.k, out int n) ? n + 1 : 1;
-                    var item = TestRoomBuilder.BuildParts(root, $"{d.k}_{made[d.k]}", prop.parts, Vector3.zero);
+                    // A CC0 model dropped in by tools/import_incoming.py replaces the shape-built prop.
+                    var item = CC0Model(root, $"{d.k}_{made[d.k]}", d.k, prop.parts)
+                               ?? TestRoomBuilder.BuildParts(root, $"{d.k}_{made[d.k]}", prop.parts, Vector3.zero);
                     item.SetLocalPositionAndRotation(ManorLayout.V(d.p), Quaternion.Euler(0, d.ry, 0));
                     item.localScale = Vector3.one * (d.sc > 0f ? d.sc : 1f);
                     foreach (var r in item.GetComponentsInChildren<Renderer>())

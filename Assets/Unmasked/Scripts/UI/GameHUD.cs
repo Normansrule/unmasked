@@ -51,6 +51,7 @@ namespace Unmasked
             if (GetComponent<ClubBook>() == null) gameObject.AddComponent<ClubBook>();
             Snapshots.Ensure(gameObject);  // the club camera (P) and the album
             StoryLight.Ensure(gameObject); // the storybook moods: teal night, amber home, violet haunting, gold unmasking
+            ScreenFade.Ensure(gameObject); // a short dip through dark between the menu and the town
         }
 
         void Update()
@@ -185,7 +186,7 @@ namespace Unmasked
             var net = NetworkManager.Singleton;
             if (net == null) { GUI.Label(new Rect(UITheme.Edge, UITheme.Edge, 700, 30), "No NetworkManager in the scene. Run Unmasked > Build Hollow Creek (town)."); return; }
 
-            if (!net.IsClient && !net.IsServer) { DrawConnectMenu(net); DrawToasts(); return; }
+            if (!net.IsClient && !net.IsServer) { MenuBackdrop.Draw(); DrawConnectMenu(net); DrawToasts(); return; }
 
             var game = MysteryGameManager.Instance;
             var agent = PlayerAgent.Local;

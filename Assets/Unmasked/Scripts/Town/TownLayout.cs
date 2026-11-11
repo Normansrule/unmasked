@@ -150,9 +150,23 @@ namespace Unmasked
         /// a hint for the Club Book, and the little story you read when you find it.</summary>
         [Serializable] public class CurioInfo { public string id, n, kind, where, lore; public float[] p; }
 
+        /// <summary>Round 42: a one-of-a-kind town building and its haunt (Docs/tools/haunts.py, Town/HauntBust.cs).</summary>
+        [Serializable]
+        public class HauntInfo
+        {
+            public string id, n, ghost, blurb, twist, street;
+            public float[] c;          // the ghost's colour
+            public HauntSign[] signs;  // three signs of the haunt round the building
+            public float[] hide;       // where the ghost shows itself and hops to: flat x,y,z triples
+            public float[] door, min, max;
+            public float ry;
+        }
+        [Serializable] public class HauntSign { public string n, lore; public float[] p; }
+
         public string name;
         public Region[] regions;
         public CurioInfo[] curios;
+        public HauntInfo[] haunts;
         /// <summary>The whole world for the map: x0, z0, x1, z1 (town plus the haunted places).</summary>
         public float[] world;
         public LifeInfo life;

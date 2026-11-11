@@ -13,6 +13,8 @@ site can never drift from what's in Unity.
             wardrobe (earned with candy, never bought), plus the town's landmarks and lanterns
   rounds    the build log from make_readme_anim.py, plus milestone progress from Docs/PROGRESS.md
   portraits site/img/legend-<id>.jpg, each legend cut from Docs/images/villains.png (needs Pillow)
+  screens   site/img/world-map.jpg and site/img/menu.jpg for the device frames, from Docs/images
+            world-map.png and menu-backdrop.png (needs Pillow)
 
 Run it whenever Cases.cs, PROGRESS.md or the round list changes. The site is plain files in site/,
 published by .github/workflows/pages.yml.
@@ -75,6 +77,33 @@ def legend_portraits(legends):
         x0 = max(0, cx - 150)
         crop = lineup.crop((x0, 150, x0 + 300, 470)).resize((450, 480), Image.LANCZOS)
         crop.save(os.path.join(ROOT, "site", "img", f"legend-{l['id']}.jpg"), quality=86, optimize=True, progressive=True)
+
+
+def device_screens():
+    """The pictures shown inside the site's laptop and tablet frames. Skipped without Pillow."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print("  device screens skipped (pip install pillow)")
+        return
+    # the laptop shows the menu (16:10, cropped); the tablet shows the whole world map (4:3, the
+    # square map centred on its own dark edge colour so nothing at the borders is cut off)
+    for src, dst, aspect, size, fit in (("menu-backdrop.png", "menu.jpg", 16 / 10, (1280, 800), False),
+                                        ("world-map.png", "world-map.jpg", 4 / 3, (1200, 900), True)):
+        path = os.path.join(ROOT, "Docs", "images", src)
+        if not os.path.exists(path):
+            print(f"  {dst} skipped ({src} not made yet)")
+            continue
+        im = Image.open(path).convert("RGB")
+        w, h = im.size
+        if fit:
+            canvas = Image.new("RGB", (round(h * aspect), h), im.getpixel((2, 2)))
+            canvas.paste(im, ((canvas.width - w) // 2, 0))
+            im = canvas
+        else:
+            tw, th = (w, round(w / aspect)) if h >= w / aspect else (round(h * aspect), h)
+            im = im.crop((0, (h - th) // 2, tw, (h - th) // 2 + th))  # keep the left edge: the menu panel lives there
+        im.resize(size, Image.LANCZOS).save(os.path.join(ROOT, "site", "img", dst), quality=84, optimize=True, progressive=True)
 
 
 def read_club():
@@ -152,6 +181,7 @@ def main():
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     legend_portraits(legends)
+    device_screens()
     print(f"  club: {len(club['chapters'])} chapters, {sum(len(c['items']) for c in club['chapters'])} challenges, "
           f"{len(club['wardrobe'])} looks, {len(club['landmarks'])} landmarks")
     print(f"{path}: {len(cases)} cases, {len(houses)} houses, {len(legends)} legends, {len(rounds)} rounds, {len(milestones)} milestones")

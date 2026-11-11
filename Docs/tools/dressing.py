@@ -261,6 +261,12 @@ def finish(L, house=True):
     """Detail every layout gets when saved. house: add shutters and flower boxes."""
     trim = L.get("trim") or _rgb("efe6d2")
     shutter = L.get("shutter") or _rgb("2f4a3a")
+    import roomdetail  # round 45: furniture, paintings and rugs so no room stands empty
+    rooms = roomdetail.furnish(L)
+    if rooms:
+        print(f"  rooms: {sum(v[0] for v in rooms.values())} pieces, {sum(v[1] for v in rooms.values())} paintings, "
+              f"{sum(v[2] for v in rooms.values())} rugs, {sum(v[3] for v in rooms.values())} curtained windows, "
+              f"{sum(v[4] for v in rooms.values())} table-top still lifes in {len(rooms)} rooms")
     counts = {
         "window trim": window_trim(L, trim, shutter, house),
         "foundations": foundations(L, L.get("foundation") or _rgb("5a5048")),

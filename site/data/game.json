@@ -1419,6 +1419,33 @@
     ]
    },
    {
+    "name": "Haunts in town",
+    "blurb": "Twelve buildings in town, twelve haunts. Find the three signs, then catch the ghost.",
+    "items": [
+     {
+      "id": "bust-1",
+      "title": "First bust",
+      "text": "Bust your first haunt in town: read its three signs, then catch the ghost three times.",
+      "reward": 25,
+      "house": null
+     },
+     {
+      "id": "bust-6",
+      "title": "Half the town's quieter",
+      "text": "Bust six haunts.",
+      "reward": 60,
+      "house": null
+     },
+     {
+      "id": "bust-all",
+      "title": "Hollow Creek's own buster",
+      "text": "Bust every haunt, from the Bijou to the laundromat.",
+      "reward": 150,
+      "house": null
+     }
+    ]
+   },
+   {
     "name": "Casework",
     "blurb": "Solving it is one thing. Solving it well is another.",
     "items": [
@@ -1808,6 +1835,16 @@
     "gift": "Light every gas lamp on the Creekside Path for Tobias Wick, then take him back his pole."
    },
    {
+    "id": "buster-cap",
+    "name": "Haunt Buster's cap",
+    "slot": "hat",
+    "price": 0,
+    "a": "#4a3a6a",
+    "b": "#e8e0ff",
+    "blurb": "A peaked cap in club purple with a little embroidered sheet ghost on the front.",
+    "gift": "Bust every haunt in Hollow Creek."
+   },
+   {
     "id": "explorer-hat",
     "name": "Explorer's hat",
     "slot": "hat",
@@ -1868,7 +1905,7 @@
     "text": "The old folks say that when all twenty-four lanterns are found and lit again, the mist will stay down on the creek for good. And whoever found them would be the new Lantern Watch. I think that might be you lot."
    }
   ],
-  "doors": 35,
+  "doors": 23,
   "families": [
    "the Ashcrofts",
    "the Sutcliffes",
@@ -2078,6 +2115,34 @@
   {
    "title": "Past the edge of town",
    "line": "A castle, a circus, a high rise, a lighthouse, a cave and a swamp, with 32 curiosities to find"
+  },
+  {
+   "title": "A painted menu",
+   "line": "A storybook night behind the menu, and free CC0 sounds and models that drop straight in"
+  },
+  {
+   "title": "First Unity compile",
+   "line": "Unity opened the project for the first time: two errors, fixed, and printed-look photos"
+  },
+  {
+   "title": "A town of haunts",
+   "line": "Twelve one-of-a-kind buildings, each with a ghost to bust, and softer edges on the whole cast"
+  },
+  {
+   "title": "Step inside",
+   "line": "Every haunt has a walk-in ground floor, and the last catch happens indoors"
+  },
+  {
+   "title": "Nicer people, livelier streets",
+   "line": "Storybook hands, skirts that flare like cloth, and trees, hydrants and signs on every street"
+  },
+  {
+   "title": "Real bodies, full rooms",
+   "line": "One smooth skin per person instead of toy pieces, and furniture, paintings and rugs in every room"
+  },
+  {
+   "title": "Faces and lived-in rooms",
+   "line": "Noses grown out of faces, softer jaws and hair, curtains at every window and things left out on the tables"
   }
  ],
  "milestones": [
@@ -2250,6 +2315,36 @@
    "name": "Milestone 34: Past the edge of town",
    "done": 6,
    "total": 7
+  },
+  {
+   "name": "Milestone 35: A painted menu and free assets",
+   "done": 6,
+   "total": 7
+  },
+  {
+   "name": "Milestone 36: A town of haunts",
+   "done": 4,
+   "total": 5
+  },
+  {
+   "name": "Milestone 37: Step inside the haunts",
+   "done": 2,
+   "total": 3
+  },
+  {
+   "name": "Milestone 38: Nicer people, livelier streets",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 39: Real bodies, full rooms",
+   "done": 3,
+   "total": 4
+  },
+  {
+   "name": "Milestone 40: Faces and lived-in rooms",
+   "done": 4,
+   "total": 5
   },
   {
    "name": "Release pipeline",

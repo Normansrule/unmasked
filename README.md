@@ -298,6 +298,122 @@ The trick-or-treaters got cuter too, with button noses, coloured eyes, lashes an
 
 <p align="center"><img src="Docs/images/characters-detail.png" alt="The cast up close with the new eyes, blush and hands, and the Mayor before and after" width="900"></p>
 
+#### Round 40: a painted menu and free sounds and models
+
+**A storybook night behind the menu.** The first screen now sits over a painted night: a sky that
+warms to an ember glow at the horizon, a moon with a soft halo, three layers of hills drifting at
+different speeds, a crooked manor with one flickering lit window, ground fog, fireflies and a little
+paper grain. It's all drawn from code in
+[`UI/MenuBackdrop.cs`](Assets/Unmasked/Scripts/UI/MenuBackdrop.cs), so there's no artwork to licence,
+and it holds still with **Reduce motion** on. Going from the menu into town (and back) now dips
+briefly through dark instead of cutting.
+
+<p align="center"><img src="Docs/images/menu-backdrop.png" alt="The first menu over a painted night: a moon, drifting purple hills, a crooked manor with a lit window, fireflies" width="900"></p>
+
+**Drop in free sounds and models.** Download a free pack (Kenney's CC0 kits, the OpenGameArt CC0
+sounds library, or Arno Faure's Free SFX Package), put the zip in the project's `Incoming` folder
+and run `unmasked import` to see the plan, then `unmasked import --apply`. It only takes packs whose
+licence is CC0 or one it knows, matches files to the game's own sound names and decor props by name,
+and writes every file used and its licence to `Resources/CC0/CREDITS.md`. The game plays a dropped-in
+sound instead of its synthesized one, and the town builder uses a dropped-in model instead of the
+shape-built prop, scaled to the same height. Delete the file to get the original back.
+
+**The website** has a new "Past the edge of town" section with the menu and the world map shown on a
+laptop and a tablet drawn in CSS.
+
+#### Round 42: a town of haunts and softer people
+
+**Twelve one-of-a-kind buildings, each with a haunt.** Hollow Creek's streets now have a cinema, a
+bakery, a school, a town hall with a clock tower, a hotel, a toy shop, a music hall, an ice cream
+parlour, the newspaper, an apothecary, the train depot and a laundromat, each with its own shape,
+sign colour and ghost: the Projectionist at the Bijou, the Flour Phantom at the bakery, the Sock
+Thief at the laundromat and nine more. Find a haunt's three violet signs to learn its story, then
+catch its ghost three times as it hops between hiding spots to bust it. The map shows each haunt in
+violet, turning green once it's busted, and the Club Book has a new "Haunts in town" chapter with
+three challenges (58 in all) and a Haunt Buster's cap for busting every one. The buildings are laid
+out by [`Docs/tools/haunts.py`](Docs/tools/haunts.py) and played by
+[`Town/HauntBust.cs`](Assets/Unmasked/Scripts/Town/HauntBust.cs).
+
+<p align="center"><img src="Docs/images/haunts.png" alt="The twelve haunt buildings at night, each with its ghost out front and three violet signs" width="900"></p>
+
+**Softer people.** Boots, shoes, soles, aprons, belts, bibs, satchels, collars and cuffs used to be
+hard boxes and cylinders. They now have rounded edges and smooth shading
+([`Spooky/SoftBox.cs`](Assets/Unmasked/Scripts/Spooky/SoftBox.cs) builds the mesh in code, so there's
+no model file), on every solver, suspect, townsperson and the lamplighter.
+
+<p align="center"><img src="Docs/images/soft-cast.png" alt="Six characters before and after: the same boots, bibs and belts with soft rounded edges" width="900"></p>
+
+#### Round 43: step inside the haunts
+
+Every haunt's ground floor is now a room you can walk into through an open doorway, dressed for
+its haunt: rows of red seats under the Bijou's glowing screen, the bakery's counter and oven, the
+music hall's stage and piano, the apothecary's shelves of glowing jars, a wall of washing machines at
+the laundromat, toy shelves and a rocking horse at Tick-Tock Toys, and so on for all twelve. The
+ghost's second escape now takes it indoors, so the last catch of every bust happens inside.
+
+<p align="center"><img src="Docs/images/haunts-inside.png" alt="Six haunt interiors: the cinema, bakery, music hall, apothecary, laundromat and toy shop, each with its ghost waiting inside" width="900"></p>
+
+#### Round 44: nicer people and livelier streets
+
+**Nicer people.** Hands used to be four thin, spread fingers that read as claws from a few steps
+away. Now every person has a chunky storybook hand: a round palm, plump fingers held together and
+curled in toward the leg, a thumb resting forward and little nails. Skirts and long coats were one
+straight tube; now they're seven soft tiers that flare toward the hem like cloth, with a darker hem
+trim (the Heiresses, several Cooks, Old Nell, Dot at the diner, the Sleuth's coat and the Reverend's long coat).
+
+<p align="center"><img src="Docs/images/cast-pass.png" alt="Five of the cast before and after: chunkier hands and skirts that flare like cloth" width="900"></p>
+
+**Life along the streets.** The grass beside every sidewalk now has what a real small town has
+along its kerbs: autumn street trees with fallen leaves, red fire hydrants, blue post boxes, green
+bins, newspaper boxes, and a green street sign near the end of each street. They're placed by
+[`Docs/tools/streetlife.py`](Docs/tools/streetlife.py) only where nothing else stands, the same way
+every build.
+
+<p align="center"><img src="Docs/images/street-life.png" alt="Hollow Creek's sidewalks at night with autumn trees, hydrants, post boxes and street signs" width="900"></p>
+
+#### Round 45: real bodies and rooms full of things
+
+**Real bodies, not toy pieces.** People were stacks of separate capsules and balls, so every elbow,
+knee, shoulder and jaw showed a seam like a toy figure. Now each person's body is one smooth skin:
+the torso, shoulders, arms, legs, neck, head, jaw, cheeks, ears and skirt are melted together, so an
+arm flows into its shoulder and a jaw into its head, and clothes keep their colours where they
+meet. Faces, hair, hands, shoes and accessories still sit on top.
+[`Spooky/SmoothBody.cs`](Assets/Unmasked/Scripts/Spooky/SmoothBody.cs) builds the skin in code when a
+character appears (shared by everyone in the same outfit), and
+[`Docs/tools/smoothbody.py`](Docs/tools/smoothbody.py) does the same for the pictures.
+
+<p align="center"><img src="Docs/images/smooth-cast.png" alt="Five of the cast before and after: separate toy pieces, then one smooth skin per person" width="900"></p>
+
+**Rooms full of things.** Plenty of rooms were a floor, four walls and one big piece. Now every
+room in every house, the manor and the club's HQ is dressed for what it is: beds, wardrobes,
+dressers, nightstands with lamps and toy chests in bedrooms; desks, bookcases and globes in
+studies; stoves, shelves of jars, sacks and barrels in kitchens and cellars; a piano, a harp and a
+gramophone in the music room; a crib and a rocking horse in the nursery; framed paintings, little
+wall lamps and a rug in the middle. 276 pieces, 92 paintings and 18 rugs, placed by
+[`Docs/tools/roomdetail.py`](Docs/tools/roomdetail.py) only against solid wall, never in a doorway
+or over a clue spot, and the same way every build.
+
+<p align="center"><img src="Docs/images/rooms-full.png" alt="Three floors before and after, walls cut away: empty rooms, then beds, wardrobes, desks, bookcases, paintings and rugs" width="900"></p>
+
+#### Round 46: faces with a real nose, and rooms that look lived in
+
+**Faces.** The nose used to be a ball stuck on the face. Now it grows out of the face, the jaw and
+cheeks melt in more softly, the palm and thumb are one piece (fingers still separate), and hair is
+one soft mass instead of separate balls. The head, hair and hands are built on a grid twice as fine
+as the body, so a nose or a knuckle keeps its shape
+([`Spooky/SmoothBody.cs`](Assets/Unmasked/Scripts/Spooky/SmoothBody.cs),
+[`Docs/tools/smoothbody.py`](Docs/tools/smoothbody.py)).
+
+<p align="center"><img src="Docs/images/faces-pass.png" alt="Five faces before and after: a nose grown out of the face, softer jaws and cheeks, softer hair" width="900"></p>
+
+**Rooms that look lived in.** Every window in every house, the manor and the HQ now has curtains
+on a brass rod with a valance and tie-backs (109 windows), and tables, desks and counters have
+things left out on them: teacups on saucers, stacks of books, candles, a vase of flowers, a pie, a
+teapot, a letter with a pen and spectacles, a little pumpkin (89 table tops). Placed by
+[`Docs/tools/roomdetail.py`](Docs/tools/roomdetail.py), never on top of something already there.
+
+<p align="center"><img src="Docs/images/rooms-inside.png" alt="Four rooms seen from inside, before and after: curtains at the windows and things on the tables" width="900"></p>
+
 **First-night hints**, which ease in by themselves and step aside when you're done with them:
 
 <p align="center"><img src="Docs/images/handbook.gif" alt="Handbook hint cards appearing at HQ, on the drive, at the Suspect Board, during a scare and after a case" width="720"></p>
@@ -329,7 +445,7 @@ always matches the checklist.
 
 <!-- tracker:start (written by Docs/tools/make_readme_anim.py from Docs/PROGRESS.md) -->
 
-**Overall: `████████████████████░░░░` 83%**, 195 of 235 tasks. 3 milestones done, 32 in progress, 1 not started. Built means the code and data exist and compile; **nothing has been played in Unity yet**.
+**Overall: `████████████████████░░░░` 83%**, 210 of 254 tasks. 3 milestones done, 36 in progress, 1 not started. Built means the code and data exist and compile; **nothing has been played in Unity yet**.
 
 | Milestone | Progress | Tasks | State | Played in Unity |
 |---|---|---|---|---|
@@ -367,6 +483,10 @@ always matches the checklist.
 | Milestone 32: The club camera | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
 | Milestone 33: The lamplighter | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
 | Milestone 34: Past the edge of town | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
+| Milestone 35: A painted menu and free assets | `██████████░░` 86% | 6/7 | 🟡 In progress | Not yet |
+| Milestone 36: A town of haunts | `██████████░░` 80% | 4/5 | 🟡 In progress | Not yet |
+| Milestone 37: Step inside the haunts | `████████░░░░` 67% | 2/3 | 🟡 In progress | Not yet |
+| Milestone 38: Nicer people, livelier streets | `█████████░░░` 75% | 3/4 | 🟡 In progress | Not yet |
 | Release pipeline | `█████████░░░` 71% | 5/7 | 🟡 In progress | Not yet |
 | Later | `░░░░░░░░░░░░` 0% | 0/4 | ⬜ Not started | Not yet |
 
@@ -403,6 +523,10 @@ always matches the checklist.
 - **Milestone 32: The club camera**: In Unity: check the photo crop, the album at every text size, and that walls block a sight
 - **Milestone 33: The lamplighter**: In Unity: walk the path, check the lamp lights and Tobias's face, the pole on each role, and the cap on each head
 - **Milestone 34: Past the edge of town**: In Unity: drive every road, climb the lighthouse stair and the fire escape, check the moving pieces and the frame rate with the whole world loaded
+- **Milestone 35: A painted menu and free assets**: Download Kenney's Halloween Kit and a CC0 sound pack on a machine that can reach them, import, and listen and look in Unity
+- **Milestone 36: A town of haunts**: In Unity: bust a haunt start to finish, check the soft shapes in the editor and on a build
+- **Milestone 37: Step inside the haunts**: In Unity: walk into each haunt, check the camera under the ceiling and the doorway height
+- **Milestone 38: Nicer people, livelier streets**: In Unity: check the hands at arm's length and the street props for frame rate across the whole town
 - **Release pipeline**: First compile in Unity and fix errors; First real in-game screenshots (F12) in the README
 - **Later**: Real characters, house art, audio; Styled UI (UI Toolkit) to replace the debug HUD; Several cases per house, campaign; Lobby and online matchmaking (Unity Relay)
 
@@ -627,8 +751,9 @@ python3 "$(unmasked where)/Docs/tools/make_images_porch.py"   # the carving benc
 python3 "$(unmasked where)/Docs/tools/make_images_album.py"   # the club camera and the album (snapshots.png)
 python3 "$(unmasked where)/Docs/tools/make_images_lamplighter.py" # Tobias Wick and the creekside lamps (lamplighter.png, creekside.png)
 python3 "$(unmasked where)/Docs/tools/make_images_regions.py"     # the world map and the six haunted places (world-map.png, regions.png)
+python3 "$(unmasked where)/Docs/tools/make_images_menu.py"        # the painted menu backdrop (menu-backdrop.png)
 python3 "$(unmasked where)/Docs/tools/make_readme_anim.py"    # this page's animations, the tracker and the interface mockups (hud-refresh.png, hud-board.png, hud-moments.gif)
-python3 "$(unmasked where)/Docs/tools/make_site_data.py"      # the website's case data (site/data/game.json), read from Cases.cs
+python3 "$(unmasked where)/Docs/tools/make_site_data.py"      # the website's case data (site/data/game.json), read from Cases.cs, and the device screens
 python3 "$(unmasked where)/Docs/tools/make_site_pictures.py"  # the website screenshots and GIFs (needs Node and Playwright: npm i playwright)
 python3 "$(unmasked where)/Docs/tools/make_reference.py"      # "Reference renders": big house stills and gameplay-tour.mp4 (needs ffmpeg)
 ```

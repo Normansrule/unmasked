@@ -167,6 +167,36 @@ def _sphere(seg=10, rings=6):
 
 
 _SPHERE = _sphere()
+
+RBOX_R = 0.22  # same as SoftBox.Radius
+
+
+def _rbox(steps=4, r=RBOX_R):
+    """Spooky/SoftBox.cs in Python: a subdivided cube pulled onto a box with rounded edges."""
+    verts, faces = [], []
+    inner = 0.5 - r
+    for axis in range(3):
+        for sign in (-1, 1):
+            a, b = (axis + 1) % 3, (axis + 2) % 3
+            base = len(verts)
+            for j in range(steps + 1):
+                for i in range(steps + 1):
+                    p = [0.0, 0.0, 0.0]
+                    p[axis] = 0.5 * sign
+                    p[a] = i / steps - 0.5
+                    p[b] = j / steps - 0.5
+                    p = np.array(p)
+                    q = np.clip(p, -inner, inner)
+                    d = p - q
+                    verts.append(q + d / (np.linalg.norm(d) + 1e-12) * r)
+            for j in range(steps):
+                for i in range(steps):
+                    k = base + j * (steps + 1) + i
+                    faces.append((k, k + 1, k + steps + 2, k + steps + 1))
+    return np.array(verts), faces
+
+
+_RBOX = _rbox()
 _LOW = (_CYL, _CAPSULE, _SPHERE)
 _HIGH = None
 
@@ -287,12 +317,14 @@ class Mesh:
 
     def add_shape(self, shape, p, s, r=(0, 0, 0), color=(1, 1, 1), emissive=0.0, parent=None, surface=0):
         """parent: (rotation matrix, position, scale) of a group the shape sits in."""
-        if shape == "cyl":
+        if shape in ("cyl", "rcyl"):
             v, f = _CYL
         elif shape == "capsule":
             v, f = _CAPSULE
         elif shape == "sphere":
             v, f = _SPHERE
+        elif shape == "rbox":
+            v, f = _RBOX
         elif shape == "pyr":
             v, f = _PYR
         else:
@@ -300,7 +332,12 @@ class Mesh:
         E = euler(*r)
         verts = (v * np.array(s)) @ E.T + np.array(p)
         normals = None
-        if shape in ("sphere", "capsule"):
+        if shape == "rbox":  # soft edges (Spooky/SoftBox.cs): the normal points out from the inner box
+            inner = 0.5 - RBOX_R
+            normals = ((v - np.clip(v, -inner, inner)) / np.maximum(np.abs(np.array(s, dtype=float)), 1e-4)) @ E.T
+            flat = np.linalg.norm(normals, axis=1) < 1e-6
+            normals[flat] = (np.sign(v[flat]) * (np.abs(v[flat]) >= np.abs(v[flat]).max(axis=1, keepdims=True))) @ E.T
+        elif shape in ("sphere", "capsule"):
             local = v.copy()
             if shape == "capsule":  # hemispheres centred at y = +-0.5, straight sides between
                 local[:, 1] = v[:, 1] - np.clip(v[:, 1], -0.5, 0.5)
@@ -314,14 +351,36 @@ class Mesh:
             normals /= np.linalg.norm(normals, axis=1, keepdims=True) + 1e-12
         self.add(verts, f, color, emissive, surface, normals)
 
-    def add_parts(self, parts, pos=(0, 0, 0), ry=0.0, scale=1.0, skip_mask=False, mask_motion=None, tint=None):
+    def add_skin(self, verts, nrm, tris, cols, R, pos, scale):
+        """Adds a ready-made smooth skin (smoothbody.build): its own triangles, normals and colours."""
+        v = verts @ R.T * scale + np.array(pos, float)
+        n = nrm @ R.T
+        for t, c in zip(tris, cols):
+            self.tris.append(v[t])
+            self.vnor.append(n[t])
+            self.cols.append(np.array(c, float))
+            self.emit.append(0.0)
+            self.surf.append(0)
+
+    def add_parts(self, parts, pos=(0, 0, 0), ry=0.0, scale=1.0, skip_mask=False, mask_motion=None, tint=None, smooth=True):
         """
         Adds a costume or prop from Costumes.json. mask_motion: (offset, rotation) applied to the
-        mask parts, for the unmasking animation.
+        mask parts, for the unmasking animation. smooth: people's bodies become one smooth skin
+        (smoothbody.py, round 45), as SmoothBody.cs does in the game.
         """
         R = euler(0, ry, 0)
+        skin = set()
+        if smooth and tint is None:
+            import smoothbody
+            built = smoothbody.build(parts)
+            if built is not None:
+                v, n, t, c, names, _ = built
+                self.add_skin(v, n, t, c, R, pos, scale)
+                skin = {id(q) for q in names}
         for q in parts:
             if q["k"] == "mask" and skip_mask:
+                continue
+            if id(q) in skin:
                 continue
             e = q["e"] if q["m"] == "emissive" else (0.3 * q["e"] if q["m"] == "ghost" else 0.0)
             col = q["c"] if tint is None else tint

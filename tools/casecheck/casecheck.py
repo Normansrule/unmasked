@@ -111,9 +111,40 @@ def main():
         problems.append(f"Curio.Total is {const('Town/Curio.cs', 'Total')} but HollowCreek.json has {len(curios)} curiosities")
     if const("Town/WorldLife.cs", "Places") != len(regions):
         problems.append(f"WorldLife.Places is {const('Town/WorldLife.cs', 'Places')} but HollowCreek.json has {len(regions)} regions")
+    haunts = town.get("haunts", [])
+    if const("Town/HauntBust.cs", "Total") != len(haunts):
+        problems.append(f"HauntBust.Total is {const('Town/HauntBust.cs', 'Total')} but HollowCreek.json has {len(haunts)} haunts")
+    for h in haunts:
+        if len(h.get("signs", [])) != 3 or len(h.get("hide", [])) != 9:
+            problems.append(f"haunt {h.get('id')}: needs 3 signs and 3 hiding spots")
     if len({c["id"] for c in curios}) != len(curios):
         problems.append("curiosity ids repeat")
-    print(f"World: {len(regions)} haunted places, {len(curios)} curiosities")
+    print(f"World: {len(regions)} haunted places, {len(curios)} curiosities, {len(haunts)} haunts in town")
+
+    # Built-in Unity modules (round 41): the offline compile check sees every module, but Unity
+    # only loads the ones in Packages/manifest.json, so a script using a module that isn't listed
+    # compiles here and fails in the editor (round 40's ScreenCapture). Each API -> its module.
+    uses = {
+        r"\bScreenCapture\.": "screencapture", r"\.EncodeTo(PNG|JPG)\(|ImageConversion\.|\.LoadImage\(": "imageconversion",
+        r"\bAudioSource\b|\bAudioClip\b": "audio", r"\bRigidbody\b|\bCollider\b|\bPhysics\.": "physics",
+        r"\bParticleSystem\b": "particlesystem", r"\bNavMesh": "ai", r"\bAnimator\b": "animation",
+        r"\bUnityWebRequest\b": "unitywebrequest", r"\bTerrain\b": "terrain", r"\bVideoPlayer\b": "video",
+        r"\bWheelCollider\b": "vehicles", r"\bJsonUtility\b": "jsonserialize", r"\bGUI(Layout)?\.": "imgui",
+    }
+    manifest = open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(RES))), "Packages", "manifest.json"), encoding="utf-8").read()
+    listed = set(re.findall(r'"com\.unity\.modules\.(\w+)"', manifest))
+    missing = {}
+    for d, _, files in os.walk(scripts):
+        for f in files:
+            if not f.endswith(".cs") or os.sep + "Editor" + os.sep in os.path.join(d, f):
+                continue  # editor-only code runs in the editor, where every module is loaded
+            src = open(os.path.join(d, f), encoding="utf-8").read()
+            for pat, mod in uses.items():
+                if mod not in listed and re.search(pat, src):
+                    missing.setdefault(mod, []).append(f)
+    for mod, where in sorted(missing.items()):
+        problems.append(f"Packages/manifest.json lacks com.unity.modules.{mod}, used by {', '.join(sorted(set(where))[:4])}")
+    print(f"Unity modules: {len(listed)} listed, {'none missing' if not missing else 'missing ' + ', '.join(sorted(missing))}")
 
     print(f"Trait table: {'any two of a culprit' + chr(39) + 's traits name exactly one suspect' if deduction_ok else 'BROKEN'}")
     w = max(len(r[0]) for r in rows)

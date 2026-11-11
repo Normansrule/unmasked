@@ -1,0 +1,206 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="art.js"></script></head><body>
+<div id="art"></div>
+<script>
+document.head.insertAdjacentHTML('beforeend', FONTS);
+const W = 1000;
+let g = '';
+// ---------- ground ----------
+g += `<rect width="1000" height="1000" fill="${C.grass}"/>`;
+g += `<rect width="1000" height="1000" fill="${C.grassL}" filter="url(#mottle)" opacity=".9"/>`;
+// hills behind castle / manor
+g += `<path d="M60,330 C120,230 200,180 300,200 C380,140 460,120 560,160 C640,130 700,160 740,210 L740,60 L60,60 Z" fill="#294536" opacity=".9"/>`;
+g += `<path d="M60,300 C110,220 170,190 250,210 C300,150 360,140 400,180 L400,60 L60,60 Z" fill="#22392f"/>`;
+// fields (farm patchwork south-west)
+for (let i = 0; i < 8; i++) { const x = 230 + (i % 4) * 46, y = 735 + Math.floor(i / 4) * 40; g += `<path d="M${x},${y} l44,-6 l4,36 l-44,6 Z" fill="${['#5b6b3a', '#6f6a3a', '#4f6537', '#7a6a3c'][i % 4]}" opacity=".75"/>`; for (let r = 0; r < 6; r++) g += `<line x1="${x + 2}" y1="${y + 4 + r * 5.5}" x2="${x + 45}" y2="${y - 2 + r * 5.5}" stroke="#2b3420" stroke-width=".6" opacity=".5"/>`; }
+// swamp water
+g += `<path d="M70,820 C110,780 200,800 230,840 C260,880 220,940 150,945 C90,950 60,900 70,820 Z" fill="#2f4c45"/><path d="M95,850 C130,830 180,845 190,870 C200,900 150,915 120,905 C90,895 85,870 95,850 Z" fill="#3e6a5a" opacity=".8"/>`;
+for (let i = 0; i < 9; i++) g += `<ellipse cx="${95 + i * 13}" cy="${870 + (i % 3) * 14}" rx="4" ry="1.6" fill="#7aa36a" stroke="${C.ink}" stroke-width=".4"/>`;
+// sea + beach
+g += `<path d="M860,60 C840,160 880,230 860,300 C845,380 900,430 870,520 C850,600 880,700 860,800 C850,880 880,920 870,940 L940,940 L940,60 Z" fill="#c9b07a"/>`;
+g += `<path d="M885,60 C865,160 905,230 885,300 C870,380 925,430 895,520 C875,600 905,700 885,800 C875,880 905,920 895,940 L940,940 L940,60 Z" fill="${C.water}"/>`;
+for (let i = 0; i < 22; i++) { const y = 80 + i * 40, x = 905 + (i % 2) * 12; g += `<path d="M${x},${y} q5,-4 10,0 q5,4 10,0" stroke="${C.waterL}" stroke-width="1.4" fill="none" opacity=".8"/>`; }
+// creek
+const creek = 'M60,700 C200,640 330,710 450,668 S620,640 700,690 S820,712 890,668';
+g += `<path d="${creek}" stroke="#1b3a44" stroke-width="30" fill="none" stroke-linecap="round"/><path d="${creek}" stroke="${C.water}" stroke-width="22" fill="none"/><path d="${creek}" stroke="${C.waterL}" stroke-width="2" fill="none" stroke-dasharray="10 18" opacity=".8"/>`;
+// ---------- roads ----------
+const roads = [
+  'M330,420 C380,398 440,404 500,410 C560,412 620,398 680,410 C720,425 730,455 722,482 C715,520 705,555 690,572 C660,600 630,612 600,612 C560,614 530,612 500,612 C460,612 430,606 400,600 C360,585 335,565 318,540 C302,515 296,490 300,470 C305,445 315,430 330,420',
+  'M500,410 C498,370 490,330 482,268',
+  'M330,420 C300,380 280,340 258,300 C240,268 222,240 205,215',
+  'M680,410 C705,370 730,330 752,295 C765,270 772,255 782,238',
+  'M300,470 C260,462 230,456 175,452',
+  'M722,482 C760,492 790,505 828,528',
+  'M500,612 C500,640 502,670 500,700',
+  'M500,700 C470,725 430,755 350,778',
+  'M500,700 C520,725 540,750 562,782',
+  'M350,778 C300,795 260,812 205,838',
+  'M690,572 C710,610 730,650 745,690 C760,730 770,760 778,790',
+];
+const hq = [500, 505];
+roads.push('M500,410 C500,430 500,450 500,478', 'M500,612 C500,590 500,570 500,540');
+for (const d of roads) g += `<path d="${d}" stroke="#4b3d33" stroke-width="15" fill="none" stroke-linecap="round"/>`;
+for (const d of roads) g += `<path d="${d}" stroke="#8e7656" stroke-width="11" fill="none" stroke-linecap="round"/>`;
+// bridges
+for (const [x, y, a] of [[501, 668, 0], [740, 688, -14]]) g += `<g transform="translate(${x},${y}) rotate(${a})"><rect x="-12" y="-17" width="24" height="34" fill="#8a6a48" stroke="${C.ink}" stroke-width="1.2"/>${[-14, -7, 0, 7, 14].map(t => `<line x1="-12" y1="${t}" x2="12" y2="${t}" stroke="${C.ink}" stroke-width=".5"/>`).join('')}<path d="M-14,-18 Q-17,0 -14,18 M14,-18 Q17,0 14,18" stroke="#5b4430" stroke-width="3" fill="none"/></g>`;
+document.getElementById('art').innerHTML = `<svg id="tmp" width="1000" height="1000"><path id="p" d=""/></svg>`;
+const P = document.getElementById('p');
+// sample spaces along roads
+const spaces = []; const exclude = [];
+roads.forEach((d, ri) => { P.setAttribute('d', d); const L = P.getTotalLength(); const n = Math.max(2, Math.round(L / 27)); for (let i = 1; i < n; i++) { const q = P.getPointAtLength(L * i / n); if (!spaces.some(s => Math.hypot(s.x - q.x, s.y - q.y) < 17)) spaces.push({ x: q.x, y: q.y }); } for (let t = 0; t <= L; t += 6) { const q = P.getPointAtLength(t); exclude.push([q.x, q.y, 13]); } });
+P.setAttribute('d', creek); { const L = P.getTotalLength(); for (let t = 0; t <= L; t += 6) { const q = P.getPointAtLength(t); exclude.push([q.x, q.y, 20]); } }
+
+// ---------- buildings ----------
+const B = []; // {x,y,w,svg,label,sub}
+function put(x, y, w, h, svg, lab, sub, ls = 7) { B.push({ x, y, svg, lab, sub, ls, w, h }); exclude.push([x, y - h / 2, Math.max(w, h) * .75]); }
+// the case houses
+put(320, 382, 52, 44, building({ x: 320, y: 382, w: 52, h: 30, rh: 22, wall: '#e8d2a6', roof: '#7a4a5a', kind: 'side', cols: 3, chimney: true, pumpkins: true, porch: true }), 'Pemberton Cottage', '① Missing Harvest Lantern');
+put(690, 375, 50, 80, building({ x: 690, y: 375, w: 48, h: 48, rh: 30, wall: '#b9a1c9', roof: '#4a3c5c', kind: 'gable', cols: 3, rows: 2, arch: true, porch: true, siding: true }) + building({ x: 720, y: 375, w: 16, h: 60, rh: 20, wall: '#a58fb8', roof: '#4a3c5c', kind: 'gable', cols: 1, rows: 3, door: false, gableWin: false }), 'Willow Lane Victorian', '③ Interrupted Recital');
+put(330, 778, 70, 50, building({ x: 330, y: 770, w: 56, h: 34, rh: 26, wall: '#a8473a', roof: '#5a2f2a', kind: 'gambrel', cols: 2, lit: .5 }) + `<rect x="368" y="722" width="13" height="48" fill="#8b8f8a" stroke="${C.ink}" stroke-width="1"/><ellipse cx="374.5" cy="722" rx="7.5" ry="5" fill="#6c6f6b" stroke="${C.ink}" stroke-width="1"/>` + [[286, 776], [296, 783]].map(([a, b]) => `<ellipse cx="${a}" cy="${b}" rx="7" ry="5" fill="#d8b25a" stroke="${C.ink}" stroke-width=".8"/>`).join(''), 'Hollow Creek Farm', '② Sabotaged Prize Display');
+put(605, 585, 64, 50, building({ x: 605, y: 585, w: 62, h: 36, rh: 14, wall: '#d9cfb8', roof: '#5c6b6a', kind: 'side', cols: 5, rows: 2, arch: true, bricks: true }) + [-24, -12, 0, 12, 24].map(d => `<rect x="${603 + d}" y="560" width="4" height="25" fill="#f0e8d6" stroke="${C.ink}" stroke-width=".7"/>`).join('') + poly([[572, 550], [605, 532], [638, 550]], '#e6dcc4'), 'Historical Society', '⑤ unlocks after the other four', 6.5);
+// Blackwood Manor
+put(482, 255, 110, 100, (() => { let s = ''; s += building({ x: 445, y: 255, w: 28, h: 50, rh: 26, wall: '#7c7486', roof: '#2e2a3c', kind: 'gable', cols: 2, rows: 3, arch: true, door: false });
+  s += building({ x: 520, y: 255, w: 28, h: 50, rh: 26, wall: '#7c7486', roof: '#2e2a3c', kind: 'gable', cols: 2, rows: 3, arch: true, door: false });
+  s += building({ x: 482, y: 258, w: 48, h: 40, rh: 22, wall: '#8a8296', roof: '#2e2a3c', kind: 'mansard', cols: 3, rows: 2, arch: true });
+  s += building({ x: 482, y: 210, w: 14, h: 22, rh: 22, wall: '#8a8296', roof: '#2e2a3c', kind: 'gable', cols: 1, door: false, gableWin: false });
+  return s; })(), 'Blackwood Manor', '④ Missing Blackwood Ledger', 8);
+// HQ
+put(500, 520, 60, 44, building({ x: 500, y: 520, w: 58, h: 34, rh: 18, wall: '#3e6b66', roof: '#c46f1c', kind: 'side', cols: 3, rows: 1, lit: 1, sign: 'MYSTERY CLUB', signc: C.red, awning: C.amber }) + `<g transform="translate(540,524)"><rect x="-1" y="-14" width="26" height="12" rx="4" fill="#5aa39a" stroke="${C.ink}" stroke-width="1"/><rect x="3" y="-20" width="16" height="8" rx="3" fill="#5aa39a" stroke="${C.ink}" stroke-width="1"/><rect x="5" y="-18" width="5" height="5" fill="${C.amberL}"/><circle cx="5" cy="-2" r="3" fill="${C.ink}"/><circle cx="20" cy="-2" r="3" fill="${C.ink}"/></g>`, 'Club HQ', 'start here', 7.5);
+// Town shops
+const shops = [
+  [430, 470, 26, 46, { wall: '#c7b08a', roof: '#3c4a4f', kind: 'gable', cols: 1, rows: 2, bricks: true }, 'Town Hall', 'clock'],
+  [392, 532, 32, 24, { wall: '#efd9b0', roof: '#b25a4a', kind: 'flat', cols: 2, awning: '#d98a7a', sign: 'BAKERY', signc: '#b25a4a' }, 'Crumb & Co.'],
+  [445, 585, 36, 22, { wall: '#d8e3dc', roof: C.red, kind: 'flat', cols: 3, awning: C.red, sign: 'DINER', signc: '#2f5e5f', lit: 1 }, 'Rosie\'s Diner'],
+  [575, 470, 30, 30, { wall: '#d9d2c6', roof: '#454a5c', kind: 'gable', cols: 1, rows: 1, arch: true, bricks: true }, 'St. Hollow\'s', 'steeple'],
+  [628, 515, 34, 26, { wall: '#9c6b52', roof: '#3d4a3e', kind: 'side', cols: 3, rows: 1, arch: true, bricks: true }, 'Library'],
+  [555, 535, 26, 20, { wall: '#b7c6cf', roof: '#33465c', kind: 'flat', cols: 2, sign: 'POST', signc: '#33465c' }, 'Post Office'],
+  [380, 645, 40, 26, { wall: '#b5523e', roof: '#3c3a44', kind: 'side', cols: 4, rows: 1, bricks: true }, 'School', 'bell'],
+  [600, 350, 32, 24, { wall: '#d6c18c', roof: '#5a6a3a', kind: 'flat', cols: 2, awning: C.sage, sign: 'GENERAL', signc: C.moss }, 'Hatcher\'s Store'],
+  [415, 355, 26, 22, { wall: '#e7e2d6', roof: '#2f5e5f', kind: 'flat', cols: 1, awning: '#3f7a8a', sign: 'BARBER', signc: '#3f7a8a' }, 'Barber'],
+  [790, 430, 36, 30, { wall: '#b13d32', roof: '#3a3030', kind: 'side', cols: 2, bricks: true, sign: 'FIRE CO.', signc: C.ink }, 'Firehouse'],
+  [645, 450, 30, 30, { wall: '#5a3550', roof: '#2a1f2d', kind: 'flat', cols: 1, sign: 'BIJOU', signc: C.amberD, lit: 1 }, 'The Bijou', 'cinema'],
+];
+for (const [x, y, w, h, o, lab, extra] of shops) {
+  let s = building(Object.assign({ x, y, w, h, rh: h * .55 }, o));
+  if (extra === 'clock') s += circ(x, y - h + 10, 6, C.parch, `stroke="${C.ink}" stroke-width="1"`) + `<path d="M${x},${y - h + 10} v-4 M${x},${y - h + 10} h3" stroke="${C.ink}" stroke-width="1"/>`;
+  if (extra === 'steeple') s += rect(x - 5, y - h - 26, 10, 26, '#d9d2c6') + poly([[x - 7, y - h - 26], [x, y - h - 50], [x + 7, y - h - 26]], '#454a5c') + `<path d="M${x},${y - h - 50} v-6 M${x - 2.5},${y - h - 54} h5" stroke="${C.amberL}" stroke-width="1.2"/>` + circ(x, y - h - 18, 2.5, C.amberL);
+  if (extra === 'bell') s += rect(x - 4, y - h - 26, 8, 12, '#c7b08a') + poly([[x - 6, y - h - 26], [x, y - h - 34], [x + 6, y - h - 26]], '#3c3a44');
+  if (extra === 'cinema') s += `<rect x="${x - 17}" y="${y - h * .62}" width="34" height="7" fill="${C.amberL}" stroke="${C.ink}" stroke-width=".8"/>` + [0, 1, 2, 3, 4, 5].map(i => circ(x - 15 + i * 6, y - h * .62 - 1.5, 1, '#fff')).join('');
+  put(x, y, w, h + 10, s, lab, null, 5.2);
+}
+// homes scattered (non-case) with variety
+const homes = [[365, 455], [365, 488], [635, 560], [660, 535], [262, 520], [260, 560], [660, 300], [380, 300], [720, 545], [560, 380], [430, 420], [270, 430], [640, 640], [430, 710], [600, 700], [680, 760], [780, 600], [230, 620]];
+const walls = ['#e9d8b4', '#c9d8c4', '#d9b8a8', '#bfcad6', '#e4cc8c', '#cdb8d8'], roofs = ['#6b3d4a', '#3e4f5c', '#5a4a3a', '#4a3c5c', '#7a4a34'];
+homes.forEach(([x, y], i) => { const w = 22 + (i * 7) % 10, h = 16 + (i * 5) % 8; const s = building({ x, y, w, h, rh: 12 + i % 4 * 2, wall: walls[i % 6], roof: roofs[i % 5], kind: i % 3 ? 'gable' : 'side', cols: 2, chimney: i % 2 === 0, pumpkins: i % 3 === 0, lit: .6 }); put(x, y, w, h + 14, s); });
+// ---------- haunted places ----------
+// castle on the hill
+put(205, 210, 120, 110, (() => { let s = shadow(205, 212, 130);
+  for (const [x, w, h] of [[160, 26, 80], [250, 26, 70], [205, 60, 50]]) { s += rect(x - w / 2, 212 - h, w, h, '#76727c'); for (let i = 0; i < 4; i++) s += rect(x - w / 2 + i * w / 4 + 1, 212 - h - 6, w / 8, 6, '#76727c', 'stroke-width=".8"'); for (let yy = 212 - h + 6; yy < 212; yy += 5) s += `<line x1="${x - w / 2}" y1="${yy}" x2="${x + w / 2}" y2="${yy}" stroke="${C.ink}" stroke-width=".3" opacity=".5"/>`; }
+  s += poly([[147, 132], [160, 104], [173, 132]], '#3a3050') + poly([[237, 142], [250, 116], [263, 142]], '#3a3050');
+  s += `<path d="M195,212 V196 A10,10 0 0 1 215,196 V212 Z" fill="#2a1f2d"/>` + windows(150, 150, 20, 40, 1, 3, .5, { arch: true }) + windows(240, 160, 20, 30, 1, 2, .6, { arch: true });
+  s += `<path d="M160,104 v-12 l12,4 l-12,4" fill="${C.violet}" stroke="${C.ink}" stroke-width=".8"/>` + circ(205, 175, 22, C.violet, 'opacity=".18"');
+  return s; })(), 'Ravencrag Castle', 'haunted place', 8);
+// circus
+put(165, 452, 80, 60, (() => { let s = shadow(165, 455, 80);
+  s += `<path d="M125,455 L135,415 L195,415 L205,455 Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.1"/>`;
+  for (let i = 0; i < 6; i++) s += `<path d="M${135 + i * 10},415 L${130 + i * 13.3 - 5 + 0},455 L${140 + i * 13.3 - 5},455 L${140 + i * 10},415 Z" fill="${C.red}" opacity=".9"/>`;
+  s += `<path d="M130,415 L165,378 L200,415 Z" fill="${C.red}" stroke="${C.ink}" stroke-width="1.1"/><path d="M147,415 L165,378 L183,415 Z" fill="${C.cream}"/><path d="M165,378 v-12 l10,4 l-10,4" fill="${C.amber}" stroke="${C.ink}" stroke-width=".8"/>`;
+  s += `<path d="M155,455 V438 A10,10 0 0 1 175,438 V455 Z" fill="#2a1f2d"/>` + [130, 145, 160, 175, 190, 205].map((x, i) => circ(x, 410 + (i % 2) * 4, 1.6, C.amberL)).join('');
+  s += `<rect x="108" y="440" width="14" height="15" rx="2" fill="#5aa39a" stroke="${C.ink}" stroke-width="1"/><circle cx="111" cy="456" r="2.5" fill="${C.ink}"/><circle cx="120" cy="456" r="2.5" fill="${C.ink}"/>`;
+  return s; })(), 'Cackling Circus', 'haunted place', 8);
+// high rise
+put(565, 835, 50, 140, (() => { let s = building({ x: 565, y: 835, w: 34, h: 120, wall: '#7e8a96', roof: '#3a4450', kind: 'flat', cols: 3, rows: 9, lit: .45, trim: '#55606b' });
+  s += `<path d="M584,835 V720 M590,833 V718" stroke="${C.ink}" stroke-width=".6"/>` + [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => `<path d="M582,${830 - i * 13} h10" stroke="${C.ink}" stroke-width=".8"/>`).join('');
+  s += `<path d="M560,712 v-14 M570,712 v-10" stroke="${C.ink}" stroke-width="1"/>` + circ(560, 697, 2, C.red);
+  return s; })(), 'Crowley Tower', 'haunted place', 8);
+// harbor + lighthouse
+put(830, 535, 90, 90, (() => { let s = '';
+  s += `<rect x="815" y="525" width="60" height="10" fill="#7a5a3e" stroke="${C.ink}" stroke-width="1"/>` + [820, 835, 850, 865].map(x => `<rect x="${x}" y="535" width="3" height="8" fill="#5b4430"/>`).join('');
+  s += building({ x: 810, y: 530, w: 34, h: 20, rh: 12, wall: '#5f8a8f', roof: '#3a3a44', kind: 'side', cols: 2, lit: .7, sign: 'FISH', signc: C.tealM });
+  s += `<g transform="translate(870,560)"><path d="M-14,0 Q0,8 14,0 L10,-6 H-10 Z" fill="#a8473a" stroke="${C.ink}" stroke-width="1"/><path d="M0,-6 V-24 L10,-10 Z" fill="${C.cream}" stroke="${C.ink}" stroke-width=".8"/></g>`;
+  // lighthouse on rock
+  s += `<ellipse cx="905" cy="505" rx="22" ry="9" fill="#6b6a66" stroke="${C.ink}" stroke-width="1"/>`;
+  s += `<path d="M896,503 L900,440 H912 L916,503 Z" fill="${C.cream}" stroke="${C.ink}" stroke-width="1.1"/>` + [455, 475, 495].map(y => `<path d="M${899 - (503 - y) * -.06},${y} L${913 + (503 - y) * -.06},${y} L${913.5 + (503 - y - 8) * -.06},${y - 8} L${898.5 - (503 - y - 8) * -.06},${y - 8} Z" fill="${C.red}"/>`).join('');
+  s += `<rect x="899" y="430" width="14" height="10" fill="${C.amberL}" stroke="${C.ink}" stroke-width="1"/><path d="M897,430 L906,420 L915,430 Z" fill="${C.ink}"/>`;
+  s += `<path d="M906,435 L960,410 L960,460 Z" fill="${C.amberL}" opacity=".25"/>` + circ(906, 435, 16, C.amber, 'opacity=".35"');
+  return s; })(), 'Saltmarsh Harbor', 'lighthouse', 8);
+// beach & smugglers' cave
+put(790, 215, 100, 70, (() => { let s = '';
+  s += `<path d="M740,240 C745,180 790,160 830,175 C860,185 870,215 865,240 Z" fill="#6f6b66" stroke="${C.ink}" stroke-width="1.2"/><path d="M775,240 C775,212 800,200 815,212 C826,222 826,232 826,240 Z" fill="#1a1520" stroke="${C.ink}" stroke-width="1"/>` + circ(800, 230, 10, C.violet, 'opacity=".35"') + circ(796, 228, 2, C.amberL) + circ(806, 228, 2, C.amberL);
+  s += `<g transform="translate(860,270) rotate(-15)"><path d="M-22,0 Q0,12 22,0 L18,-8 H-18 Z" fill="#6b4a32" stroke="${C.ink}" stroke-width="1"/><path d="M-4,-8 V-30 M-4,-28 l12,10" stroke="${C.ink}" stroke-width="1.6"/></g>`;
+  for (let i = 0; i < 5; i++) s += `<path d="M${745 + i * 22},250 l3,-6 l3,6" stroke="#9bb07a" stroke-width="1" fill="none"/>`;
+  return s; })(), 'Smugglers\' Cave', 'beach + wreck', 8);
+// swamp
+put(160, 860, 90, 60, (() => { let s = '';
+  s += [140, 150, 165, 178].map(x => `<rect x="${x}" y="842" width="2.5" height="20" fill="#3a2a28"/>`).join('');
+  s += building({ x: 160, y: 845, w: 40, h: 22, rh: 16, wall: '#6a5a44', roof: '#3d4a33', kind: 'gable', cols: 2, lit: .5 });
+  s += `<path d="M185,826 Q200,820 210,830" stroke="${C.ink}" stroke-width="1" fill="none"/><path d="M196,810 l-10,-20" stroke="#6b4a32" stroke-width="2.2"/><path d="M186,790 l-4,-8 m4,8 l4,-8 m-4,8 l0,-9" stroke="#c9a85a" stroke-width="1.2"/>`;
+  for (const [x, y] of [[110, 830], [200, 900], [95, 905]]) s += tree(x, y, 10, 'bare');
+  s += circ(160, 830, 30, '#8fdc9a', 'opacity=".10"');
+  return s; })(), 'Witchwood Swamp', 'haunted place', 8);
+// Nine Widows stones (wayside) + graveyard
+put(778, 805, 70, 40, (() => { let s = ''; for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2; s += `<rect x="${778 + Math.cos(a) * 22 - 2.5}" y="${805 + Math.sin(a) * 9 - 12}" width="5" height="12" rx="1" fill="${C.stone}" stroke="${C.ink}" stroke-width=".7"/>`; } s += circ(778, 800, 14, C.tealLL, 'opacity=".15"'); return s; })(), 'Nine Widows', 'wayside', 6);
+put(700, 880, 80, 40, (() => { let s = `<path d="M650,895 H750" stroke="${C.ink}" stroke-width=".6"/>`; for (let i = 0; i < 10; i++) s += grave(660 + (i % 5) * 18 + (i > 4 ? 9 : 0), 870 + (i > 4 ? 18 : 0), 1.1); for (let x = 645; x < 760; x += 6) s += `<path d="M${x},897 v-8" stroke="${C.ink}" stroke-width=".8"/>`; return s + tree(745, 862, 9, 'bare'); })(), 'Old Churchyard', null, 6);
+put(255, 660, 30, 30, (() => `<ellipse cx="255" cy="662" rx="9" ry="4" fill="${C.stone}" stroke="${C.ink}" stroke-width=".9"/><path d="M247,662 v-14 M263,662 v-14 M244,648 L255,640 L266,648 Z" stroke="${C.ink}" stroke-width="1.2" fill="#6b3d4a"/>`)(), 'Wishing Well', null, 5);
+
+// ---------- trees & scatter ----------
+let scatter = '';
+const free = (x, y, r) => !exclude.some(([a, b, rr]) => Math.hypot(a - x, b - y) < rr + r) && x > 70 && x < 850 && y > 75 && y < 930;
+const placed = [];
+for (let i = 0; i < 2600 && placed.length < 260; i++) { const x = 70 + rnd() * 790, y = 75 + rnd() * 860; const r = 6 + rnd() * 5; if (!free(x, y, r * .8) || placed.some(([a, b]) => Math.hypot(a - x, b - y) < r * 1.3)) continue; placed.push([x, y, r]); }
+placed.sort((a, b) => a[1] - b[1]);
+for (const [x, y, r] of placed) { const k = rnd(); scatter += tree(x, y, r, y < 260 || (x < 230 && y > 780) ? (k < .5 ? 'pine' : k < .7 ? 'bare' : 'round') : (k < .45 ? 'round' : k < .65 ? 'orange' : k < .8 ? 'gold' : 'pine')); }
+// pumpkin patches + lamps along ring
+let deco = '';
+for (let i = 0; i < 14; i++) { const x = 238 + rnd() * 170, y = 735 + rnd() * 70; if (free(x, y, 2)) deco += pumpkin(x, y, 2 + rnd()); }
+roads.forEach((d, ri) => { P.setAttribute('d', d); const L = P.getTotalLength(); for (let t = 30; t < L; t += 70) { const q = P.getPointAtLength(t), q2 = P.getPointAtLength(Math.min(L, t + 1)); const nx = -(q2.y - q.y), ny = q2.x - q.x, n = Math.hypot(nx, ny) || 1; deco += lamp(q.x + nx / n * 12, q.y + ny / n * 12, .9); } });
+
+// ---------- spaces ----------
+let sp = '';
+// mark location (big) spaces near each location building
+const locs = [[320, 404, '1'], [690, 397, '3'], [352, 772, '2'], [598, 612, '5'], [484, 270, '4'], [206, 220, 'C'], [178, 452, 'C'], [562, 790, 'C'], [826, 527, 'C'], [782, 240, 'C'], [207, 836, 'C'], [500, 450, 'HQ']];
+const isLoc = s => locs.some(([x, y]) => Math.hypot(s.x - x, s.y - y) < 24);
+spaces.forEach((s, i) => {
+  if (isLoc(s)) return;
+  const kind = i % 5 === 2 ? 'lantern' : i % 7 === 3 ? 'haunt' : 'plain';
+  const fill = kind === 'lantern' ? C.amberL : kind === 'haunt' ? C.violetL : C.parch;
+  sp += circ(s.x + .8, s.y + 1.6, 8.2, '#0d1a1c', 'opacity=".45"') + circ(s.x, s.y, 8, fill, `stroke="${C.ink}" stroke-width="1.3"`) + circ(s.x, s.y, 6.2, 'none', `stroke="${shade(fill, .7)}" stroke-width=".6"`);
+  if (kind === 'lantern') sp += ICON.lantern(s.x, s.y, .32); else if (kind === 'haunt') sp += ICON.ghost(s.x, s.y + .5, .4);
+});
+for (const [x, y, t] of locs) {
+  const col = t === 'HQ' ? C.amber : t === 'C' ? C.violet : C.red;
+  sp += circ(x + 1, y + 2, 13.5, '#0d1a1c', 'opacity=".5"') + circ(x, y, 13, C.parch, `stroke="${C.ink}" stroke-width="1.6"`) + circ(x, y, 10, col, `stroke="${C.ink}" stroke-width="1"`);
+  sp += t === 'C' ? ICON.ghost(x, y + .5, .58) : `<text x="${x}" y="${y + (t === 'HQ' ? 3 : 4)}" font-family="Fraunces" font-weight="700" font-size="${t === 'HQ' ? 8 : 12}" fill="${C.parch}" text-anchor="middle">${t}</text>`;
+}
+
+// ---------- assemble buildings in depth order ----------
+B.sort((a, b) => a.y - b.y);
+let bs = '', labs = '';
+for (const b of B) { bs += b.svg; if (b.lab) { const above = b.sub && b.sub !== 'start here' && b.lab !== 'Nine Widows' && b.lab !== 'Saltmarsh Harbor'; labs += label(b.x, above ? b.y - b.h - 10 : b.y + (b.ls > 6 ? 14 : 10), b.lab, b.ls, above ? null : b.sub); } }
+
+// ---------- frame: title, midnight track, fear & lantern border ----------
+let fr = '';
+fr += `<path d="M0,0 H1000 V1000 H0 Z M60,60 V940 H940 V60 Z" fill-rule="evenodd" fill="${C.parch}"/>`;
+fr += `<path d="M0,0 H1000 V1000 H0 Z M60,60 V940 H940 V60 Z" fill-rule="evenodd" fill="${C.parchDD}" filter="url(#grain)"/>`;
+fr += `<rect x="58" y="58" width="884" height="884" fill="none" stroke="${C.ink}" stroke-width="3"/><rect x="50" y="50" width="900" height="900" fill="none" stroke="${C.ink}" stroke-width="1"/><rect x="10" y="10" width="980" height="980" fill="none" stroke="${C.ink}" stroke-width="1.5"/>`;
+// midnight track (bottom): 12 spaces dusk -> midnight
+const hours = ['6', '7', '8', '9', '10', '11', '12'];
+for (let i = 0; i < 12; i++) { const x = 160 + i * 58, y = 970 - 18; const mid = i === 11; fr += `<circle cx="${x}" cy="${y - 2}" r="15" fill="${mid ? C.violet : i > 7 ? '#3b2c52' : C.tealM}" stroke="${C.ink}" stroke-width="1.6"/><text x="${x}" y="${y + 3}" font-family="Fraunces" font-weight="700" font-size="${mid ? 10 : 13}" fill="${C.parch}" text-anchor="middle">${mid ? '12' : i + 1}</text>`; if (i < 11) fr += `<path d="M${x + 17},${y - 2} h24" stroke="${C.ink}" stroke-width="1.2" stroke-dasharray="3 3"/>`; }
+fr += `<text x="95" y="960" font-family="Fraunces" font-weight="700" font-size="13" fill="${C.ink}" text-anchor="middle">DUSK</text><text x="905" y="960" font-family="Fraunces" font-weight="700" font-size="11" fill="${C.violet}" text-anchor="middle">MIDNIGHT</text>`;
+// title (top)
+fr += `<text x="500" y="44" font-family="Fraunces" font-weight="700" font-size="34" fill="${C.ink}" text-anchor="middle" letter-spacing="6">UNMASKED</text>`;
+fr += `<text x="300" y="38" font-family="Atkinson" font-style="italic" font-size="11" fill="${C.inkSoft}" text-anchor="middle">Solve the haunting.</text><text x="700" y="38" font-family="Atkinson" font-style="italic" font-size="11" fill="${C.inkSoft}" text-anchor="middle">Unmask the person.</text>`;
+fr += ICON.lantern(150, 30, .9) + ICON.lantern(850, 30, .9);
+// left border: Fear track 0..5 (shared co-op fear); right: lantern hook board (12)
+for (let i = 0; i < 6; i++) { const y = 260 + i * 80; fr += `<circle cx="30" cy="${y}" r="15" fill="${i === 5 ? C.violet : C.parch}" stroke="${C.ink}" stroke-width="1.5"/>` + (i === 5 ? ICON.ghost(30, y + 1, .7) : `<text x="30" y="${y + 5}" font-family="Fraunces" font-weight="700" font-size="14" fill="${C.ink}" text-anchor="middle">${i}</text>`); }
+fr += `<text transform="translate(34,180) rotate(-90)" font-family="Fraunces" font-weight="700" font-size="14" fill="${C.ink}" text-anchor="middle">FEAR</text>`;
+for (let i = 0; i < 12; i++) { const y = 165 + i * 60; fr += `<path d="M960,${y - 14} q10,-6 20,0" stroke="${C.ink}" stroke-width="1.4" fill="none"/><circle cx="970" cy="${y}" r="12" fill="${C.parchD}" stroke="${C.ink}" stroke-width="1.2" stroke-dasharray="2 2"/><text x="970" y="${y + 4}" font-family="Atkinson" font-weight="700" font-size="10" fill="${C.inkSoft}" text-anchor="middle">${i + 1}</text>`; }
+fr += `<text transform="translate(970,100) rotate(90)" font-family="Fraunces" font-weight="700" font-size="12" fill="${C.ink}" text-anchor="middle">HOOK BOARD</text>`;
+// corner moons/pumpkins
+fr += circ(30, 30, 18, 'url(#moon)') + pumpkin(970, 985, 8) + pumpkin(30, 985, 8);
+// compass + legend on map (bottom-right inside)
+const legend = `<g transform="translate(860,880)"><circle r="26" fill="${C.parch}" stroke="${C.ink}" stroke-width="1.4" opacity=".95"/><path d="M0,-22 L5,0 L0,22 L-5,0 Z" fill="${C.red}" stroke="${C.ink}" stroke-width=".8"/><path d="M-22,0 L0,-4 L22,0 L0,4 Z" fill="${C.ink}"/><text y="-28" font-family="Fraunces" font-weight="700" font-size="9" text-anchor="middle" fill="${C.parch}" stroke="${C.ink}" stroke-width="2" paint-order="stroke">N</text></g>`;
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="4096" height="4096">${DEFS}${g}${scatter}${deco}${bs}${sp}${labs}${legend}<rect x="60" y="60" width="880" height="880" fill="url(#vig)"/>${fr}<rect width="1000" height="1000" fill="#000" filter="url(#grain)" opacity=".35"/></svg>`;
+document.getElementById('art').innerHTML = svg;
+document.fonts.ready.then(() => { window.READY = true; });
+</script></body></html>

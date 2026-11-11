@@ -17,6 +17,7 @@
 #   unmasked release v0.1.0    tag a version: GitHub builds it and publishes the downloads
 #   unmasked install-unity     (native Ubuntu) install Unity Hub + the matching editor
 #   unmasked doctor            check git, WSL, Unity version; print the fix for anything missing
+#   unmasked import [--apply]  bring CC0 models and sounds from Incoming/ into the game (shows the plan first)
 #   unmasked where             print the project folder
 set -euo pipefail
 
@@ -444,5 +445,6 @@ case "${1:-help}" in
   install-unity) cmd_install_unity ;;
   where) echo "$PROJECT_DIR" ;;
   doctor) cmd_doctor ;;
+  import) shift; mkdir -p "$PROJECT_DIR/Incoming"; python3 "$PROJECT_DIR/tools/import_incoming.py" "$@" ;;
   *) cmd_help ;;
 esac

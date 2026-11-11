@@ -4,7 +4,8 @@ using UnityEngine;
 namespace Unmasked
 {
     /// <summary>
-    /// Plays the game's sounds (Resources/Sounds/*.wav, made by Docs/tools/make_sounds.py) by name.
+    /// Plays the game's sounds (Resources/Sounds/*.wav, made by Docs/tools/make_sounds.py) by name,
+    /// or a CC0 recording of the same name in Resources/Sounds/CC0 when there is one.
     /// Purely cosmetic and local to each machine: call it from code that already runs everywhere
     /// (client RPCs, SpookyFX, Update).
     /// </summary>
@@ -20,7 +21,8 @@ namespace Unmasked
             if (string.IsNullOrEmpty(name)) return null;
             if (!clips.TryGetValue(name, out var clip))
             {
-                clip = Resources.Load<AudioClip>("Sounds/" + name);
+                // A CC0 recording dropped in by tools/import_incoming.py wins over the synthesized one.
+                clip = Resources.Load<AudioClip>("Sounds/CC0/" + name) ?? Resources.Load<AudioClip>("Sounds/" + name);
                 clips[name] = clip;
             }
             return clip;

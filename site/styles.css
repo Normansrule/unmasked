@@ -379,6 +379,30 @@ main > section { max-width: var(--wide); margin: 0 auto; padding: var(--s9) var(
 /* ---------- Things to do: the town, the Club Book, the Wardrobe ---------- */
 .btn-small { min-height: 44px; padding: 0 var(--s4); font-size: var(--t-small); }
 .play-row { display: flex; flex-wrap: wrap; gap: var(--s2); }
+/* Past the edge of town (round 40): a laptop and a tablet drawn in CSS, holding real screens */
+.devices { position: relative; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: end; gap: var(--s6); }
+.device { margin: 0; }
+.device .bezel { position: relative; background: #17131a; padding: 2.2%; border-radius: 14px; box-shadow: var(--lift-hi), inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.device .bezel::before { content: ""; position: absolute; top: .9%; left: 50%; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: #2c2633; }
+.device img { display: block; width: 100%; height: auto; border-radius: 4px; background: #0d0b10; }
+.laptop { padding-inline: 4%; }
+.laptop img { aspect-ratio: 16 / 10; }
+.laptop .deck { height: 14px; margin: 0 -4%; border-radius: 0 0 14px 14px / 0 0 10px 10px; background: linear-gradient(#cfc6ba, #9d958b); box-shadow: var(--lift); position: relative; }
+.laptop .deck::before { content: ""; position: absolute; left: 50%; top: 0; width: 16%; height: 5px; margin-left: -8%; border-radius: 0 0 6px 6px; background: rgba(0, 0, 0, .18); }
+.tablet { transform: rotate(2deg); margin-bottom: var(--s5); }
+.tablet .bezel { padding: 3.4%; border-radius: 22px; }
+.tablet img { aspect-ratio: 4 / 3; border-radius: 6px; }
+.device figcaption { margin-top: var(--s4); color: var(--ink-2); font-size: var(--t-small); }
+.tablet figcaption { transform: rotate(-2deg); }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .device .bezel { transition: transform var(--med) var(--ease-out), box-shadow var(--med) var(--ease-out); }
+  .device:hover .bezel { transform: translateY(-4px); box-shadow: var(--lift-hi), 0 24px 40px -20px rgba(0, 0, 0, .5); }
+}
+@media (max-width: 760px) {
+  .devices { grid-template-columns: minmax(0, 1fr); }
+  .tablet { width: 82%; justify-self: end; }
+}
+
 .town-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--s7); align-items: start; margin-bottom: var(--s8); }
 .town-map { margin: 0; }
 .town-map img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 1435; object-fit: cover; background: var(--sheet-2); }

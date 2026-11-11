@@ -201,7 +201,7 @@ namespace Unmasked
             if (mapW > UITheme.W * 0.62f) { mapW = UITheme.W * 0.62f; mapH = mapW * world.height / world.width; }
             var r = new Rect(UITheme.S6, 72, mapW, mapH);
             GUI.Label(new Rect(UITheme.S6, 20, 420, 40), town.name, UITheme.Display);
-            GUI.Label(new Rect(UITheme.S6 + 300, 32, 400, 22), "M or Esc to close · click a house · gold dots are lanterns, stars are curiosities you found", UITheme.Small);
+            GUI.Label(new Rect(UITheme.S6 + 300, 32, 400, 22), "M or Esc to close · click a house · gold dots are lanterns, stars are curiosities you found, violet names are haunts to bust", UITheme.Small);
             GUI.DrawTexture(r, mapTexture, ScaleMode.StretchToFill);
 
             // HQ
@@ -257,6 +257,18 @@ namespace Unmasked
                         GUI.Label(new Rect(p.x - 8, p.y - 9, 16, 18), "★", small);
                         GUI.color = Color.white;
                     }
+
+            // Round 42: every haunt in town, violet until it's busted, then a quiet tick
+            if (town.haunts != null)
+                foreach (var h in town.haunts)
+                {
+                    if (h.door == null || h.door.Length < 3) continue;
+                    var p = ToMap(new Vector3(h.door[0], 0, h.door[2]), r);
+                    bool busted = ClubBook.HasHaunt(h.id);
+                    GUI.color = busted ? new Color(0.6f, 0.85f, 0.65f) : new Color(0.78f, 0.66f, 1f);
+                    GUI.Label(new Rect(p.x - 70, p.y - 22, 140, 18), $"<size=14>•</size><size=12> {h.n}{(busted ? " (busted)" : "")}</size>", small);
+                    GUI.color = Color.white;
+                }
 
             // The van and the club
             var van = MysteryVan.Instance;

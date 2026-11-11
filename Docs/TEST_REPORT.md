@@ -1,8 +1,16 @@
-# Test report (round 39, 2026-11-08)
+# Test report (round 46, 2026-11-10)
 
-**Not tested in Unity yet.** The project has never been opened in the Unity editor, so nothing below
-was played. These are the checks that could be run offline in the build container (Linux, Python
-3, .NET 8), and what still needs a person with Unity.
+**First real Unity compile (round 41).** On 2026-11-09 Unity 6000.6.5f1 opened the project on
+Alek's PC in batch mode (`Logs/build.log`). It upgraded the packages to their 6000.6 versions and
+compiled every script with **2 errors**, both `The name 'ScreenCapture' does not exist`
+(`UI/Snapshots.cs`, `UI/GameHUD.cs`): the screen-capture module wasn't in `Packages/manifest.json`.
+Round 41 adds it (and image conversion), and `tools/casecheck/casecheck.py` now fails when a script
+uses a built-in module the manifest doesn't list. The other messages were warnings: 6000.6 marks
+`FindObjectsSortMode` as obsolete (fine on the pinned 6000.0.32f1). Nothing has been played yet;
+the next Unity run should compile clean.
+
+**Not played in Unity yet.** These are the checks that could be run offline in the build container
+(Linux, Python 3, .NET 8), and what still needs a person with Unity.
 
 ## Run and passed
 
@@ -11,6 +19,14 @@ was played. These are the checks that could be run offline in the build containe
 | Every C# script compiles against Unity's DLLs (runtime and editor) | `bash tools/compilecheck/check.sh` | 0 errors, 0 warnings |
 | Netcode RPC naming | same script | 0 problems |
 | Every case can be solved | `python3 tools/casecheck/casecheck.py` | 9 cases, 0 problems |
+| Every built-in Unity module a game script uses is in `Packages/manifest.json` | same script (prints "Unity modules: 12 listed, none missing") | pass; it reported the 2 missing modules before the fix |
+| The smooth skin (round 45) builds for all 30 outfits as a closed surface with its triangles facing out (every edge shared by exactly two triangles, positive volume) | a one-off Python check over `smoothbody.build()` for every outfit | 30 built, all facing out; 29 perfectly closed, the Snacker has 4 edges where two bits of skin just touch (draws fine) |
+| Room furniture (round 45) overlaps no wall, stair, door, possessable or other piece, and no two pieces share a name | a one-off Python check of the 6 layout files after `make_manor.py`, `make_houses.py`, `make_town.py` | 0 overlaps, 0 duplicates; every other piece is unchanged |
+| The round 46 skin (each limb, the head, the hair and each hand meshed on its own) builds for all 30 outfits with every piece facing out | a one-off Python check over `smoothbody.build()` for every outfit, piece by piece | 30 built, 308 pieces, 0 facing in; 15 outfits have 1 to 15 edges where two bits of skin just touch (the same harmless kind as the Snacker in round 45) |
+| Curtains and table-top still lifes (round 46) overlap no wall, stair, door, possessable or other piece, and no two pieces share a name | a one-off Python check of the 6 layout files after `make_manor.py`, `make_houses.py`, `make_town.py` | 0 overlaps, 0 duplicates; only additions (109 curtained windows, 89 still lifes) |
+| No street prop (tree, hydrant, post box, bin, newspaper box, sign) stands on a road or sidewalk, and no town piece shares a name | a one-off Python check of `HollowCreek.json` | 0 on roads, 0 duplicates |
+| Each of the 12 town haunts has three signs, three hiding spots and a matching `HauntBust.Total` | `python3 tools/casecheck/casecheck.py` (prints "12 haunts in town") | pass |
+| No two town pieces share a name, and the haunt buildings overlap no road or each other | a one-off Python check of `HollowCreek.json` | 0 duplicates, 0 overlaps |
 | Website accessibility (axe-core 4.10) at 1440 and 390 pixels wide, light and dark | Playwright in headless Chromium | 0 violations |
 | Website has no sideways scroll at 390, 768, 1024 and 1440 pixels, or at 200% text | same | none |
 | Website touch targets on a phone are at least 44 pixels | same | all, except the inline "Releases page" link in a sentence (allowed) |
@@ -20,6 +36,9 @@ was played. These are the checks that could be run offline in the build containe
 | No hero card covers the board's caption at 390 to 1920 pixels wide | Playwright | pass |
 | The scroll-driven night plays every chapter at 1440 pixels, falls back to the timeline below 861 pixels and with reduced motion, and logs no errors | Playwright | pass |
 | The mask fly-off plays on a win (a fade with reduced motion) and removes itself afterwards | Playwright | pass |
+| The importer takes a known CC BY pack and a CC0 pack, skips a pack with no licence, matches "Woosh" to whoosh, and writes the credits | `python3 tools/import_incoming.py --apply` on a test Incoming folder | pass |
+| The menu backdrop's picture matches its code (same numbers ported to Python) | `python3 Docs/tools/make_images_menu.py` | menu-backdrop.png, looked at |
+| Website "Past the edge of town" devices: no sideways scroll at 375 and 1366 pixels, light and dark; images load; axe 0 violations | Playwright + axe-core 4.10.2 | pass |
 | The world past the town: no new solid piece overlaps anything in town, no two pieces share a name, the town file has 6 places and 32 curiosities and the C# counts agree | `python3 Docs/tools/make_town.py`, a one-off overlap script, and `python3 tools/casecheck/casecheck.py` (prints "World: 6 haunted places, 32 curiosities") | pass |
 | The album's view point for each haunted place isn't buried inside a solid piece | a one-off script over HollowCreek.json | pass |
 | The grown town: every lost lantern is clear of walls, stones and tents, and the town is 7,799 boxes | `python3 Docs/tools/make_town.py` (prints "24 lost lanterns (24 clear of walls)") | pass |
@@ -73,6 +92,12 @@ waits up to 75 seconds, because the costumed stand-in won't go near a guarded tr
 | What to check | Why it isn't verified |
 |---|---|
 | The ToonSpooky shader still compiles with the storybook additions (teal shadows, creek mist, painted edge, violet haunting) | Shaders can't be compiled outside Unity; written against Unity's surface shader rules (finalcolor, no mist in the additive light passes) |
+| You can walk into every haunt through its doorway, the camera stays under the ceiling, and the ghost's last hiding spot inside is reachable | New in round 43; checked offline that no outside piece pokes into a room and the last spot is clear of furniture, not walked in Unity |
+| Soft street props (hydrants, post boxes, bins) show rounded in the built town, and ~110 extra props keep the frame rate | New in round 44; `ManorBuilder` now adds `SoftBox` to `rbox`/`rcyl` layout pieces, not built in Unity yet |
+| A haunt plays start to finish: the three signs light up and say their lore, the ghost appears only after all three, hops between its hiding spots, and the third catch busts it (toast, sound, map turns green, signs fade) | New in round 42 (`Town/HauntBust.cs`); only seen as haunts.png |
+| Soft boots, belts and collars show rounded in the editor and in a build, with no missing mesh after a domain reload | New in round 42 (`Spooky/SoftBox.cs` makes its mesh in code with `[ExecuteAlways]`) |
+| The menu backdrop draws behind the first menu at any window size, drifts smoothly, holds still with Reduce motion; the dip through dark plays once when you host or join and when you leave | New in round 40 (`UI/MenuBackdrop.cs`); only seen as menu-backdrop.png |
+| Dropped-in sounds play instead of the synthesized ones; a dropped-in .fbx/.obj replaces its prop at the right height and sits on the ground | New in round 40 (`Spooky/Sfx.cs`, `Editor/ManorBuilder.cs`); needs real packs in Incoming |
 | The haunted places: the roads are drivable, the castle ramp, the lighthouse's spiral stair (0.25 m steps) and the tower's fire escape can be climbed, nothing blocks the way in | New in round 39 (`Docs/tools/regions.py`); only seen in the Python renderer (world-map.png, regions.png) |
 | Moving pieces (flags, carousel, Ferris wheel, beam, beacon, bobbing) move and aren't static-batched; frame rate with the whole world (about 13,500 boxes) | New in round 39 (`Town/WorldLife.cs`, `Editor/ManorBuilder.cs`) |
 | Curiosities: each twinkles, E shows its story, it stops twinkling once found, the map stars it, the hat is given for the last one | New in round 39 (`Town/Curio.cs`) |

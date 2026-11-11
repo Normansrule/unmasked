@@ -177,6 +177,12 @@ namespace Unmasked
                 C("lighthouse", "Keeper of the light", "Climb Saltmarsh Lighthouse and step out on the gallery.", 1, 30, () => Has("climb:lighthouse") ? 1 : 0),
                 C("tower-roof", "Top floor", "Climb the fire escape all the way to the roof of Gloamwood Tower.", 1, 30, () => Has("climb:tower") ? 1 : 0),
             }},
+            new() { Name = "Haunts in town", Blurb = "Twelve buildings in town, twelve haunts. Find the three signs, then catch the ghost.", Items = new[]
+            {
+                C("bust-1", "First bust", "Bust your first haunt in town: read its three signs, then catch the ghost three times.", 1, 25, () => HauntsBusted),
+                C("bust-6", "Half the town's quieter", "Bust six haunts.", 6, 60, () => HauntsBusted),
+                C("bust-all", "Hollow Creek's own buster", "Bust every haunt, from the Bijou to the laundromat.", HauntBust.Total, 150, () => HauntsBusted),
+            }},
             new() { Name = "Casework", Blurb = "Solving it is one thing. Solving it well is another.", Items = new[]
             {
                 C("clues-25", "Magnifying glass", "Find 25 clues across your nights.", 25, 50, () => Get("clues")),
@@ -282,6 +288,8 @@ namespace Unmasked
             W("scarecrow-hat", "Scarecrow hat", "hat", 130, "c8a050", "8a3a2a", "Straw, a patch, and a crow feather. Like the one in the middle of the maze."),
             Gift(W("lamplighter-cap", "Lamplighter's cap", "hat", 0, "3a3a46", "e8c96a", "Tobias Wick's spare flat cap, with the little brass lamp badge."),
                  "Light every gas lamp on the Creekside Path for Tobias Wick, then take him back his pole."),
+            Gift(W("buster-cap", "Haunt Buster's cap", "hat", 0, "4a3a6a", "e8e0ff", "A peaked cap in club purple with a little embroidered sheet ghost on the front."),
+                 "Bust every haunt in Hollow Creek."),
             Gift(W("explorer-hat", "Explorer's hat", "hat", 0, "8a6a44", "3a2a1e", "A wide-brimmed field hat with a leather band and a little brass compass pinned to it."),
                  "Find every curiosity hidden round the world past the edge of town."),
         };

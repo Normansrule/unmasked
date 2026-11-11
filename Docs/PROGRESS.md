@@ -295,6 +295,46 @@
 - [x] A character detail pass: two-tone irises, second glints, lower lashes, blush, fingernails, laces and cuffs, cuter trick-or-treaters
 - [ ] In Unity: drive every road, climb the lighthouse stair and the fire escape, check the moving pieces and the frame rate with the whole world loaded
 
+## Milestone 35: A painted menu and free assets
+- [x] A storybook night behind the first menu (sky, moon, drifting hills, manor window, fog, fireflies, grain), still with Reduce motion
+- [x] A short dip through dark between the menu and the town
+- [x] `unmasked import`: free CC0 (and known CC BY) sounds and models dropped into Incoming replace the built-in ones, with credits
+- [x] The website shows the menu and the world map on CSS-drawn devices
+- [x] First Unity compile (6000.6.5f1 on Alek's PC): the 2 errors fixed (missing screen-capture module), and the case check now catches a missing module
+- [x] Club camera photos look printed (ordered-dither ink and cream paper)
+- [ ] Download Kenney's Halloween Kit and a CC0 sound pack on a machine that can reach them, import, and listen and look in Unity
+
+## Milestone 36: A town of haunts
+- [x] Twelve one-of-a-kind buildings on the town's streets (cinema, bakery, school, town hall, hotel, toy shop, music hall, creamery, gazette, apothecary, depot, laundromat)
+- [x] A haunt in each: three violet signs to read, then a ghost to catch three times; violet names on the map, green once busted
+- [x] A "Haunts in town" chapter (three challenges, 58 in all) and the Haunt Buster's cap
+- [x] Softer people: boots, belts, bibs, collars and cuffs with rounded edges on the whole cast
+- [ ] In Unity: bust a haunt start to finish, check the soft shapes in the editor and on a build
+
+## Milestone 37: Step inside the haunts
+- [x] Each haunt's ground floor is a walk-in room with an open doorway, furnished for its haunt
+- [x] The ghost's last hiding spot is indoors, so every bust ends inside
+- [ ] In Unity: walk into each haunt, check the camera under the ceiling and the doorway height
+
+## Milestone 38: Nicer people, livelier streets
+- [x] Chunky storybook hands on every person (round palm, plump fingers held together, thumb, nails)
+- [x] Skirts and long coats flare toward the hem in soft tiers instead of one straight tube
+- [x] Street life on every sidewalk: autumn trees and leaves, hydrants, post boxes, bins, newspaper boxes, street signs
+- [ ] In Unity: check the hands at arm's length and the street props for frame rate across the whole town
+
+## Milestone 39: Real bodies, full rooms
+- [x] One smooth skin per person: body parts melted together, no toy-piece seams at joints (SmoothBody.cs)
+- [x] Clothes keep their colours across the smooth skin; faces, hair, hands and shoes stay on top
+- [x] Every room furnished for what it is: 276 pieces, 92 paintings, 18 rugs (roomdetail.py)
+- [ ] In Unity: check how long the skins take to build on the first night, and look at faces up close
+
+## Milestone 40: Faces and lived-in rooms
+- [x] Noses grow out of the face; softer jaws and cheeks; one-piece palms; hair as one soft mass
+- [x] Head, hair and hands built on a grid twice as fine as the body
+- [x] Curtains on brass rods at every indoor window (109)
+- [x] Things left out on tables, desks and counters (89 table tops)
+- [ ] In Unity: check the finer heads still build quickly on the first night
+
 ## Release pipeline
 - [x] One-click test room generator
 - [x] Player builds for Windows, macOS, Linux (menu, terminal, GitHub Actions)

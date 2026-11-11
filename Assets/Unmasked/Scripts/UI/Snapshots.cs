@@ -122,10 +122,42 @@ namespace Unmasked
             RenderTexture.active = rt;
             var t = new Texture2D(ThumbW, ThumbH, TextureFormat.RGB24, false);
             t.ReadPixels(new Rect(0, 0, ThumbW, ThumbH), 0, 0);
-            t.Apply();
             RenderTexture.active = prev;
             RenderTexture.ReleaseTemporary(rt);
+            PrintLook(t);
             return t;
+        }
+
+        // A 4x4 ordered-dither (Bayer) threshold map, 0..15.
+        static readonly int[] Bayer = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
+
+        /// <summary>
+        /// Makes the photo look printed (round 41): colours settle onto a few ink steps with an
+        /// ordered dot pattern, blacks lift to warm ink and whites to cream paper, and the corners
+        /// fall off a touch like an instant camera. Steps stay fine enough that faces read clearly.
+        /// </summary>
+        static void PrintLook(Texture2D t)
+        {
+            const float Steps = 8f;
+            Color ink = new(0.06f, 0.045f, 0.06f), paper = new(1f, 0.96f, 0.88f);
+            var px = t.GetPixels();
+            int w = t.width, h = t.height;
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                {
+                    int i = y * w + x;
+                    float dither = (Bayer[(y & 3) * 4 + (x & 3)] + 0.5f) / 16f - 0.5f;
+                    var c = px[i];
+                    c.r = Mathf.Round(c.r * Steps + dither) / Steps;
+                    c.g = Mathf.Round(c.g * Steps + dither) / Steps;
+                    c.b = Mathf.Round(c.b * Steps + dither) / Steps;
+                    c = new Color(Mathf.Lerp(ink.r, paper.r, c.r), Mathf.Lerp(ink.g, paper.g, c.g), Mathf.Lerp(ink.b, paper.b, c.b));
+                    float dx = (x - w * 0.5f) / (w * 0.5f), dy = (y - h * 0.5f) / (h * 0.5f);
+                    float fall = 1f - Mathf.Clamp01((dx * dx + dy * dy - 0.55f) * 0.35f);
+                    px[i] = c * fall;
+                }
+            t.SetPixels(px);
+            t.Apply();
         }
 
         /// <summary>Is a point near the middle of the picture, close enough, and not behind a wall?</summary>

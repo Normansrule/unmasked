@@ -1,0 +1,125 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="art.js"></script></head><body>
+<div id="art" style="display:grid;grid-template-columns:repeat(6,750px);width:4500px"></div>
+<script>
+document.head.insertAdjacentHTML('beforeend', FONTS);
+const CW = 250, CH = 350;
+function frame(inner, opt = {}) {
+  const bg = opt.bg || C.parch, edge = opt.edge || C.ink;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CW} ${CH}" width="750" height="1050">${DEFS}
+  <rect width="${CW}" height="${CH}" rx="14" fill="${edge}"/>
+  <rect x="7" y="7" width="${CW - 14}" height="${CH - 14}" rx="9" fill="${bg}"/>
+  <rect x="7" y="7" width="${CW - 14}" height="${CH - 14}" rx="9" fill="#000" filter="url(#grain)" opacity=".6"/>
+  ${inner}
+  <rect x="12" y="12" width="${CW - 24}" height="${CH - 24}" rx="6" fill="none" stroke="${opt.line || C.ink}" stroke-width=".8" opacity=".6"/>
+  </svg>`;
+}
+const T = (x, y, t, size, o = {}) => `<text x="${x}" y="${y}" font-family="${o.font || 'Fraunces'}" font-weight="${o.w || 700}" font-size="${size}" fill="${o.fill || C.ink}" text-anchor="${o.anchor || 'middle'}" ${o.italic ? 'font-style="italic"' : ''} ${o.ls ? `letter-spacing="${o.ls}"` : ''}>${t}</text>`;
+function wrap(x, y, text, size, width, o = {}) {
+  const words = text.split(' '); let line = '', lines = [];
+  for (const w of words) { if ((line + ' ' + w).length * size * .5 > width && line) { lines.push(line); line = w; } else line = line ? line + ' ' + w : w; }
+  lines.push(line);
+  return lines.map((l, i) => T(x, y + i * size * 1.3, l, size, Object.assign({ font: 'Atkinson', w: 400 }, o))).join('');
+}
+function scene(fill = C.tealM) { // portrait window background: night window with moon
+  return `<clipPath id="win"><rect x="22" y="40" width="206" height="165" rx="8"/></clipPath><g clip-path="url(#win)"><rect x="22" y="40" width="206" height="165" fill="url(#sky)"/><circle cx="190" cy="70" r="30" fill="url(#moon)" opacity=".8"/>${[[40, 60], [70, 52], [110, 66], [150, 50], [60, 90]].map(([a, b]) => circ(a, b, .9, '#fff', 'opacity=".8"')).join('')}<path d="M22,180 Q80,160 130,175 T228,168 V205 H22 Z" fill="${fill}"/></g><rect x="22" y="40" width="206" height="165" rx="8" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+}
+// ---------- suspects ----------
+const suspects = [
+  { name: 'Hank Moody', job: 'Handyman', alibi: 'Fixing the Garden Shed lock', p: { skin: '#e2b48e', hair: '#6b4a32', hairStyle: 'short', outfit: '#3f6f8f', collar: 'overall', outfit2: '#2f557a', hat: 'cap', hatc: C.red, beard: '#6b4a32', mood: 'smug' } },
+  { name: 'Daisy Pemberton', job: 'Granddaughter', alibi: 'At Rosie\'s Diner with friends', p: { skin: '#f4d1b5', hair: '#c96b3a', hairStyle: 'long', outfit: '#d98aa8', freckles: true, hat: 'flower', mood: 'happy' } },
+  { name: 'Leonard Crisp', job: 'Estate agent', alibi: 'Showing a house on Elm Street', p: { skin: '#f1c9a5', hair: '#2a2228', hairStyle: 'part', outfit: '#4a4a5c', collar: 'tie', tie: C.amber, glasses: C.ink, mustache: '#2a2228', mood: 'smug' } },
+  { name: 'Beatrice Hollis', job: 'Next-door neighbour', alibi: 'Icing cupcakes in the Kitchen', p: { skin: '#c98e6a', hair: '#d8d4cc', hairStyle: 'bun', outfit: '#7a8f5a', collar: 'apron', glasses: '#a0522d', earring: true, mood: 'worried' } },
+];
+function suspectCard(i) {
+  const s = suspects[i]; let c = scene();
+  c += `<g clip-path="url(#win)">${portrait(s.p, 125, 152, .84)}</g>`;
+  c += `<rect x="22" y="40" width="206" height="165" rx="8" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+  c += T(125, 30, 'SUSPECT', 9, { font: 'Atkinson', ls: 3, fill: C.red });
+  c += `<rect x="22" y="212" width="206" height="34" rx="4" fill="${C.parchD}" stroke="${C.ink}" stroke-width="1"/>` + T(125, 233, s.name, 17);
+  c += T(125, 262, s.job, 10, { font: 'Atkinson', w: 400, italic: true, fill: C.inkSoft });
+  // traits row
+  SLOT_TRAITS[i].forEach((t, j) => { const x = 62 + j * 63; c += circ(x, 288, 17, j === 0 ? '#f6d6c8' : C.parch, `stroke="${j === 0 ? C.red : C.ink}" stroke-width="${j === 0 ? 2 : 1.2}"`) + ICON[TRAIT_ICON[t]](x, 288, .85) + T(x, 316, TRAIT_NAME[t], 7, { font: 'Atkinson' }); });
+  c += T(125, 334, 'Alibi: ' + s.alibi, 7.5, { font: 'Atkinson', w: 400, italic: true, fill: C.inkSoft });
+  c += `<text x="226" y="30" font-family="Atkinson" font-size="7" text-anchor="end" fill="${C.inkSoft}">① Pemberton</text>`;
+  return frame(c);
+}
+// ---------- solvers ----------
+const solvers = [
+  { name: 'The Sleuth', col: '#3e7a4a', ab: 'Read the Room', txt: 'Once a round, look at one face-down clue token in your space.', p: { skin: '#f1c9a5', hair: '#6b3a2a', hairStyle: 'short', outfit: '#3e7a4a', outfit2: '#2e5c38', collar: 'cape', hat: 'deerstalker', hatc: '#8a6a3e', mood: 'happy' } },
+  { name: 'The Techie', col: '#2f5a9a', ab: 'Ghost Meter', txt: 'Before the Haunter moves, ask: is it within 3 spaces of me?', p: { skin: '#b9825e', hair: '#1f1a1c', hairStyle: 'curly', outfit: '#2f5a9a', headphones: '#e2b23c', glasses: C.ink, mood: 'happy' } },
+  { name: 'The Brawn', col: '#a83232', ab: 'Steady Hands', txt: 'Carry 2 trap pieces. Fear from Possess cards can\'t reach you.', p: { skin: '#e9b892', hair: '#2d2420', hairStyle: 'spiky', outfit: '#a83232', scarf: C.amber, mood: 'cross' } },
+  { name: 'The Snacker', col: '#c9a03a', ab: 'Snack Break', txt: 'Spend a Snack token: everyone in your space drops 1 Fear.', p: { skin: '#f4d1b5', hair: '#a8693a', hairStyle: 'bob', outfit: '#d8b23a', hat: 'bobble', hatc: '#5aa39a', freckles: true, mood: 'open' } },
+];
+function solverCard(i) {
+  const s = solvers[i]; let c = scene(shade(s.col, .7));
+  c += `<g clip-path="url(#win)">${portrait(s.p, 125, 152, .84)}</g><rect x="22" y="40" width="206" height="165" rx="8" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+  c += T(125, 30, 'MYSTERY CLUB', 9, { font: 'Atkinson', ls: 3, fill: s.col });
+  c += `<rect x="22" y="212" width="206" height="34" rx="4" fill="${s.col}" stroke="${C.ink}" stroke-width="1"/>` + T(125, 235, s.name, 18, { fill: C.parch });
+  c += ICON.magnifier(40, 268, .8) + T(56, 272, s.ab, 12, { anchor: 'start' });
+  c += wrap(125, 292, s.txt, 9, 190);
+  c += [0, 1, 2, 3, 4].map(k => circ(80 + k * 22, 330, 6, k < 3 ? C.parch : C.violetL, `stroke="${C.ink}" stroke-width="1"`)).join('') + T(52, 333, 'Fear', 8, { font: 'Atkinson' });
+  return frame(c);
+}
+// ---------- masks ----------
+const masks = [['horseman', 'The Headless Horseman', 'Pumpkin Toss', 'Burst a pumpkin on a space next to the Haunter: every Solver there gains 1 Fear.'], ['banshee', 'The Banshee', 'Wail', 'Every Solver within 2 spaces gains 1 Fear, then moves 1 space away.'], ['jack', 'Stingy Jack', 'Lantern Trick', 'Swap one lit lantern on the board with an empty space. It still counts, if they can find it.'], ['baba', 'Baba Yaga', 'Hex', 'Put a Hex token on a path. Crossing it costs a Solver 1 extra move.']];
+function maskCard(i) {
+  const [k, n, pw, txt] = masks[i]; let c = '';
+  c += `<clipPath id="mw"><rect x="22" y="40" width="206" height="165" rx="8"/></clipPath><g clip-path="url(#mw)"><rect x="22" y="40" width="206" height="165" fill="#241a33"/>${circ(125, 122, 90, C.violet, 'opacity=".25"')}${haunter(k, 125, 128, .95)}</g><rect x="22" y="40" width="206" height="165" rx="8" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+  c += T(125, 30, 'FOLKLORE MASK', 9, { font: 'Atkinson', ls: 3, fill: C.violetL });
+  c += `<rect x="22" y="212" width="206" height="34" rx="4" fill="${C.violet}" stroke="${C.ink}" stroke-width="1"/>` + T(125, 234, n, n.length > 16 ? 13 : 16, { fill: C.parch });
+  c += T(125, 268, pw, 13, { fill: C.violetL }) + wrap(125, 288, txt, 9, 190, { fill: C.parch });
+  return frame(c, { bg: '#2c2140', line: C.violetL });
+}
+// ---------- clues ----------
+const clues = [[0, 'Pile of sawdust', 'Fresh sawdust, the kind you get from sawing a shed door.'], [4, 'Spare key', 'The spare key from under the flowerpot, left on the rug.'], [6, 'Gold locket', 'A gold locket with a tiny photo of the cottage inside.'], [7, 'Spilled tea leaves', 'Chamomile tea leaves, scattered as if the pot leapt by itself.']];
+function clueCard(i) {
+  const [t, n, d] = clues[i]; let c = '';
+  c += `<rect x="22" y="40" width="206" height="150" rx="8" fill="${C.parchD}" stroke="${C.ink}" stroke-width="1.5"/>` + `<path d="M22,58 H228" stroke="${C.red}" stroke-width=".8" opacity=".5"/>` + [80, 100, 120, 140, 160, 180].map(y => `<path d="M30,${y} H220" stroke="${C.tealL}" stroke-width=".5" opacity=".5"/>`).join('');
+  c += circ(125, 115, 48, C.parch, `stroke="${C.ink}" stroke-width="1.5"`) + ICON[TRAIT_ICON[t]](125, 115, 2.6);
+  // evidence tag
+  c += `<g transform="translate(184,52) rotate(14)"><path d="M0,0 h36 v20 h-36 l-8,-10 Z" fill="${C.red}" stroke="${C.ink}" stroke-width="1"/><circle cx="-2" cy="10" r="2.5" fill="${C.parch}"/><text x="17" y="14" font-family="Atkinson" font-weight="700" font-size="9" fill="${C.parch}" text-anchor="middle">#${t + 1}</text></g>`;
+  c += T(125, 30, 'CLUE', 9, { font: 'Atkinson', ls: 3, fill: C.red });
+  c += T(125, 220, n, 16) + T(125, 238, 'Points to: ' + TRAIT_NAME[t], 9, { font: 'Atkinson', fill: C.red });
+  c += wrap(125, 262, d, 9.5, 190);
+  c += `<rect x="30" y="306" width="190" height="24" rx="4" fill="none" stroke="${C.ink}" stroke-width=".8" stroke-dasharray="3 2"/>` + T(125, 322, 'Two true clues name one suspect', 8.5, { font: 'Atkinson', italic: true, w: 400, fill: C.inkSoft });
+  return frame(c);
+}
+// ---------- haunt cards ----------
+const haunts = [['Possess the Teapot!', 'ghost', 'The teapot rattles off the shelf. Solvers in the Kitchen gain 1 Fear and drop a clue token where they stand.', 'Possess'], ['Fog Rolls In', 'ghost', 'Lay a fog cloud on any 3 spaces. Solvers there can\'t Search this round.', 'Fog'], ['Lights Out', 'lantern', 'Turn one lit lantern face down. Relight it with an action.', 'Flicker']];
+function hauntCard(i) {
+  const [n, ic, txt, tag] = haunts[i]; let c = '';
+  c += `<rect x="22" y="40" width="206" height="150" rx="8" fill="#3a2c52" stroke="${C.ink}" stroke-width="1.5"/>`;
+  c += circ(125, 115, 60, C.violet, 'opacity=".35"') + circ(125, 115, 34, C.violetL, 'opacity=".25"') + ICON[ic](125, 118, 3.6);
+  for (let k = 0; k < 14; k++) c += circ(30 + rnd() * 190, 50 + rnd() * 130, .8 + rnd(), '#fff', 'opacity=".5"');
+  c += T(125, 30, 'HAUNT', 9, { font: 'Atkinson', ls: 3, fill: C.violetL });
+  c += T(125, 222, n, 16, { fill: C.parch }) + `<rect x="95" y="230" width="60" height="14" rx="7" fill="${C.violet}"/>` + T(125, 241, tag, 8.5, { font: 'Atkinson', fill: C.parch });
+  c += wrap(125, 264, txt, 9.5, 190, { fill: C.parch });
+  return frame(c, { bg: '#2c2140', line: C.violetL });
+}
+// ---------- case card ----------
+function caseCard() {
+  let c = scene(C.grassL);
+  c += `<g clip-path="url(#win)">${building({ x: 125, y: 190, w: 110, h: 64, rh: 46, wall: '#e8d2a6', roof: '#7a4a5a', kind: 'side', cols: 3, chimney: true, porch: true, pumpkins: true, lit: 1 })}${tree(40, 192, 16)}${tree(212, 194, 14, 'orange')}</g><rect x="22" y="40" width="206" height="165" rx="8" fill="none" stroke="${C.ink}" stroke-width="2"/>`;
+  c += T(125, 30, 'CASE ①  ·  PEMBERTON COTTAGE', 8.5, { font: 'Atkinson', ls: 1.5, fill: C.red });
+  c += T(125, 228, 'The Missing', 15) + T(125, 247, 'Harvest Lantern', 19);
+  c += wrap(125, 268, 'The lantern that leads the festival walk has vanished from Mrs. Pemberton\'s mantel, and her teapot hasn\'t stopped rattling.', 9, 192);
+  c += `<rect x="30" y="312" width="190" height="20" rx="4" fill="${C.teal}"/>` + T(125, 326, 'Case code  HC-01-LANTERN', 9, { font: 'Atkinson', fill: C.amberL, ls: 1 });
+  return frame(c);
+}
+// ---------- card backs ----------
+function back(kind) {
+  const bg = kind === 'haunt' ? '#2c2140' : kind === 'clue' ? C.red : C.teal; let c = '';
+  c += `<rect x="7" y="7" width="236" height="336" rx="9" fill="${bg}"/>`;
+  for (let y = 20; y < 340; y += 18) for (let x = 20 + (y / 18 % 2) * 9; x < 240; x += 18) c += circ(x, y, 1.4, kind === 'haunt' ? C.violetL : C.parch, 'opacity=".18"');
+  c += `<rect x="22" y="22" width="206" height="306" rx="8" fill="none" stroke="${C.parch}" stroke-width="1.5" opacity=".7"/><rect x="28" y="28" width="194" height="294" rx="6" fill="none" stroke="${C.parch}" stroke-width=".6" opacity=".6"/>`;
+  c += circ(125, 160, 58, kind === 'haunt' ? C.violet : C.amber, 'opacity=".25"');
+  c += kind === 'clue' ? ICON.magnifier(125, 160, 4.4) : kind === 'haunt' ? ICON.ghost(125, 160, 4.4) : ICON.lantern(125, 160, 4);
+  c += T(125, 250, 'UNMASKED', 24, { fill: C.parch, ls: 3 }) + T(125, 272, kind === 'clue' ? 'CLUE' : kind === 'haunt' ? 'HAUNT' : 'SUSPECT', 10, { font: 'Atkinson', fill: C.parch, ls: 4 });
+  return frame(c, { bg, line: C.parch });
+}
+const all = [0, 1, 2, 3].map(suspectCard).concat([0, 1, 2, 3].map(solverCard), [0, 1, 2, 3].map(maskCard), [0, 1, 2, 3].map(clueCard), [0, 1, 2].map(hauntCard), [caseCard(), back('suspect'), back('clue'), back('haunt')]);
+// 23 cards -> pad to 24
+all.push(back('suspect'));
+document.getElementById('art').innerHTML = all.map((s, i) => `<div style="width:750px;height:1050px">${s.replace(/id="(win|mw)"/g, `id="$1${i}"`).replace(/url\(#(win|mw)\)/g, `url(#$1${i})`)}</div>`).join('');
+document.fonts.ready.then(() => { window.READY = true; });
+</script></body></html>

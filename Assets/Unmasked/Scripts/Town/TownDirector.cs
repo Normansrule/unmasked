@@ -29,6 +29,7 @@ namespace Unmasked
             Lamplighter.Ensure(gameObject); // Tobias Wick and the twelve gas lamps on the Creekside Path
             WorldLife.Ensure(gameObject);   // the haunted places past the edge of town: moving pieces, first visits, climbs
             Curio.Ensure(gameObject);       // curiosities hidden all over the world, each with a little story
+            HauntBust.Ensure(gameObject);   // a haunt to bust in each of the twelve one-of-a-kind buildings in town
         }
 
         void OnDestroy()

@@ -348,6 +348,109 @@ windows lit. Built by [`Town/TownLife.cs`](../Assets/Unmasked/Scripts/Town/TownL
 
 <p align="center"><img src="images/valley-train.png" alt="Cars on the road out of town and the train crossing the valley" width="860"></p>
 
+### Haunts in town
+
+<p align="center"><img src="images/haunts.png" alt="The twelve haunt buildings at night, each with its ghost out front and three violet signs" width="900"></p>
+
+Hollow Creek isn't just houses. Twelve one-of-a-kind buildings stand on its streets, each with a
+shape of its own (the Bijou's marquee, the town hall's clock tower, the depot's long platform
+canopy, the laundromat's round windows) and each with a haunt. Walk up to a haunt and look for its
+**three violet signs**: little wisps over a ring of light, each telling a piece of the story when you
+press **E**. Once all three are read, the ghost comes out. Press **E** to catch it, and it hops away
+to its next hiding spot; catch it **three times** and the haunt is busted, with the twist explained.
+The signs go dark, the building goes quiet, and its name on the map (**M**) turns from violet to green.
+
+| Building | Ghost | The haunt |
+|---|---|---|
+| The Bijou | The Projectionist | The late show at the Bijou starts by itself every night at 13 o'clock. |
+| Crumb & Co. Bakery | The Flour Phantom | Every morning the bread is already baked, and nobody has a key. |
+| Hollow Creek School | The Hall Monitor | The school bell rings at midnight and a stern voice asks for your hall pass. |
+| Town Hall | The Clockwinder | The clock on Town Hall has started striking thirteen. |
+| The Grand Raven Hotel | The Night Porter | Bags carry themselves upstairs at the Grand Raven, and Room 13 is always booked. |
+| Tick-Tock Toys | The Wind-up Twins | The toys in the window rearrange themselves every night into a little parade. |
+| The Gloaming Music Hall | The Diva | A voice sings the last song of the night in the empty Music Hall. |
+| Moon Pie Creamery | The Sundae Specter | The freezer opens by itself and the cherries keep going missing. |
+| The Hollow Creek Gazette | The Typesetter | Tomorrow's headlines are printed tonight, and they keep coming true. |
+| Nightshade Apothecary | The Apothecary | Green light glows in the jars after closing, and something bubbles. |
+| Hollow Creek Depot | The Conductor | A whistle blows on the platform at midnight, and the last train never arrives. |
+| Spin Cycle Laundry | The Sock Thief | Every machine in the laundromat runs by itself, and nobody's socks come back in pairs. |
+
+**Step inside.** Each haunt's ground floor is a room you can walk into, furnished for its haunt
+(cinema seats and a screen, a bakery counter and oven, a stage and piano, shelves of glowing jars,
+a wall of washing machines). After your second catch the ghost flees indoors, so the last catch
+always happens inside.
+
+<p align="center"><img src="images/haunts-inside.png" alt="Six haunt interiors with their ghosts waiting inside" width="900"></p>
+
+Busts are saved, and the Club Book's "Haunts in town" chapter has three challenges: your first bust,
+six, and all twelve, which earns the **Haunt Buster's cap**. Laid out by
+[`Docs/tools/haunts.py`](tools/haunts.py), played by
+[`Town/HauntBust.cs`](../Assets/Unmasked/Scripts/Town/HauntBust.cs).
+
+### Softer people
+
+<p align="center"><img src="images/soft-cast.png" alt="Six characters before and after: the same boots, bibs and belts with soft rounded edges" width="900"></p>
+
+The parts of a character that used to be hard cubes and tubes (boots, shoes, soles, aprons, belts,
+bibs, satchels, collars, cuffs and socks) now have rounded edges and smooth shading.
+`Costumes.json` marks them `rbox` or `rcyl`; the builders make a plain cube or cylinder and add
+[`Spooky/SoftBox.cs`](../Assets/Unmasked/Scripts/Spooky/SoftBox.cs), which swaps in a rounded mesh made
+once in code and shared by everyone, so there's no model file to ship.
+
+**Storybook hands and flaring skirts (round 44).** Hands are chunky now (a round palm, plump fingers
+held together and curled in, a thumb resting forward), so they read as hands rather than claws from
+across a street. Skirts and long coats flare toward the hem in seven soft tiers with a darker trim,
+instead of one straight tube.
+
+<p align="center"><img src="images/cast-pass.png" alt="Five of the cast before and after: chunkier hands and skirts that flare like cloth" width="900"></p>
+
+**One smooth skin (round 45).** A person's body parts (torso, shoulders, arms, legs, neck, head,
+jaw, cheeks, ears and skirt) are melted into one skin, so joints flow into each other instead of
+showing a seam like a toy figure. Each limb only melts into its own joints and the torso, so a hand
+resting by a hip or an arm hanging by a skirt stays separate. Every bit of the skin takes the
+colour of the part it's nearest, so clothes keep their colours. It's built in code by
+[`Spooky/SmoothBody.cs`](../Assets/Unmasked/Scripts/Spooky/SmoothBody.cs) when a character appears
+and shared by everyone in the same outfit; the original parts stay in place with their renderers
+off, so taking the script off brings the old look back.
+
+<p align="center"><img src="images/smooth-cast.png" alt="Five of the cast before and after: separate toy pieces, then one smooth skin per person" width="900"></p>
+
+**Faces and hands (round 46).** The nose, the palm and thumb, and the hair melt into the skin too,
+each with its own gentle blend, so a nose grows out of the face instead of sitting on it like a
+ball. Every limb is meshed on its own grid, and the head, hair and hands use one twice as fine as
+the body's. Eyes, brows, mouths, fingers and shoes still sit on top as their own parts.
+
+<p align="center"><img src="images/faces-pass.png" alt="Five faces before and after: a nose grown out of the face, softer jaws and cheeks, softer hair" width="900"></p>
+
+### Rooms full of things
+
+<p align="center"><img src="images/rooms-full.png" alt="Three floors before and after, walls cut away: empty rooms, then furniture, paintings and rugs" width="900"></p>
+
+Since round 45 every room in the houses, the manor and the HQ is dressed for what it is (bedrooms,
+studies, kitchens, pantries, cellars, music rooms, nurseries, sewing rooms, dining rooms, halls,
+galleries, the gift shop). A piece only goes against solid wall, standing on floor, clear of other
+furniture, stairs, doors, doorways, trapdoors, clue spots and suspects, with a walkway left in front;
+a room never gets a second bed or piano, or one it already has. Paintings and little wall lamps
+hang on bare wall, and a rug goes in the middle when the floor is clear. Placed by
+[`Docs/tools/roomdetail.py`](tools/roomdetail.py), which `dressing.finish()` runs whenever a layout is saved.
+
+Since round 46 every window that looks into a room has curtains on a brass rod, with a valance and
+tie-backs in one of seven fabrics, and every table, desk, counter and sideboard at table height gets
+a little still life (teacups, books, candles, flowers, a pie, a teapot, a letter and pen, a small
+pumpkin) wherever nothing already stands on it.
+
+<p align="center"><img src="images/rooms-inside.png" alt="Four rooms seen from inside, before and after: curtains at the windows and things on the tables" width="900"></p>
+
+### Along the streets
+
+<p align="center"><img src="images/street-life.png" alt="Hollow Creek's sidewalks at night with autumn trees, hydrants, post boxes and street signs" width="900"></p>
+
+Every sidewalk in town has a grass verge, and since round 44 it's lived in: autumn street trees in
+orange, red and gold with leaves fallen round their feet, red fire hydrants, blue post boxes, green
+bins, yellow newspaper boxes, and a green signpost near the end of each street. Nothing is placed
+where a building, path, fence, lamp or another prop already stands, and the same town comes out
+every build. Placed by [`Docs/tools/streetlife.py`](tools/streetlife.py).
+
 ### The people of Hollow Creek
 
 <p align="center"><img src="images/townsfolk.png" alt="Mayor Harold Beaumont, Old Nell Thistle, Reverend Amos Gale, Dot Kowalski and Sheriff Ruth Calloway" width="900"></p>
@@ -576,7 +679,11 @@ the Hook Board (25 m) and your porch once you've carved something (15 m). Neighb
 turn and smile for three seconds first; any suspect in the frame looks startled, all alike, so the
 camera never gives the culprit away. The Club Book's **Snapshots** tab shows the album; empty frames
 say where to look. Photos are PNGs in the game's save folder. Challenges *Say cheese* and *The whole
-album* (Around town). `UI/Snapshots.cs`.
+album* (Around town). `UI/Snapshots.cs`. Photos come out looking printed: colours settle onto a few
+ink steps with a fine dot pattern, blacks are warm ink, whites are cream paper, and the corners
+darken a little like an instant camera.
+
+<p align="center"><img src="images/print-look.png" alt="A club camera photo of trick-or-treaters before and after the printed look: finer ink steps, a dot pattern and cream highlights" width="900"></p>
 
 <p align="center"><img src="images/snapshots.png" alt="A snapshot developing, and the album" width="900"></p>
 
@@ -663,6 +770,22 @@ recordings, nothing to license) into
 The game plays them through [`Sfx.cs`](../Assets/Unmasked/Scripts/Spooky/Sfx.cs) and
 [`Ambience.cs`](../Assets/Unmasked/Scripts/Spooky/Ambience.cs), which sets itself up, so the scenes
 don't need rebuilding.
+
+#### Swapping in free recorded sounds and models
+
+Put a downloaded pack (zip or folder) in the project's `Incoming` folder and run:
+
+```bash
+unmasked import            # shows which files would replace which sounds and props
+unmasked import --apply    # copies them in and writes Resources/CC0/CREDITS.md
+```
+
+Only packs with a CC0 or public-domain licence file are taken, plus packs it knows (Arno Faure's
+Free SFX Package, CC BY 4.0, which it credits). For anything else you've checked yourself, add
+`--trust "<folder name>"` or `--trust "<folder name>=<licence>"`. A dropped-in sound lands in
+`Resources/Sounds/CC0/` and plays instead of the synthesized one with the same name; a model lands in
+`Resources/Models/CC0/` and replaces that decor prop the next time you run **Unmasked > Build Hollow
+Creek**. Delete a file to go back to the original.
 
 ---
 

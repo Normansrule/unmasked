@@ -1,0 +1,67 @@
+// More trait icons so every house's clues get their own picture. Each: (x, y, k) -> svg string.
+(function () {
+  const I = C.ink, G = (x, y, k, body) => `<g transform="translate(${x},${y}) scale(${k})">${body}</g>`;
+  const st = `stroke="${I}" stroke-width="1.5" stroke-linejoin="round"`;
+  Object.assign(ICON, {
+    boot: (x, y, k) => G(x, y, k, `<path d="M-8,-12 H2 V2 L12,4 Q14,10 10,11 H-8 Z" fill="#6b4a32" ${st}/><path d="M-8,6 H12" stroke="#4a3220" stroke-width="2"/><path d="M-6,-4 h6 M-6,-8 h6" stroke="${C.parch}" stroke-width="1.2"/>`),
+    bottle: (x, y, k) => G(x, y, k, `<rect x="-3" y="-14" width="6" height="5" fill="${C.amber}" ${st}/><path d="M-9,-8 H9 Q12,0 9,11 H-9 Q-12,0 -9,-8 Z" fill="${C.violetL}" ${st}/><path d="M-5,-3 q3,4 0,8" stroke="#fff" stroke-width="1.5" fill="none" opacity=".7"/>`),
+    bottle2: (x, y, k) => G(x, y, k, `<rect x="-3" y="-14" width="6" height="5" fill="${C.amber}" ${st}/><path d="M-9,-8 H9 Q12,0 9,11 H-9 Q-12,0 -9,-8 Z" fill="#9b7fd0" ${st}/><circle cx="0" cy="2" r="3.5" fill="#d8c8f0"/>`),
+    cigar: (x, y, k) => G(x, y, k, `<rect x="-13" y="-3" width="20" height="6" rx="3" fill="#7a4a2a" ${st}/><rect x="2" y="-3" width="3" height="6" fill="${C.red}"/><rect x="7" y="-3" width="4" height="6" fill="#bbb" ${st}/><path d="M12,-6 q-3,-4 1,-8 M9,-7 q-2,-3 1,-6" stroke="${C.stone}" stroke-width="1.3" fill="none"/>`),
+    flour: (x, y, k) => G(x, y, k, `<path d="M-10,-8 Q0,-14 10,-8 L12,11 H-12 Z" fill="#f4efe4" ${st}/><path d="M-7,-9 l3,-4 l3,4 l3,-4 l3,4" stroke="${I}" stroke-width="1.2" fill="none"/><text x="0" y="5" font-family="Atkinson" font-weight="700" font-size="7" text-anchor="middle" fill="${C.amberD}">FLOUR</text>`),
+    rose: (x, y, k) => G(x, y, k, `<path d="M0,2 V13" stroke="${C.moss}" stroke-width="2"/><path d="M0,8 q6,-2 7,-6 q-5,0 -7,4" fill="${C.sage}" ${st}/><circle cx="0" cy="-4" r="8" fill="#c43a52" ${st}/><path d="M-4,-4 q4,-5 8,0 q-4,4 -8,0 M-2,-8 q4,2 2,6" stroke="#7a1a2a" stroke-width="1.1" fill="none"/>`),
+    pearl: (x, y, k) => G(x, y, k, `<path d="M-12,-8 Q0,10 12,-8" stroke="${C.stone}" stroke-width="1" fill="none"/>${[[-10,-5,2.6],[-6,0,3],[0,2,3.6],[6,0,3],[10,-5,2.6]].map(([a,b,r])=>`<circle cx="${a}" cy="${b}" r="${r}" fill="#f4f0fa" ${st}/>`).join('')}<circle cx="-1" cy="1" r="1" fill="#fff"/>`),
+    glove: (x, y, k) => G(x, y, k, `<path d="M-8,12 V-2 L-11,-6 Q-12,-9 -9,-9 L-6,-5 V-12 Q-6,-14 -4,-14 Q-2,-14 -2,-12 V-6 V-14 Q-2,-15 0,-15 Q2,-15 2,-13 V-6 V-12 Q2,-13 4,-13 Q6,-13 6,-11 V-4 V-8 Q6,-9 8,-9 Q10,-9 10,-7 V4 Q10,12 4,12 Z" fill="#8a5a3a" ${st}/><path d="M-8,8 H8" stroke="#5a3a20" stroke-width="2"/>`),
+    hay: (x, y, k) => G(x, y, k, `${[-8, -4, 0, 4, 8].map((a, i) => `<path d="M${a},12 Q${a + (i - 2) * 2},-2 ${a + (i - 2) * 4},-12" stroke="#d6b25a" stroke-width="2.4" fill="none" stroke-linecap="round"/>`).join('')}<path d="M-9,3 H9" stroke="${C.red}" stroke-width="2.5"/>`),
+    goldglitter: (x, y, k) => G(x, y, k, [[0, 0, 9], [-9, 6, 5], [9, -7, 5]].map(([a, b, r]) => `<path d="M${a},${b - r} Q${a},${b} ${a + r},${b} Q${a},${b} ${a},${b + r} Q${a},${b} ${a - r},${b} Q${a},${b} ${a},${b - r} Z" fill="${C.amber}" stroke="${I}" stroke-width="1.2"/>`).join('')),
+    chalk: (x, y, k) => G(x, y, k, `<path d="M-13,10 Q0,4 13,10" stroke="#5aa0d8" stroke-width="3" stroke-dasharray="4 3" fill="none"/><rect x="-4" y="-12" width="8" height="18" rx="2" transform="rotate(30)" fill="#7ab8e8" ${st}/>`),
+    apple: (x, y, k) => G(x, y, k, `<path d="M-12,8 C-6,-6 6,10 12,-4" stroke="#c43a2a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M-12,8 C-6,-6 6,10 12,-4" stroke="#f4e3a8" stroke-width="1.6" fill="none" stroke-linecap="round" transform="translate(0,2)"/>`),
+    bigkey: (x, y, k) => G(x, y, k, `<circle cx="-7" cy="0" r="6" fill="none" stroke="#5d5a58" stroke-width="3.6"/><path d="M-1,0 H13 M8,0 V6 M12,0 V5" stroke="#5d5a58" stroke-width="3.6" stroke-linecap="round"/>`),
+    corn: (x, y, k) => G(x, y, k, `<ellipse cx="0" cy="-2" rx="5" ry="11" fill="#e8c24a" ${st}/>${[-7, -3, 1, 5].map(b => `<path d="M-4,${b} H4" stroke="#b8902a" stroke-width=".8"/>`).join('')}<path d="M0,12 Q-10,4 -9,-10 Q-4,0 0,8 Q4,0 9,-10 Q10,4 0,12 Z" fill="${C.sage}" ${st}/>`),
+    buckle: (x, y, k) => G(x, y, k, `<path d="M-11,6 V-2 A11,11 0 0 1 11,-2 V6 H6 V-2 A6,6 0 0 0 -6,-2 V6 Z" fill="#c8ccd4" ${st}/>${[-9, 9].map(a => `<circle cx="${a}" cy="-1" r="1" fill="${I}"/>`).join('')}`),
+    drop: (x, y, k, col = '#2a2228') => G(x, y, k, `<path d="M0,-13 Q10,0 8,6 Q6,12 0,12 Q-6,12 -8,6 Q-10,0 0,-13 Z" fill="${col}" ${st}/><path d="M-3,2 q0,4 3,5" stroke="#fff" stroke-width="1.5" fill="none" opacity=".6"/>`),
+    grease: (x, y, k) => ICON.drop(x, y, k, '#2a2228'),
+    ink: (x, y, k) => ICON.drop(x, y, k, '#2f4a9a'),
+    leaf: (x, y, k) => G(x, y, k, `<path d="M-10,10 Q-12,-10 10,-12 Q12,8 -10,10 Z" fill="${C.sage}" ${st}/><path d="M-10,10 L6,-6" stroke="${C.moss}" stroke-width="1.3"/><path d="M6,8 l6,-2 l-2,6 Z" fill="${C.sage}" ${st}/>`),
+    pipe: (x, y, k) => G(x, y, k, `<path d="M-13,-4 H0 Q4,-4 4,0 V2" stroke="#3a2a20" stroke-width="3" fill="none"/><path d="M2,-2 H12 V6 Q12,12 7,12 Q2,12 2,6 Z" fill="#7a4a2a" ${st}/><path d="M6,-6 q-3,-4 1,-7" stroke="${C.stone}" stroke-width="1.3" fill="none"/>`),
+    polish: (x, y, k) => G(x, y, k, `<rect x="-10" y="-4" width="20" height="13" rx="3" fill="#c8ccd4" ${st}/><rect x="-11" y="-9" width="22" height="5" rx="2" fill="#7a7f8a" ${st}/><path d="M-6,1 l3,3 M2,2 l3,-3" stroke="#fff" stroke-width="1.4"/>`),
+    grave: (x, y, k) => G(x, y, k, `<path d="M-14,12 Q0,4 14,12 Z" fill="#4a3426" ${st}/><path d="M-6,8 V-4 A6,6 0 0 1 6,-4 V8 Z" fill="${C.stone}" ${st}/><path d="M0,-4 v6 M-2.5,-1 h5" stroke="${I}" stroke-width="1.2"/>`),
+    spool: (x, y, k) => G(x, y, k, `<rect x="-9" y="-12" width="18" height="4" rx="1" fill="#b0814e" ${st}/><rect x="-9" y="8" width="18" height="4" rx="1" fill="#b0814e" ${st}/><rect x="-6" y="-8" width="12" height="16" fill="${C.plum}" ${st}/><path d="M6,0 Q14,2 12,12" stroke="${C.plum}" stroke-width="1.5" fill="none"/>`),
+    candle: (x, y, k) => G(x, y, k, `<circle cx="0" cy="-10" r="7" fill="${C.amber}" opacity=".3"/><path d="M0,-15 Q4,-10 0,-6 Q-4,-10 0,-15 Z" fill="${C.amberL}" ${st}/><rect x="-5" y="-6" width="10" height="17" fill="#2a2228" ${st}/><path d="M-5,-3 q2,5 4,0" fill="#3a3238"/>`),
+    page: (x, y, k) => G(x, y, k, `<path d="M-9,-12 H5 L10,-7 V12 H-9 Z" fill="#f4efe4" ${st}/><path d="M-6,-6 H5 M-6,-2 H6 M-6,2 H6 M-6,6 H2" stroke="${C.inkSoft}" stroke-width="1"/><circle cx="2" cy="4" r="4" fill="none" stroke="${C.red}" stroke-width="1.3"/>`),
+    dust: (x, y, k) => G(x, y, k, `<path d="M-11,-8 H9 V10 H-11 Z" fill="#d9c49a" ${st} transform="rotate(-8)"/>${[[-6, -12], [4, -14], [10, -6], [-12, 0], [12, 6]].map(([a, b]) => `<circle cx="${a}" cy="${b}" r="1.6" fill="${C.stone}"/>`).join('')}`),
+    lamp: (x, y, k) => ICON.lantern(x, y, k),
+    pen: (x, y, k) => G(x, y, k, `<path d="M-12,12 L4,-4 L8,0 L-8,16 Z" fill="#2a2228" ${st} transform="translate(0,-4)"/><path d="M4,-8 L12,-14 L8,-4 Z" fill="${C.amber}" ${st}/>`),
+    ticket: (x, y, k) => G(x, y, k, `<path d="M-13,-7 H13 V-2 A2,2 0 0 0 13,2 V7 H-13 V2 A2,2 0 0 0 -13,-2 Z" fill="${C.amberL}" ${st}/><text x="0" y="3" font-family="Atkinson" font-weight="700" font-size="7" text-anchor="middle" fill="${C.red}">No.101</text>`),
+    cake: (x, y, k) => G(x, y, k, `<path d="M-11,10 L-11,-2 L11,-8 L11,10 Z" fill="#f2d06a" ${st}/><path d="M-11,-2 L11,-8 L11,-4 L-11,2 Z" fill="#fff" ${st}/>${[[-6, 12], [2, 13], [8, 12]].map(([a, b]) => `<circle cx="${a}" cy="${b}" r="1.4" fill="#f2d06a"/>`).join('')}`),
+  });
+})();
+const HOUSE_META = {
+  PembertonCottage: { n: 1, short: 'Pemberton', crop: [270, 315, 120, 96], icons: ['sawdust', 'glitter', 'pomade', 'icing', 'key', 'soil', 'locket', 'tea'], code: 'HC-01-LANTERN' },
+  HollowCreekFarm: { n: 2, short: 'Farm', crop: [262, 690, 140, 112], icons: ['hay', 'goldglitter', 'chalk', 'apple', 'bigkey', 'corn', 'buckle', 'grease'], code: 'HC-02-PUMPKIN' },
+  WillowLaneVictorian: { n: 3, short: 'Victorian', crop: [628, 278, 125, 100], icons: ['leaf', 'bottle2', 'pipe', 'polish', 'key', 'grave', 'spool', 'candle'], code: 'HC-03-RECITAL' },
+  BlackwoodManor: { n: 4, short: 'Blackwood', crop: [408, 128, 150, 120], icons: ['boot', 'bottle', 'cigar', 'flour', 'key', 'rose', 'pearl', 'glove'], code: 'HC-04-LEDGER' },
+  HistoricalSociety: { n: 5, short: 'Society', crop: [552, 508, 108, 86], icons: ['key', 'ink', 'page', 'cake', 'dust', 'lamp', 'pen', 'ticket'], code: 'HC-05-KEEPER' },
+};
+// Portrait settings per suspect, by name
+const FACES = {
+  'Gus Thornbury': { skin: '#e2b48e', hair: '#e8e4dc', hairStyle: 'bald', outfit: '#5a6b3a', collar: 'overall', outfit2: '#44542c', beard: '#e8e4dc', hat: 'straw', mood: 'cross' },
+  'Vivian Blackwood': { skin: '#f4d6c0', hair: '#2a1a24', hairStyle: 'long', outfit: '#6a3a7a', earring: true, locket: true, mood: 'smug' },
+  'Reginald Pike': { skin: '#efcfb0', hair: '#5a4a3a', hairStyle: 'part', outfit: '#3a3a4a', collar: 'tie', tie: '#7a2a3a', mustache: '#5a4a3a', glasses: '#a08040', hat: 'top', hatc: '#2a2228', mood: 'smug' },
+  'Martha Bunce': { skin: '#d9a07a', hair: '#7a4a2a', hairStyle: 'curly', outfit: '#c96b5a', collar: 'apron', hat: 'chef', mood: 'happy' },
+  'Hank Moody': { skin: '#e2b48e', hair: '#6b4a32', hairStyle: 'short', outfit: '#3f6f8f', collar: 'overall', outfit2: '#2f557a', hat: 'cap', hatc: C.red, beard: '#6b4a32', mood: 'smug' },
+  'Daisy Pemberton': { skin: '#f4d1b5', hair: '#c96b3a', hairStyle: 'long', outfit: '#d98aa8', freckles: true, hat: 'flower', mood: 'happy' },
+  'Leonard Crisp': { skin: '#f1c9a5', hair: '#2a2228', hairStyle: 'part', outfit: '#4a4a5c', collar: 'tie', tie: C.amber, glasses: C.ink, mustache: '#2a2228', mood: 'smug' },
+  'Beatrice Hollis': { skin: '#c98e6a', hair: '#d8d4cc', hairStyle: 'bun', outfit: '#7a8f5a', collar: 'apron', glasses: '#a0522d', earring: true, mood: 'worried' },
+  'Abel Hatcher': { skin: '#e9b892', hair: '#8a5a32', hairStyle: 'short', outfit: '#b5523e', collar: 'overall', outfit2: '#3f6f8f', beard: '#8a5a32', hat: 'straw', mood: 'worried' },
+  'Clementine Hatcher': { skin: '#f4d1b5', hair: '#e8b84a', hairStyle: 'long', outfit: '#e88aa0', hat: 'crown', freckles: true, mood: 'happy' },
+  'Silas Crane': { skin: '#efcfb0', hair: '#1f1a1c', hairStyle: 'part', outfit: '#2f4a5a', collar: 'tie', tie: '#5aa0d8', glasses: C.ink, mood: 'smug' },
+  'Ma Jessup': { skin: '#a8724e', hair: '#cfcac0', hairStyle: 'bun', outfit: '#8a6a9a', collar: 'apron', glasses: '#5a3a2a', mood: 'happy' },
+  'Ezra Cole': { skin: '#d9a07a', hair: '#6a6a6a', hairStyle: 'short', outfit: '#4f6b45', collar: 'overall', outfit2: '#344a32', hat: 'cap', hatc: '#4a3c5c', mustache: '#6a6a6a', mood: 'worried' },
+  'Lavinia Ashcombe': { skin: '#f6e0d0', hair: '#3a2430', hairStyle: 'bun', outfit: '#9b7fd0', locket: true, earring: true, mood: 'worried' },
+  'Dr. Felix Marlowe': { skin: '#efcfb0', hair: '#8a8a8a', hairStyle: 'bald', outfit: '#3a3446', collar: 'tie', tie: '#9b4a6a', glasses: C.ink, mustache: '#8a8a8a', mood: 'smug' },
+  'Agnes Pratt': { skin: '#e9c0a0', hair: '#a8a29a', hairStyle: 'bun', outfit: '#3a3a4a', collar: 'apron', mood: 'cross' },
+  'Walter Finch': { skin: '#d9a07a', hair: '#d8d4cc', hairStyle: 'short', outfit: '#2f3f5a', collar: 'tie', tie: '#2f3f5a', hat: 'cap', hatc: '#2f3f5a', mustache: '#d8d4cc', mood: 'worried' },
+  'Edie Wren': { skin: '#f1c9a5', hair: '#a85a3a', hairStyle: 'bob', outfit: '#5a7a8a', scarf: C.amber, glasses: '#8a3a2a', freckles: true, pencil: true, mood: 'happy' },
+  'Mortimer Vane': { skin: '#f4d6c0', hair: '#2a2228', hairStyle: 'part', outfit: '#4a3a3a', collar: 'tie', tie: C.red, mustache: '#2a2228', mood: 'smug' },
+  'Rosa Delgado': { skin: '#c98e6a', hair: '#2a1a1a', hairStyle: 'curly', outfit: '#d98a5a', collar: 'apron', hat: 'flower', earring: true, mood: 'happy' },
+};

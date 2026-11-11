@@ -159,9 +159,27 @@ WINDOW_LIGHTS = [rgb("ffcf7a"), rgb("ffcf7a"), rgb("ffb45e"), rgb("ffdf9e"), rgb
 CURTAINS = [rgb("7a2a2a"), rgb("2f5a3a"), rgb("6a4a2a"), rgb("8a6a3a"), rgb("2a4a6a")]
 
 
-def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows=True, sign=None, level=9, win_sides="SNWE"):
-    """A closed town building (not explorable) with glowing windows and a door facing the street."""
-    T.box(f"{name}Body", ((x0 + x1) / 2, h / 2, (z0 + z1) / 2), (x1 - x0, h, z1 - z0), wall, level, "solid", "building")
+INSIDE_H = 3.4  # ceiling height of a walk-in ground floor
+
+
+def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows=True, sign=None, level=9, win_sides="SNWE", hollow=False):
+    """A town building with glowing windows and a door facing the street. Closed unless hollow: then the
+    ground floor is a room you can walk into through an open doorway (the haunts, round 43)."""
+    if hollow:
+        t, inner = 0.25, rgb("3a2e2a")
+        T.slab(f"{name}Floor", 0.1, x0, x1, z0, z1, [], rgb("5a4436"), level, 0.1)
+        cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+        doorway = lambda c: [(c, 1.6, 0.0, 2.4, "door")]
+        T.wall(f"{name}WallS", "x", z0 + t / 2, x0, x1, 0, INSIDE_H, level, wall, t, doorway(cx) if door_side == "S" else ())
+        T.wall(f"{name}WallN", "x", z1 - t / 2, x0, x1, 0, INSIDE_H, level, wall, t, doorway(cx) if door_side == "N" else ())
+        T.wall(f"{name}WallW", "z", x0 + t / 2, z0 + t, z1 - t, 0, INSIDE_H, level, wall, t, doorway(cz) if door_side == "W" else ())
+        T.wall(f"{name}WallE", "z", x1 - t / 2, z0 + t, z1 - t, 0, INSIDE_H, level, wall, t, doorway(cz) if door_side == "E" else ())
+        T.box(f"{name}Ceiling", (cx, INSIDE_H + 0.1, cz), (x1 - x0, 0.2, z1 - z0), inner, level, "solid", "building")
+        if h > INSIDE_H + 0.25:
+            top = INSIDE_H + 0.2
+            T.box(f"{name}Body", (cx, (top + h) / 2, cz), (x1 - x0, h - top, z1 - z0), wall, level, "solid", "building")
+    else:
+        T.box(f"{name}Body", ((x0 + x1) / 2, h / 2, (z0 + z1) / 2), (x1 - x0, h, z1 - z0), wall, level, "solid", "building")
     if gable:
         T.gable_roof(f"{name}Roof", x0, x1, z0, z1, h, min(4.0, (z1 - z0) * 0.35), roof, wall, level=level, overhang=0.4)
     else:
@@ -201,7 +219,8 @@ def building(name, x0, x1, z0, z1, h, wall, roof, door_side, gable=True, windows
     mid = ((x0 + x1) / 2, (z0 + z1) / 2)
     door = {"S": ((mid[0], 1.15, z0 - 0.06), (1.4, 2.3, 0.08)), "N": ((mid[0], 1.15, z1 + 0.06), (1.4, 2.3, 0.08)),
             "W": ((x0 - 0.06, 1.15, mid[1]), (0.08, 2.3, 1.4)), "E": ((x1 + 0.06, 1.15, mid[1]), (0.08, 2.3, 1.4))}[door_side]
-    T.box(f"{name}Door", door[0], door[1], rgb("4a2a1a"), level, "solid", "door")
+    if not hollow:
+        T.box(f"{name}Door", door[0], door[1], rgb("4a2a1a"), level, "solid", "door")
     if sign:
         txt, col = sign
         p, s = door
@@ -579,6 +598,9 @@ def district_of(x, z):
     return best or "Hollow Creek"
 
 
+import haunts  # noqa: E402  (round 42)
+
+
 def grow_town():
     W = wg.TownGen(T, building, street_lamps, road, LOTS, C, (TX0, TX1, TZ0, TZ1))
     W.stamp(keep_rooms={"Town Square", "Churchyard", "Church", "HQ Parking", "Mystery Club HQ", "Hollow Creek Bridge"},
@@ -614,7 +636,10 @@ def grow_town():
     W.line_street("Founders Way", "x", -84, 4, 104)
     W.cut_parcels()
     W.snapshots["parcels"] = W.grid.a.copy()
+    # Round 42: twelve plots near the middle of town become one-of-a-kind buildings with haunts to bust
+    haunt_sites = haunts.claim(W.parcels)
     W.build_parcels()
+    T.L["haunts"] = haunts.build(T, C, rgb, lambda *a, **k: building(*a, hollow=True, **k), haunt_sites)
     # A footpath along the north bank, from the bridge out to the fields either side
     for name, x0, x1 in (("CreeksidePathW", -150, -6), ("CreeksidePathE", 6, 112)):
         T.box(name, ((x0 + x1) / 2, -0.02, CREEK_Z + 11.5), (x1 - x0, 0.08, 2.6), rgb("6a5a44"), 9, "solid", "road")
@@ -654,6 +679,11 @@ T.L["curios"] = _R["curios"]
 T.L["world"] = [regions.WORLD[0], regions.WORLD[2], 415.0, regions.WORLD[3]]  # x0, z0, x1, z1 (the harbor runs out to sea)
 # flat x0, z0, x1, z1 quads: Unity's JsonUtility can't read nested lists
 T.L["horizon"]["forest"]["clear"] = [round(v, 1) for c in _R["clear"] for v in c]
+
+# Round 44: trees, hydrants, post boxes, bins and street signs along every sidewalk (streetlife.py).
+import streetlife  # noqa: E402
+_SL = streetlife.build(T, rgb)
+print("  street life:", ", ".join(f"{v} {k}s" for k, v in _SL.items()))
 
 T.L["lots"] = LOTS
 T.L["roads"] = ["Main Street", "Elm Street", "Willow Lane", "Founders Way"] + T.L.get("newRoads", [])

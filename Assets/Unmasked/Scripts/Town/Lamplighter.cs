@@ -305,13 +305,17 @@ namespace Unmasked
         /// <summary>A Costumes.json outfit, built the way the editor builds the townsfolk (TestRoomBuilder.BuildParts).</summary>
         static void BuildParts(Transform parent, Costumes.Part[] parts)
         {
+            int first = parent.childCount;
             foreach (var q in parts)
             {
-                var type = q.t switch { "cyl" => PrimitiveType.Cylinder, "capsule" => PrimitiveType.Capsule, "sphere" => PrimitiveType.Sphere, _ => PrimitiveType.Cube };
+                var type = q.t switch { "cyl" or "rcyl" => PrimitiveType.Cylinder, "capsule" => PrimitiveType.Capsule, "sphere" => PrimitiveType.Sphere, _ => PrimitiveType.Cube };
                 bool glow = q.m == "emissive" || q.m == "ghost";
                 var go = Shape(parent, type, ManorLayout.V(q.p), ManorLayout.V(q.s), ManorLayout.V(q.r), Mat(ManorLayout.C(q.c), glow), q.n);
                 if (glow) go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                if (q.t == "rbox") go.AddComponent<SoftBox>();
+                if (q.t == "rcyl") go.AddComponent<SoftBox>().Cylinder = true;
             }
+            SmoothBody.Attach(parent, parts, first); // round 45: one smooth skin, as the townsfolk have
         }
     }
 

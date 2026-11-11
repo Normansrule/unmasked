@@ -23,6 +23,7 @@
 
 # Delivery zips copied onto the desktop folder
 /_to_delete/
+/Incoming/
 
 # Python bytecode from the Docs/tools scripts
 __pycache__/

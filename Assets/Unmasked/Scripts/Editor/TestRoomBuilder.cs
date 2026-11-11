@@ -607,14 +607,17 @@ namespace Unmasked.EditorTools
                 }
                 var go = Shape(PartPrimitive(q.t), q.n, into, p, ManorLayout.V(q.s), ColorMaterial(ManorLayout.C(q.c), q.m, q.e), false);
                 go.transform.localRotation = Quaternion.Euler(ManorLayout.V(q.r));
+                if (q.t == "rbox") go.AddComponent<SoftBox>(); // round 42: soft edges instead of a hard cube
+                if (q.t == "rcyl") go.AddComponent<SoftBox>().Cylinder = true;
                 if (q.m == "ghost") go.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
             }
+            SmoothBody.Attach(root, parts); // round 45: people get one smooth skin instead of toy-piece joints
             return root;
         }
 
         internal static PrimitiveType PartPrimitive(string shape) => shape switch
         {
-            "cyl" => PrimitiveType.Cylinder,
+            "cyl" or "rcyl" => PrimitiveType.Cylinder,
             "capsule" => PrimitiveType.Capsule,
             "sphere" => PrimitiveType.Sphere,
             _ => PrimitiveType.Cube
