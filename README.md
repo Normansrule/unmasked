@@ -414,6 +414,28 @@ teapot, a letter with a pen and spectacles, a little pumpkin (89 table tops). Pl
 
 <p align="center"><img src="Docs/images/rooms-inside.png" alt="Four rooms seen from inside, before and after: curtains at the windows and things on the tables" width="900"></p>
 
+#### Round 47: one smooth body, and front gardens
+
+**People.** The Brawn's barrel chest used to sit on top of his body like a puffed band; it now
+melts into the torso. Beards, mutton chops and the ring of hair round a bald head melt into soft
+hair too, and every bit of skin is relaxed after it's built (Taubin smoothing, which irons out the
+little ripples the building grid left without shrinking anyone)
+([`Spooky/SmoothBody.cs`](Assets/Unmasked/Scripts/Spooky/SmoothBody.cs),
+[`Docs/tools/smoothbody.py`](Docs/tools/smoothbody.py)).
+
+<p align="center"><img src="Docs/images/cast-smooth.png" alt="Four of the cast before and after: a barrel chest melted into the body and softer beards" width="900"></p>
+
+**Front gardens.** The 23 trick-or-treat homes had a lawn, a path and a hedge or fence. Now every
+front window has a window box of mums and trailing ivy (62), rounded shrubs line the front wall
+(99), flowers run down both sides of the path with stone edging and two little lantern stakes at
+the gate, box hedges have a soft clipped crown, 17 porches have a rocking chair with a cushion and
+throw (most with a lantern on a side table), and every yard has either a raked pile of leaves with
+the rake still in it or a wheelbarrow of pumpkins. Placed by
+[`Docs/tools/frontyard.py`](Docs/tools/frontyard.py) only where nothing already stands, the same
+way every build.
+
+<p align="center"><img src="Docs/images/front-gardens.png" alt="Four front yards before and after: window boxes, shrubs, flowers down the path, rockers and leaf piles" width="900"></p>
+
 **First-night hints**, which ease in by themselves and step aside when you're done with them:
 
 <p align="center"><img src="Docs/images/handbook.gif" alt="Handbook hint cards appearing at HQ, on the drive, at the Suspect Board, during a scare and after a case" width="720"></p>

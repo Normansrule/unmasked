@@ -685,6 +685,11 @@ import streetlife  # noqa: E402
 _SL = streetlife.build(T, rgb)
 print("  street life:", ", ".join(f"{v} {k}s" for k, v in _SL.items()))
 
+# Round 47: front gardens: window boxes, foundation shrubs, path borders, clipped hedges, porch rockers, leaf piles.
+import frontyard  # noqa: E402
+_FY = frontyard.build(T, rgb)
+print("  front gardens:", ", ".join(f"{v} {k}" for k, v in _FY.items()))
+
 T.L["lots"] = LOTS
 T.L["roads"] = ["Main Street", "Elm Street", "Willow Lane", "Founders Way"] + T.L.get("newRoads", [])
 T.L["creekZ"] = CREEK_Z

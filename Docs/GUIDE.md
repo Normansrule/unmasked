@@ -422,6 +422,15 @@ the body's. Eyes, brows, mouths, fingers and shoes still sit on top as their own
 
 <p align="center"><img src="images/faces-pass.png" alt="Five faces before and after: a nose grown out of the face, softer jaws and cheeks, softer hair" width="900"></p>
 
+**One smooth body (round 47).** A second chest shape (the Brawn's barrel chest) melts into the
+torso, and beards, mutton chops and the ring of hair round a bald head melt into the hair. After
+each limb is meshed, its skin is relaxed with Taubin smoothing: every corner is pulled towards the
+middle of its neighbours, then pushed back out by a little more, ten times over. That irons out
+the ripples the grid leaves on cheeks, chests and skirts while the volume stays the same (within
+0.1%), and the lighting then uses normals from the relaxed surface itself.
+
+<p align="center"><img src="images/cast-smooth.png" alt="Four of the cast before and after: a barrel chest melted into the body and softer beards" width="900"></p>
+
 ### Rooms full of things
 
 <p align="center"><img src="images/rooms-full.png" alt="Three floors before and after, walls cut away: empty rooms, then furniture, paintings and rugs" width="900"></p>
@@ -450,6 +459,16 @@ orange, red and gold with leaves fallen round their feet, red fire hydrants, blu
 bins, yellow newspaper boxes, and a green signpost near the end of each street. Nothing is placed
 where a building, path, fence, lamp or another prop already stands, and the same town comes out
 every build. Placed by [`Docs/tools/streetlife.py`](tools/streetlife.py).
+
+Since round 47 the front gardens of the 23 homes are planted too: a window box of mums and ivy
+under every front window, rounded shrubs along the front wall (or along the porch where a porch
+covers it), a border of flowers and stone edging down each side of the path with two lantern stakes
+at the gate, a soft clipped crown on every box hedge, a rocking chair on most porches (with a
+lantern on a side table when the porch is wide), and either a raked leaf pile with its rake or a
+wheelbarrow of pumpkins on the lawn. [`Docs/tools/frontyard.py`](tools/frontyard.py) runs after the
+street life in `make_town.py` and only adds pieces where nothing already stands.
+
+<p align="center"><img src="images/front-gardens.png" alt="Four front yards before and after: window boxes, shrubs, flowers down the path, rockers and leaf piles" width="900"></p>
 
 ### The people of Hollow Creek
 

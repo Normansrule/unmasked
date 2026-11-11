@@ -1,4 +1,4 @@
-# Test report (round 46, 2026-11-10)
+# Test report (round 47, 2026-11-11)
 
 **First real Unity compile (round 41).** On 2026-11-09 Unity 6000.6.5f1 opened the project on
 Alek's PC in batch mode (`Logs/build.log`). It upgraded the packages to their 6000.6 versions and
@@ -23,6 +23,8 @@ the next Unity run should compile clean.
 | The smooth skin (round 45) builds for all 30 outfits as a closed surface with its triangles facing out (every edge shared by exactly two triangles, positive volume) | a one-off Python check over `smoothbody.build()` for every outfit | 30 built, all facing out; 29 perfectly closed, the Snacker has 4 edges where two bits of skin just touch (draws fine) |
 | Room furniture (round 45) overlaps no wall, stair, door, possessable or other piece, and no two pieces share a name | a one-off Python check of the 6 layout files after `make_manor.py`, `make_houses.py`, `make_town.py` | 0 overlaps, 0 duplicates; every other piece is unchanged |
 | The round 46 skin (each limb, the head, the hair and each hand meshed on its own) builds for all 30 outfits with every piece facing out | a one-off Python check over `smoothbody.build()` for every outfit, piece by piece | 30 built, 308 pieces, 0 facing in; 15 outfits have 1 to 15 edges where two bits of skin just touch (the same harmless kind as the Snacker in round 45) |
+| The round 47 skin (Taubin-relaxed, barrel chests and beards melted in) builds for all 30 outfits with every piece facing out, and keeps its size | a one-off Python check over `smoothbody.build()` for every outfit, against the same build with relaxing turned off | 30 built, 312 pieces, 0 facing in, volume changed by 0.06% to 0.11%; the same 15 outfits have a few edges where two bits of skin just touch |
+| Front gardens (round 47) overlap no solid piece, path, road or prop, only add pieces, and no two pieces share a name | a one-off Python check of `HollowCreek.json` against the round 46 file | 1612 pieces added (140 solid), 0 overlaps, 0 on paths or roads, 0 duplicates, nothing else changed |
 | Curtains and table-top still lifes (round 46) overlap no wall, stair, door, possessable or other piece, and no two pieces share a name | a one-off Python check of the 6 layout files after `make_manor.py`, `make_houses.py`, `make_town.py` | 0 overlaps, 0 duplicates; only additions (109 curtained windows, 89 still lifes) |
 | No street prop (tree, hydrant, post box, bin, newspaper box, sign) stands on a road or sidewalk, and no town piece shares a name | a one-off Python check of `HollowCreek.json` | 0 on roads, 0 duplicates |
 | Each of the 12 town haunts has three signs, three hiding spots and a matching `HauntBust.Total` | `python3 tools/casecheck/casecheck.py` (prints "12 haunts in town") | pass |

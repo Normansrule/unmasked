@@ -2143,6 +2143,10 @@
   {
    "title": "Faces and lived-in rooms",
    "line": "Noses grown out of faces, softer jaws and hair, curtains at every window and things left out on the tables"
+  },
+  {
+   "title": "Front gardens",
+   "line": "Window boxes, shrubs, flowers down the path, porch rockers, leaf piles, and one smooth body for every person"
   }
  ],
  "milestones": [
@@ -2345,6 +2349,11 @@
    "name": "Milestone 40: Faces and lived-in rooms",
    "done": 4,
    "total": 5
+  },
+  {
+   "name": "Milestone 41: One smooth body and front gardens",
+   "done": 5,
+   "total": 6
   },
   {
    "name": "Release pipeline",

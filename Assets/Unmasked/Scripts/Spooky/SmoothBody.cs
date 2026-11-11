@@ -22,6 +22,9 @@ namespace Unmasked
     ///
     /// Round 46: the nose, the palm and thumb, and the hair melt in too, each limb is meshed on its own
     /// grid, and the head, hair and hands use a grid twice as fine so small shapes keep their form.
+    ///
+    /// Round 47: each limb's skin is relaxed with Taubin smoothing and lit with normals from the relaxed
+    /// surface, so the grid's little ripples on cheeks, chests and skirts are gone.
     /// </summary>
     [ExecuteAlways]
     public class SmoothBody : MonoBehaviour
@@ -30,14 +33,15 @@ namespace Unmasked
         public const float Cell = 0.012f;
         const float KHead = 0.04f, KBody = 0.042f, KSkirt = 0.07f, Margin = 0.08f;
         const float KNose = 0.012f, KHand = 0.008f, KHair = 0.03f; // round 46: a nose grown out of the face, one-piece palms, soft hair
+        const float TaubinShrink = 0.5f, TaubinGrow = -0.53f; const int TaubinPasses = 10; // round 47 (smoothbody.TAUBIN)
 
-        static readonly Regex BodyName = new Regex(@"^(Chest|ShoulderLine|Shoulders|Waist|Hips|Belly|Neck|Head|Jaw|Chin|Cheek[LR]|Ear[LR]|" +
+        static readonly Regex BodyName = new Regex(@"^(Chest|Chest\d|Beard|MuttonChop[LR]|HairRing|ShoulderLine|Shoulders|Waist|Hips|Belly|Neck|Head|Jaw|Chin|Cheek[LR]|Ear[LR]|" +
                                                    @"Shoulder[LR]|UpperArm[LR]|Elbow[LR]|Forearm[LR]|Wrist[LR]|Thigh[LR]|Shin[LR]|Ankle[LR]|\w+Tier\d|Nose|NoseBridge|NoseWing[LR]|Hand[LR](?:Knuckles|Thumb)?|" +
                                                    @"Hair(?:Crown|Back|Front|Long|Fall|Sweep|Part|Curtain[LR]|Temple[LR]|Strand[LR]|Tuft\d|Flyaway)|" +
                                                    @"Fringe|Sideburn[LR]|SideHair[LR]|Bun|Updo|Bouffant|Ponytail|Braid|Curls?|Curl[LR\d]+)$");
         static readonly Regex NoseName = new Regex(@"^(Nose|NoseBridge|NoseWing[LR])$");
         static readonly Regex HandName = new Regex(@"^Hand([LR])(?:Knuckles|Thumb)?$");
-        static readonly Regex HairName = new Regex(@"^(Hair\w*|Fringe|Sideburn[LR]|SideHair[LR]|Bun|Updo|Bouffant|Ponytail|Braid|Curls?|Curl[LR\d]+)$");
+        static readonly Regex HairName = new Regex(@"^(Hair\w*|Beard|MuttonChop[LR]|Fringe|Sideburn[LR]|SideHair[LR]|Bun|Updo|Bouffant|Ponytail|Braid|Curls?|Curl[LR\d]+)$");
         static readonly Regex HeadName = new Regex(@"^(Head|Jaw|Chin|Cheek[LR]|Ear[LR])$");
         static readonly Regex ArmName = new Regex(@"^(Shoulder|UpperArm|Elbow|Forearm|Wrist)([LR])$");
         static readonly Regex LegName = new Regex(@"^(Thigh|Shin|Ankle)([LR])$");
@@ -332,6 +336,7 @@ namespace Unmasked
             }
 
             // one quad round every grid edge the surface crosses
+            int firstTri = tris.Count;
             int[] dims = { nx, ny, nz };
             for (int x = 0; x < nx; x++)
                 for (int y = 0; y < ny; y++)
@@ -354,6 +359,57 @@ namespace Unmasked
                             Add(tris, verts, normals, q0, q2, q3);
                         }
                     }
+            Relax(verts, normals, tris, first, firstTri);
+        }
+
+        /// <summary>Round 47: Taubin smoothing of one limb's skin (pull every corner towards the middle of its
+        /// neighbours, then push it back out, <see cref="TaubinPasses"/> times), which irons out the grid's
+        /// ripples without shrinking the body; then normals from the relaxed surface itself.</summary>
+        static void Relax(List<Vector3> verts, List<Vector3> normals, List<int> tris, int first, int firstTri)
+        {
+            int n = verts.Count - first;
+            if (n == 0) return;
+            var nb = new List<int>[n];
+            for (int i = 0; i < n; i++) nb[i] = new List<int>(6);
+            void Link(int a, int b)
+            {
+                a -= first; b -= first;
+                if (!nb[a].Contains(b)) { nb[a].Add(b); nb[b].Add(a); }
+            }
+            for (int t = firstTri; t < tris.Count; t += 3)
+            {
+                Link(tris[t], tris[t + 1]);
+                Link(tris[t + 1], tris[t + 2]);
+                Link(tris[t + 2], tris[t]);
+            }
+            var p = new Vector3[n];
+            var q = new Vector3[n];
+            for (int i = 0; i < n; i++) p[i] = verts[first + i];
+            for (int pass = 0; pass < TaubinPasses * 2; pass++)
+            {
+                float f = (pass & 1) == 0 ? TaubinShrink : TaubinGrow;
+                for (int i = 0; i < n; i++)
+                {
+                    if (nb[i].Count == 0) { q[i] = p[i]; continue; }
+                    Vector3 mid = Vector3.zero;
+                    foreach (int j in nb[i]) mid += p[j];
+                    mid /= nb[i].Count;
+                    q[i] = p[i] + f * (mid - p[i]);
+                }
+                (p, q) = (q, p);
+            }
+            var acc = new Vector3[n];
+            for (int t = firstTri; t < tris.Count; t += 3)
+            {
+                int a = tris[t] - first, b = tris[t + 1] - first, c = tris[t + 2] - first;
+                var face = Vector3.Cross(p[b] - p[a], p[c] - p[a]);
+                acc[a] += face; acc[b] += face; acc[c] += face;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                verts[first + i] = p[i];
+                if (acc[i].sqrMagnitude > 1e-20f) normals[first + i] = acc[i].normalized;
+            }
         }
 
         static Built Finish(List<Piece> ps, Shape[] shapes, List<Vector3> verts, List<Vector3> normals, List<int> tris)

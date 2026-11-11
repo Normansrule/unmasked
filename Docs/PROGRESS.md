@@ -335,6 +335,14 @@
 - [x] Things left out on tables, desks and counters (89 table tops)
 - [ ] In Unity: check the finer heads still build quickly on the first night
 
+## Milestone 41: One smooth body and front gardens
+- [x] Barrel chests melt into the body; beards, mutton chops and bald rings melt into soft hair
+- [x] Skin relaxed with Taubin smoothing (ripples gone, volume unchanged)
+- [x] Window boxes under all 62 front windows of the 23 homes
+- [x] Foundation shrubs, path borders with lantern stakes, clipped hedge crowns
+- [x] Rocking chairs on 17 porches; a leaf pile or a wheelbarrow of pumpkins in every yard
+- [ ] In Unity: check the relaxed skins still build quickly on the first night
+
 ## Release pipeline
 - [x] One-click test room generator
 - [x] Player builds for Windows, macOS, Linux (menu, terminal, GitHub Actions)

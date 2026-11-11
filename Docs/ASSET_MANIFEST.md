@@ -13,6 +13,7 @@ each one is listed with its source and licence in `Resources/CC0/CREDITS.md`.
 | Sounds (29 .wav) | `Assets/Unmasked/Resources/Sounds` | `make_sounds.py` | Synthesized |
 | Menu backdrop (sky, moon, hills, manor, fog, fireflies, grain) | Generated at runtime | `Assets/Unmasked/Scripts/UI/MenuBackdrop.cs` | Procedural |
 | Street trees, hydrants, post boxes, bins, newspaper boxes and street signs | Generated from code (layout) | `Docs/tools/streetlife.py` | Procedural |
+| Front gardens: window boxes, shrubs, path borders, hedge crowns, porch rockers, leaf piles, wheelbarrows | Generated from code (layout) | `Docs/tools/frontyard.py` | Procedural |
 | Smooth body skins (one per outfit) | Generated at runtime | `Assets/Unmasked/Scripts/Spooky/SmoothBody.cs` | Procedural |
 | Room furniture, paintings, rugs, curtains and table-top still lifes | Generated from code (layout) | `Docs/tools/roomdetail.py` | Procedural |
 | Rounded box and cylinder meshes for soft boots, belts, collars and cuffs | Generated at runtime | `Assets/Unmasked/Scripts/Spooky/SoftBox.cs` | Procedural |

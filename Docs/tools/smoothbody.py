@@ -12,6 +12,10 @@ and hair is one soft mass. Each limb is meshed on its own grid, and the head, ha
 grid twice as fine, so a nose or a knuckle keeps its shape. Eyes, brows, mouths, fingers, shoes and
 accessories still sit on top as their own parts.
 
+Round 47: the meshed skin is relaxed with Taubin smoothing (pull each point to the middle of its
+neighbours, then push back out, ten times), and its normals come from the relaxed surface itself.
+The ripples the grid left on cheeks, chests and skirts are gone, without the body shrinking.
+
     import smoothbody; v, n, f, c = smoothbody.build(parts)    # verts, normals, faces, face colours
 """
 import math
@@ -20,7 +24,7 @@ import re
 import numpy as np
 
 CELL = 0.012  # grid spacing in metres (SmoothBody.Cell)
-BODY = re.compile(r"^(Chest|ShoulderLine|Shoulders|Waist|Hips|Belly|Neck|Head|Jaw|Chin|Cheek[LR]|Ear[LR]|"
+BODY = re.compile(r"^(Chest|Chest\d|Beard|MuttonChop[LR]|HairRing|ShoulderLine|Shoulders|Waist|Hips|Belly|Neck|Head|Jaw|Chin|Cheek[LR]|Ear[LR]|"
                   r"Shoulder[LR]|UpperArm[LR]|Elbow[LR]|Forearm[LR]|Wrist[LR]|Thigh[LR]|Shin[LR]|Ankle[LR]|"
                   r"\w+Tier\d|Nose|NoseBridge|NoseWing[LR]|Hand[LR](?:Knuckles|Thumb)?|"
                   r"Hair(?:Crown|Back|Front|Long|Fall|Sweep|Part|Curtain[LR]|Temple[LR]|Strand[LR]|Tuft\d|Flyaway)|"
@@ -28,7 +32,7 @@ BODY = re.compile(r"^(Chest|ShoulderLine|Shoulders|Waist|Hips|Belly|Neck|Head|Ja
 HEAD = re.compile(r"^(Head|Jaw|Chin|Cheek[LR]|Ear[LR])$")
 NOSE = re.compile(r"^(Nose|NoseBridge|NoseWing[LR])$")
 HAND = re.compile(r"^Hand([LR])(?:Knuckles|Thumb)?$")
-HAIR = re.compile(r"^(Hair\w*|Fringe|Sideburn[LR]|SideHair[LR]|Bun|Updo|Bouffant|Ponytail|Braid|Curls?|Curl[LR\d]+)$")
+HAIR = re.compile(r"^(Hair\w*|Beard|MuttonChop[LR]|Fringe|Sideburn[LR]|SideHair[LR]|Bun|Updo|Bouffant|Ponytail|Braid|Curls?|Curl[LR\d]+)$")
 K_HEAD, K_BODY, K_SKIRT = 0.04, 0.042, 0.07  # how far the smooth union melts shapes together
 K_NOSE, K_HAND, K_HAIR = 0.012, 0.008, 0.03   # round 46: a nose grown out of the face, one-piece hands, soft hair
 
@@ -230,6 +234,34 @@ def surface_nets(F, lo, cell):
     return verts, np.array(faces, int).reshape(-1, 4)
 
 
+TAUBIN = (0.5, -0.53, 10)  # shrink, grow, passes (SmoothBody.Taubin*)
+
+
+def relax(verts, tris, lam=TAUBIN[0], mu=TAUBIN[1], passes=TAUBIN[2]):
+    """Taubin smoothing: each pass pulls every vertex towards the middle of its neighbours (lam), then
+    pushes it back out (mu), which irons out the grid's little ripples without shrinking the body."""
+    e = np.concatenate([tris[:, [0, 1]], tris[:, [1, 2]], tris[:, [2, 0]]])  # as SmoothBody.Relax
+    e = np.unique(np.sort(e, axis=1), axis=0)
+    deg = np.bincount(e.ravel(), minlength=len(verts)).astype(float)[:, None]
+    deg[deg == 0] = 1
+    v = verts.copy()
+    for _ in range(passes):
+        for f in (lam, mu):
+            acc = np.zeros_like(v)
+            np.add.at(acc, e[:, 0], v[e[:, 1]])
+            np.add.at(acc, e[:, 1], v[e[:, 0]])
+            v = v + f * (acc / deg - v)
+    return v
+
+
+def mesh_normals(verts, tris):
+    fn = np.cross(verts[tris[:, 1]] - verts[tris[:, 0]], verts[tris[:, 2]] - verts[tris[:, 0]])
+    n = np.zeros_like(verts)
+    for i in range(3):
+        np.add.at(n, tris[:, i], fn)
+    return n / (np.linalg.norm(n, axis=1, keepdims=True) + 1e-12)
+
+
 def soften(F):
     """A 1-2-1 blur along each axis, so normals don't ripple with the grid."""
     for ax in range(3):
@@ -254,12 +286,13 @@ def build(parts, cell=CELL):
         if len(quads) == 0:
             continue
         tris = np.concatenate([quads[:, [0, 1, 2]], quads[:, [0, 2, 3]]])
-        gr = np.stack(np.gradient(soften(F)), axis=-1)  # vertex normals from the (gently blurred) field's slope
-        nrm = trilinear(gr, (verts - lo) / c)
-        nrm /= np.linalg.norm(nrm, axis=1, keepdims=True) + 1e-12
+        gr = np.stack(np.gradient(soften(F)), axis=-1)  # which way is out, from the (gently blurred) field's slope
+        out = trilinear(gr, (verts - lo) / c)
         fn = np.cross(verts[tris[:, 1]] - verts[tris[:, 0]], verts[tris[:, 2]] - verts[tris[:, 0]])
-        wrong = np.einsum("ij,ij->i", fn, nrm[tris].mean(axis=1)) < 0  # face the way the normals do
+        wrong = np.einsum("ij,ij->i", fn, out[tris].mean(axis=1)) < 0  # face the way out
         tris[wrong] = tris[wrong][:, ::-1]
+        verts = relax(verts, tris)  # round 47: iron out the grid's ripples
+        nrm = mesh_normals(verts, tris)
         V.append(verts)
         N.append(nrm)
         T.append(tris + base)
