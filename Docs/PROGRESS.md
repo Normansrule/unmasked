@@ -343,6 +343,21 @@
 - [x] Rocking chairs on 17 porches; a leaf pile or a wheelbarrow of pumpkins in every yard
 - [ ] In Unity: check the relaxed skins still build quickly on the first night
 
+## Milestone 42: Hills and level changes
+- [x] Three terraces climbing north from Pine Street, and a grass bank down to the creek
+- [x] Main Street and Ash Street ramp between them in cuttings, with stone retaining walls and railings
+- [x] Main Street on an embankment to a bridge raised on stone abutments and piers
+- [x] Every building, yard and lot at the height of the street its door faces
+- [x] Flights of steps from the sunken streets to the terraces, one to the church door
+- [x] `TownLayout.GroundY` so trick-or-treaters and cars follow the hills
+- [ ] In Unity: drive the van up Main Street and over the bridge, walk the steps
+
+## Milestone 43: Life on the hills
+- [x] Ivy and moss down about half the retaining walls, some of it in autumn colours
+- [x] A lit lantern post at the top of every flight of steps
+- [x] Three stairways down the creek bank with handrails, benches, lanterns and wooden landings
+- [ ] In Unity: walk down a bank stairway to its landing
+
 ## Release pipeline
 - [x] One-click test room generator
 - [x] Player builds for Windows, macOS, Linux (menu, terminal, GitHub Actions)

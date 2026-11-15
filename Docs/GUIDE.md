@@ -460,6 +460,26 @@ bins, yellow newspaper boxes, and a green signpost near the end of each street. 
 where a building, path, fence, lamp or another prop already stands, and the same town comes out
 every build. Placed by [`Docs/tools/streetlife.py`](tools/streetlife.py).
 
+Since round 48 the town stands on a hill. [`Docs/tools/terrain.py`](tools/terrain.py) runs on the
+saved layout at the end of `make_town.py` and lifts it onto three terraces (0, 2.4 m and 4.8 m)
+that step up north from Pine Street, with a 31° grass bank down to the creek and softer banks at the
+east and west edges of town. Main Street and Ash Street ramp between the terraces at about 6°
+(Main Street drops to the raised bridge at 11°), so they run in cuttings with stone retaining walls
+and railings, and Main Street crosses the creek on a bridge raised 2.2 m on stone abutments and two
+piers. Buildings are grouped with their yards, gardens and props and each group is set to the height
+of the nearest street to its door; a building beside a ramp keeps to its terrace and gets a flight
+of steps (risers under 0.17 m, so a player walks straight up). Lots set their `offset` to the street
+at their arrival point. The pass writes a `terrain` block (one character per 1 m cell and the ramps)
+and `TownLayout.GroundY(x, z)` reads it, so anything placed by code (trick-or-treaters, cars) stands
+on the ground. Everything else in the JSON (doors, lights, haunt signs, folk, curios, decor) is
+lifted with the ground under it.
+
+Since round 49 the hills are lived in: [`Docs/tools/hillside.py`](tools/hillside.py) runs after
+the terrain pass and hangs ivy and moss down about half the retaining walls (chosen in patches about
+4 m long, on the low face only), stands a lit lantern post at the top of every flight of steps, and
+cuts three stone stairways down the creek bank (30 steps of 0.16 m, handrails both sides) with a
+bench and lantern at the top and a wooden landing on the water at the foot.
+
 Since round 47 the front gardens of the 23 homes are planted too: a window box of mums and ivy
 under every front window, rounded shrubs along the front wall (or along the porch where a porch
 covers it), a border of flowers and stone edging down each side of the path with two lantern stakes

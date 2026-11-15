@@ -254,7 +254,9 @@ namespace Unmasked
             var b = new Vector3(w.to[0], 0f, w.to[1]);
             var dir = (b - a).normalized;
             var right = new Vector3(dir.z, 0f, -dir.x);
-            return Vector3.Lerp(a, b, u) + right * side * w.side + Vector3.up * 0.06f;
+            var p = Vector3.Lerp(a, b, u) + right * side * w.side;
+            var town = TownLayout.Current;   // round 48: the town has hills now
+            return p + Vector3.up * ((town != null ? town.GroundY(p.x, p.z) : 0f) + 0.06f);
         }
 
         string RumourFor(Group g)
@@ -372,7 +374,10 @@ namespace Unmasked
                 Vector3 start = car.Incoming ? b : a, end = car.Incoming ? a + (b - a).normalized * 25f : b;
                 var dir = (end - start).normalized;
                 var right = new Vector3(dir.z, 0f, -dir.x);
-                car.T.SetPositionAndRotation(Vector3.Lerp(start, end, car.U) + right * 2f, Quaternion.LookRotation(dir));
+                var at = Vector3.Lerp(start, end, car.U) + right * 2f;
+                var town = TownLayout.Current;
+                if (town != null) at.y += town.GroundY(at.x, at.z);
+                car.T.SetPositionAndRotation(at, Quaternion.LookRotation(dir));
                 // Grow in and shrink out at the ends of the trip, so nobody sees a car pop into being.
                 float ends = Mathf.Clamp01(Mathf.Min(car.U, 1f - car.U) / 0.02f);
                 car.T.localScale = Vector3.one * ends;

@@ -2147,6 +2147,14 @@
   {
    "title": "Front gardens",
    "line": "Window boxes, shrubs, flowers down the path, porch rockers, leaf piles, and one smooth body for every person"
+  },
+  {
+   "title": "Hills",
+   "line": "Terraces, sunken streets with stone walls, steps to the church and a raised bridge over the creek"
+  },
+  {
+   "title": "Life on the hills",
+   "line": "Ivy on the walls, lanterns at the steps, and stairways down the creek bank to little wooden landings"
   }
  ],
  "milestones": [
@@ -2354,6 +2362,16 @@
    "name": "Milestone 41: One smooth body and front gardens",
    "done": 5,
    "total": 6
+  },
+  {
+   "name": "Milestone 42: Hills and level changes",
+   "done": 6,
+   "total": 7
+  },
+  {
+   "name": "Milestone 43: Life on the hills",
+   "done": 3,
+   "total": 4
   },
   {
    "name": "Release pipeline",

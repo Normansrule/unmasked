@@ -695,7 +695,14 @@ T.L["roads"] = ["Main Street", "Elm Street", "Willow Lane", "Founders Way"] + T.
 T.L["creekZ"] = CREEK_Z
 
 if __name__ == "__main__":
-    T.save("HollowCreek.json", house=False)
+    _path = T.save("HollowCreek.json", house=False)
+    # Round 48: lift the town onto terraces, ramps and a raised bridge (after dressing, which plinths at y 0).
+    import terrain  # noqa: E402
+    _TR, _, _ = terrain.apply(_path)
+    print("  terrain:", ", ".join(f"{v} {k}" for k, v in _TR.items()))
+    # Round 49: ivy on the walls, lanterns at the steps, stairways down the creek bank.
+    import hillside  # noqa: E402
+    print("  hillside:", ", ".join(f"{v} {k}" for k, v in hillside.apply(_path).items()))
     for lot in LOTS:
         (x0, z0), (x1, z1) = lot["lot"]["min"], lot["lot"]["max"]
         print(f"  {lot['name']:24s} {lot['size']:7s} lot {x1 - x0:.0f} x {z1 - z0:.0f} m, {lot['rooms']} rooms, {lot['pieces']} pieces")

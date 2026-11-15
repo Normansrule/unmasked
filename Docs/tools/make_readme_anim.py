@@ -114,6 +114,8 @@ ROUNDS = [
     ("Real bodies, full rooms", "One smooth skin per person instead of toy pieces, and furniture, paintings and rugs in every room", "smooth-cast.png"),
     ("Faces and lived-in rooms", "Noses grown out of faces, softer jaws and hair, curtains at every window and things left out on the tables", "rooms-inside.png"),
     ("Front gardens", "Window boxes, shrubs, flowers down the path, porch rockers, leaf piles, and one smooth body for every person", "front-gardens.png"),
+    ("Hills", "Terraces, sunken streets with stone walls, steps to the church and a raised bridge over the creek", "hills.png"),
+    ("Life on the hills", "Ivy on the walls, lanterns at the steps, and stairways down the creek bank to little wooden landings", "hillside.png"),
 ]
 
 

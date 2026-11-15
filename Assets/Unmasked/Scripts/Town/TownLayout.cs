@@ -182,6 +182,49 @@ namespace Unmasked
         public HorizonInfo horizon;
         public ManorLayout.Room[] rooms;
         public float creekZ;
+        /// <summary>The hills under the town (round 48): see GroundY.</summary>
+        public TerrainInfo terrain;
+
+        /// <summary>
+        /// Round 48: Hollow Creek climbs north from Elm Street on terraces, with Main Street and Ash Street ramping
+        /// between them and a bank down to the creek. Docs/tools/terrain.py writes one character per 1 m cell (an
+        /// index into levels, or '~' where a ramp sets the height) and the ramps as flat groups of seven numbers:
+        /// x0, x1, z0, z1, axis (0 = x, 1 = z), height at the low end, height at the high end. First ramp wins.
+        /// </summary>
+        [Serializable]
+        public class TerrainInfo
+        {
+            public float x0, z0, cell = 1f;
+            public int nx, nz;
+            public float[] levels;
+            public string cells;
+            public float[] ramps;
+            public string alphabet;
+        }
+
+        /// <summary>How high the ground is at a point of the town (0 outside it). Walkers and cars use it.</summary>
+        public float GroundY(float x, float z)
+        {
+            var t = terrain;
+            if (t == null || string.IsNullOrEmpty(t.cells) || t.cell <= 0f) return 0f;
+            int i = Mathf.FloorToInt((x - t.x0) / t.cell), j = Mathf.FloorToInt((z - t.z0) / t.cell);
+            if (i < 0 || j < 0 || i >= t.nx || j >= t.nz) return 0f;
+            char c = t.cells[j * t.nx + i];
+            if (c != '~')
+            {
+                int k = t.alphabet != null ? t.alphabet.IndexOf(c) : -1;
+                return k >= 0 && t.levels != null && k < t.levels.Length ? t.levels[k] : 0f;
+            }
+            if (t.ramps == null) return 0f;
+            for (int r = 0; r + 6 < t.ramps.Length; r += 7)
+            {
+                float rx0 = t.ramps[r], rx1 = t.ramps[r + 1], rz0 = t.ramps[r + 2], rz1 = t.ramps[r + 3];
+                if (x < rx0 || x >= rx1 || z < rz0 || z >= rz1) continue;
+                float u = t.ramps[r + 4] < 0.5f ? (x - rx0) / (rx1 - rx0) : (z - rz0) / (rz1 - rz0);
+                return Mathf.Lerp(t.ramps[r + 5], t.ramps[r + 6], Mathf.Clamp01(u));
+            }
+            return 0f;
+        }
 
         public const string ResourceName = "HollowCreek";
 

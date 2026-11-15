@@ -436,6 +436,36 @@ way every build.
 
 <p align="center"><img src="Docs/images/front-gardens.png" alt="Four front yards before and after: window boxes, shrubs, flowers down the path, rockers and leaf piles" width="900"></p>
 
+#### Round 48: hills and level changes
+
+**The town isn't flat any more.** Hollow Creek now climbs north from Elm Street on three terraces:
+Elm Street, Pine Street and everything south of them stay at street level, the middle town up to
+Willow Lane and Chapel Lane sits 2.4 m higher, and the high town round Orchard Road and Willow
+Heights 4.8 m up, before a grass bank falls to the creek. Main Street and Ash Street climb between
+the terraces on gentle ramps (about 6°) cut into the hill, so they run as sunken streets between
+stone retaining walls with iron railings along the top; near the creek Main Street runs out on an
+embankment to a bridge raised 2.2 m on stone abutments and piers. Every house, shop, haunt and lot
+sits at the height of the street its door faces, so paths, porches and driveways still meet the
+sidewalk flush, and a capped stone wall rises wherever two levels meet. Flights of steps with
+handrails climb from the sunken streets to the terraces, one of them straight to the church door.
+Built by [`Docs/tools/terrain.py`](Docs/tools/terrain.py) after the town is saved; the game reads the
+ground height from the layout (`TownLayout.GroundY`) so trick-or-treaters walk up the hills.
+
+<p align="center"><img src="Docs/images/hills.png" alt="Four views before and after: Main Street climbing in a cutting, steps to the church, the raised bridge and the terraces from the air" width="900"></p>
+
+#### Round 49: life on the hills
+
+**The new terraces are dressed.** Ivy and moss trail down about half of the retaining walls, in
+patches of green with a few runs already turned red and gold for October, so the sunken streets
+look old rather than freshly poured. A lit lantern post stands at the top of every flight of steps.
+The creek bank isn't a slide any more: three stone stairways with iron handrails climb down it
+from the high town, each with a lantern and a bench at the top looking over the water and a little
+wooden landing on pilings at the bottom where the steps meet the creek. Placed by
+[`Docs/tools/hillside.py`](Docs/tools/hillside.py) right after the terrain pass, only where nothing
+already stands.
+
+<p align="center"><img src="Docs/images/hillside.png" alt="Four views before and after: ivy down the walls of the sunken street, a lantern at the church steps, a stairway down the creek bank to a landing, and a bench above the creek" width="900"></p>
+
 **First-night hints**, which ease in by themselves and step aside when you're done with them:
 
 <p align="center"><img src="Docs/images/handbook.gif" alt="Handbook hint cards appearing at HQ, on the drive, at the Suspect Board, during a scare and after a case" width="720"></p>
